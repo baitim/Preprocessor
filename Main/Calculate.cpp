@@ -65,8 +65,8 @@ static void add(Stack *stack)
 static void sub(Stack *stack)
 {
     int x = 0, y = 0;
-    stack_pop(stack, &x);
     stack_pop(stack, &y);
+    stack_pop(stack, &x);
     stack_push(stack, x - y);
 }
 
@@ -81,8 +81,8 @@ static void mul(Stack *stack)
 static void div(Stack *stack)
 {
     int x = 0, y = 0;
-    stack_pop(stack, &x);
     stack_pop(stack, &y);
+    stack_pop(stack, &x);
     stack_push(stack, x / y);
 }
 
