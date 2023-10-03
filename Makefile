@@ -6,7 +6,7 @@ Main_files = 			$(wildcard Main/*.cpp) $(wildcard Stack/*.cpp)
 To_byte_code = 			$(wildcard To_byte_code/*.cpp)
 From_byte_code_files = 	$(wildcard From_byte_code/*.cpp)
 
-start : run_to_byte_code run_from_byte_code run_main
+start : run_to_byte_code run_from_byte_code run_main finish_to_byte_code finish_from_byte_code finish
 
 run_to_byte_code :
 	g++ $(To_byte_code) -o to_byte_code $(options) $(debug)
@@ -16,3 +16,12 @@ run_from_byte_code :
 
 run_main :
 	g++ $(Main_files) -o start $(options) $(debug)
+
+finish_to_byte_code:
+	./to_byte_code
+
+finish_from_byte_code:
+	./from_byte_code
+
+finish:	
+	./start

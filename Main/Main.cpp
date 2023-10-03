@@ -8,9 +8,6 @@ int main()
 {
     printf(print_lblue("# Implementation of stack.\n"
                        "# (c) BAIDIUSENOV TIMUR, 2023\n\n"));
-
-    Stack stack = {};
-	stack_ctor(&stack);
     
     /*if (stack_push(&stack, 9)) return 0;
 
@@ -20,10 +17,8 @@ int main()
     */
 
     FILE *instruction = fopen("txt/Commands_in_byte_code.txt", "r");
-    int answer = calculate(instruction);
-    printf(print_lgreen("answer = %d\n"), answer);
 
-	stack_dtor(&stack);
+    calculate(instruction);
 
     printf(print_lblue("\nBye\n"));
 

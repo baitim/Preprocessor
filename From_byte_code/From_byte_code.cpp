@@ -14,7 +14,6 @@ Errors process_byte_commands(FILE *dest, FILE *src)
     while (true) {
         int int_instruct = -1;
         int count_input = fscanf(src, "%d", &int_instruct);
-        printf("count_input = %d\n", count_input);
         if (count_input != 1)
             break;
 

@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-int calculate(FILE *instruction);
+void calculate(FILE *src);
 
 #endif // CALCULATE_H
