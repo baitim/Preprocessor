@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "From_byte_code.h"
+#include "Disasm.h"
 
 Errors process_byte_commands(FILE *dest, FILE *src)
 {
