@@ -3,35 +3,27 @@
 
 #include "Asm.h"
 
-Errors process_input_commands(FILE *dest, FILE *src)
+Errors process_input_commands(FILE *dest, const Data *src)
 {
-    if (!src) return ERROR_READ_FILE;
     if (!dest) return ERROR_READ_FILE;
     Errors error = ERROR_NO;
-    char *instruction = (char *)calloc(MAX_SIZE_COMMAND, sizeof(char));
-    if (!instruction)
-        return ERROR_ALLOC_FAIL;
-    while (true) {
-        int count_input = fscanf(src, "%s", instruction);
-        if (count_input != 1)
-            break;
-        for (int i = 0; i < COUNT_COMMANDS; i++) {
-            if (strcmp(commands[i].name, instruction) == 0) {
-                fprintf(dest, "%d", commands[i].int_name);
-                count_input = 0;
-                int value = 0;
-                if (strcmp("push", instruction) == 0)
-                    count_input = fscanf(src, "%d", &value);
 
-                if (count_input)
-                    fprintf(dest, " %d", value);
+    int number_string = 0;
+    while (number_string < src->commands_count) {
+        for (int i = 0; i < COUNT_COMMANDS; i++) {
+            if (strcmp(commands[i].name, src->pointers[number_string]) == 0) {
+                fprintf(dest, "%d", commands[i].int_name);
+
+                if (strcmp("push", src->pointers[number_string]) == 0) {
+                    number_string++;
+                    fprintf(dest, " %s", src->pointers[number_string]);
+                }
 
                 break;
             }
         }
+        number_string++;
         fprintf(dest, "\n");
     }
-
-    free(instruction);
     return error;
 }

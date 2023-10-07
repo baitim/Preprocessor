@@ -5,9 +5,12 @@
 
 int main()
 {
-    FILE *src =  fopen("txt/Input_commands.txt", "r");
+    Data src = {};
+
+    create_data(&src, "txt/Input_commands.txt");
+
     FILE *dest = fopen("txt/Commands_in_byte_code.txt", "w");
-    process_input_commands(dest, src);
+    process_input_commands(dest, &src);
 
     return 0;
 }

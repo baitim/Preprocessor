@@ -7,21 +7,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-struct DATA {
+struct Data {
     int size_file;
     char *text;
-    int lines_count;
+    int commands_count;
     char **pointers;
 };
 
-void create_data(DATA *data);
-
-off_t fsize(const char *filename);
-
-void get_data(DATA data, FILE *stream);
-
-int count_pointers(const char *text);
-
-void write_pointers(DATA data);
+void create_data(Data *data, const char *src);
 
 #endif // INPUT_H
