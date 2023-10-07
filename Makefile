@@ -3,8 +3,8 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 debug =
 
 Main_files = 	$(wildcard Main/*.cpp) $(wildcard Stack/*.cpp)
-ASM = 			$(wildcard ASM/*.cpp)
-DISASM = 	    $(wildcard DISASM/*.cpp)
+ASM = 			$(wildcard Asm/*.cpp)
+DISASM = 	    $(wildcard Disasm/*.cpp)
 
 start : run_asm run_disasm run_main finish_asm finish_disasm finish
 

@@ -42,4 +42,10 @@ const Register REGISTERS[] = {
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
 
+union SPU {
+    struct Register;
+    struct Stack;
+    struct Data;
+};
+
 #endif // CONFIG_H
