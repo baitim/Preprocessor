@@ -11,8 +11,8 @@ Errors process_input_commands(FILE *dest, const Data *src)
     int number_string = 0;
     while (number_string < src->commands_count) {
         for (int i = 0; i < COUNT_COMMANDS; i++) {
-            if (strcmp(commands[i].name, src->pointers[number_string]) == 0) {
-                fprintf(dest, "%d", commands[i].int_name);
+            if (strcmp(COMMANDS[i].name, src->pointers[number_string]) == 0) {
+                fprintf(dest, "%d", COMMANDS[i].int_name);
 
                 if (strcmp("push", src->pointers[number_string]) == 0) {
                     number_string++;

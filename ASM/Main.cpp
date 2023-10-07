@@ -9,7 +9,7 @@ int main()
 
     create_data(&src, "txt/Input_commands.txt");
 
-    FILE *dest = fopen("txt/Commands_in_byte_code.txt", "w");
+    FILE *dest = fopen("txt/Asm.txt", "w");
     process_input_commands(dest, &src);
 
     return 0;

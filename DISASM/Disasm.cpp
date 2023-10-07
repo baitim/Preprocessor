@@ -18,8 +18,8 @@ Errors process_byte_commands(FILE *dest, FILE *src)
             break;
 
         for (int i = 0; i < COUNT_COMMANDS; i++) {
-            if (commands[i].int_name == int_instruct) {
-                fprintf(dest, "%s", commands[i].name);
+            if (COMMANDS[i].int_name == int_instruct) {
+                fprintf(dest, "%s", COMMANDS[i].name);
 
                 count_input = 0;
                 int value = 0;

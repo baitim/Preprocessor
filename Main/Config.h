@@ -24,4 +24,22 @@ enum Errors {
     ERROR_READ_FILE =                   1 << 11
 };
 
+enum Arg_types {
+    NUM = 1 << 1,
+    REG = 1 << 2
+};
+
+struct Register {
+    const char *name;
+    int value;
+};
+
+const Register REGISTERS[] = {
+    {"rax", 0},
+    {"rbx", 0},
+    {"rcx", 0},
+    {"rdx", 0}
+};
+const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
+
 #endif // CONFIG_H

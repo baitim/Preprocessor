@@ -16,7 +16,7 @@ int main()
     printf(print_lcyan(type_el_print "\n"), el_print(value));
     */
 
-    FILE *instruction = fopen("txt/Commands_in_byte_code.txt", "r");
+    FILE *instruction = fopen("txt/Asm.txt", "r");
 
     calculate(instruction);
 

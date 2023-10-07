@@ -29,16 +29,17 @@ void calculate(FILE *src)
         
         switch (instruction) {
             case 1:  push(&stack, src); break;
-            case 2:  add(&stack);       break;
-            case 3:  sub(&stack);       break;
-            case 4:  mul(&stack);       break;
-            case 5:  div(&stack);       break;
-            case 6:  sqrt(&stack);      break;
-            case 7:  sin(&stack);       break;
-            case 8:  cos(&stack);       break;
-            case 9:  in(&stack);        break;
-            case 10: out(&stack);       break;
-            case 11: return;
+            case 2:  in(&stack);        break;
+            case 3:                     break;
+            case 4:  add(&stack);       break;
+            case 5:  sub(&stack);       break;
+            case 6:  mul(&stack);       break;
+            case 7:  div(&stack);       break;
+            case 8:  sqrt(&stack);      break;
+            case 9:  sin(&stack);       break;
+            case 10: cos(&stack);       break;
+            case 11: out(&stack);       break;
+            case 12: return;
             default: assert(0);
         }
     }
