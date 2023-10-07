@@ -5,9 +5,8 @@
 
 #include "Input.h"
 
-#include "../Main/Config.h"
-
 #include "../Main/Commands.h"
+#include "../Main/Config.h"
 
 Errors process_input_commands(FILE *dest, const Data *src);
 

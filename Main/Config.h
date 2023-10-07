@@ -24,17 +24,12 @@ enum Errors {
     ERROR_READ_FILE =                   1 << 11
 };
 
-enum Arg_types {
-    NUM = 1 << 1,
-    REG = 1 << 2
-};
-
 struct Register {
     const char *name;
     int value;
 };
 
-const Register REGISTERS[] = {
+static Register REGISTERS[] = {
     {"rax", 0},
     {"rbx", 0},
     {"rcx", 0},

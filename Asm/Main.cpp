@@ -1,8 +1,6 @@
 #include "Input.h"
 #include "Asm.h"
 
-#include <errno.h>
-
 int main()
 {
     Data src = {};

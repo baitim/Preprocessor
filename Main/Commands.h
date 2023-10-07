@@ -1,8 +1,6 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include "Config.h"
-
 struct Input_commands {
     const char *name;
     int int_name;
@@ -12,9 +10,14 @@ struct Input_commands {
 
 const int MAX_SIZE_COMMAND = 10;
 
+enum Arg_types {
+    NUM = 1 << 1,
+    REG = 1 << 2
+};
+
 const Input_commands COMMANDS[] = {
     {"push",    1,  NUM | REG,    "add element to calculate"},
-    {"in",      2,  NUM,          "choose and add element to calculate"},
+    {"in",      2,  0,            "choose and add element to calculate"},
     {"pop",     3,  REG,          "write register"},
     {"add",     4,  0,            "sum elements"},
     {"sub",     5,  0,            "subtraction elements"},

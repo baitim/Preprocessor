@@ -1,6 +1,5 @@
 #include "ANSI_colors.h"
 #include "Calculate.h"
-#include "Config.h"
 #include "Debug.h"
 #include "../Stack/Stack.h"
 

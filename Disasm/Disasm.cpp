@@ -22,12 +22,11 @@ Errors process_byte_commands(FILE *dest, FILE *src)
                 fprintf(dest, "%s", COMMANDS[i].name);
 
                 count_input = 0;
-                int value = 0;
-                if (int_instruct == 1)
-                    count_input = fscanf(src, "%d", &value);
+                if (COMMANDS[i].arg_types > 0)
+                    count_input = fscanf(src, "%s", instruction);
 
                 if (count_input)
-                    fprintf(dest, " %d", value);
+                    fprintf(dest, " %s", instruction);
 
                 break;
             }
