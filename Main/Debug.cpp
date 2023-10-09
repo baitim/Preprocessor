@@ -4,6 +4,7 @@
 
 #include "ANSI_colors.h"
 #include "Config.h"
+#include "Output.h"
 
 struct ProcessErrors {
     int error;
@@ -53,12 +54,7 @@ Errors stack_dump_(Stack *stack, const char *file, const char *func, int line, c
         if (type_error & powf(2, i - 1))
             print_error(type_error, errors[i].description);
     }
-    if (stack && stack->data) {
-        for (int i = 0; i <= stack->size; i++) {
-            printf(print_lcyan("i = %d "), i);
-            print_el(&stack->data[i]);
-        }
-    }
+    print_stack(stack);
     return type_error;
 }
 

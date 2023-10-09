@@ -27,17 +27,18 @@ enum Errors {
 struct Register {
     const char *name;
     int value;
+    int index;
 };
 
 static Register REGISTERS[] = {
-    {"rax", 0},
-    {"rbx", 0},
-    {"rcx", 0},
-    {"rdx", 0}
+    {"rax", 0, 1},
+    {"rbx", 0, 2},
+    {"rcx", 0, 3},
+    {"rdx", 0, 4}
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
 
-union SPU {
+struct SPU {
     struct Register;
     struct Stack;
     struct Data;

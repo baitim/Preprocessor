@@ -7,6 +7,7 @@
 #include "../Stack/Stack.h"
 #include "Commands.h"
 #include "Config.h"
+#include "Output.h"
 
 static void push(Stack *stack, FILE *src);
 static void in(Stack *stack);
@@ -20,18 +21,21 @@ static void sin(Stack *stack);
 static void cos(Stack *stack);
 static void out(Stack *stack);
 
-void calculate(FILE *src)
+void calculate(const char *name_of_file)
 {
+    FILE *src = fopen(name_of_file, "r");
+
     Stack stack = {};
     stack_ctor(&stack);
 
+    int number_command = 1;
     while (true) {
-        int instruction = -1;
-        int count_input = fscanf(src, "%d", &instruction);
+        int command = -1;
+        int count_input = fscanf(src, "%d", &command);
         if (count_input != 1)
             break;
         
-        switch (instruction) {
+        switch (command) {
             case 1:  push(&stack, src);         break;
             case 2:  in(&stack);                break;
             case 3:  pop(&stack, src);          break;
@@ -46,6 +50,9 @@ void calculate(FILE *src)
             case 12: return;
             default: assert(0);
         }
+        //print_commands_stack(name_of_file, number_command);
+
+        number_command++;
     }
 
     stack_dtor(&stack);

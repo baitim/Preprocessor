@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-void calculate(FILE *src);
+void calculate(const char *name_of_file);
 
 #endif // CALCULATE_H
