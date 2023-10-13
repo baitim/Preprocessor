@@ -5,9 +5,12 @@
 
 #include "Input.h"
 
-#include "../Main/Commands.h"
-#include "../Main/Config.h"
+#include "../Errors.h"
+#include "../Commands.h"
+#include "../Config.h"
 
-Errors process_input_commands(FILE *dest, const Data *src);
+Errors process_input_commands_txt(FILE *dest, const Data *src);
+
+Errors process_input_commands_bin(FILE *dest, const Data *src);
 
 #endif // TO_BYTE_CODE_H

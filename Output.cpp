@@ -14,9 +14,10 @@ void print_stack(Stack *stack)
     }
 }
 
-void print_commands_stack(const char *name_of_file, int number_command)
+void print_commands(const char *name_of_file, int number_command)
 {
     FILE *src = fopen(name_of_file, "r");
+    assert(src);
 
     char *instruction = (char *)calloc(MAX_SIZE_COMMAND, sizeof(char));
     assert (instruction);
@@ -30,5 +31,7 @@ void print_commands_stack(const char *name_of_file, int number_command)
 
         printf("%s ", instruction);
     }
+
     printf("\n");
+    fclose(src);
 }

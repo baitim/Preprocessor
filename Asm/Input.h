@@ -14,6 +14,10 @@ struct Data {
     char **pointers;
 };
 
+off_t fsize(const char *filename);
+
 void create_data(Data *data, const char *src);
+
+void dtor_data(Data *data);
 
 #endif // INPUT_H

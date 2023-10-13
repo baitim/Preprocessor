@@ -3,10 +3,12 @@
 
 #include <stdio.h>
 
-#include "../Main/Config.h"
+#include "../Errors.h"
+#include "../Config.h"
+#include "../Commands.h"
 
-#include "../Main/Commands.h"
+Errors process_byte_commands_txt(FILE *dest, FILE *src);
 
-Errors process_byte_commands(FILE *dest, FILE *src);
+Errors process_byte_commands_bin(FILE *dest, const char *str_src);
 
 #endif // FROM_BYTE_CODE_H

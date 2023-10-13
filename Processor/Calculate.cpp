@@ -2,12 +2,12 @@
 #include <string.h>
 #include <math.h>
 
-#include "ANSI_colors.h"
+#include "../ANSI_colors.h"
 #include "Calculate.h"
 #include "../Stack/Stack.h"
-#include "Commands.h"
-#include "Config.h"
-#include "Output.h"
+#include "../Commands.h"
+#include "../Config.h"
+#include "../Output.h"
 
 static void push(Stack *stack, FILE *src);
 static void in(Stack *stack);
@@ -36,44 +36,45 @@ void calculate(const char *name_of_file)
             break;
         
         switch (command) {
-            case 1:  push(&stack, src);         break;
-            case 2:  in(&stack);                break;
-            case 3:  pop(&stack, src);          break;
-            case 4:  add(&stack);               break;
-            case 5:  sub(&stack);               break;
-            case 6:  mul(&stack);               break;
-            case 7:  div(&stack);               break;
-            case 8:  sqrt(&stack);              break;
-            case 9:  sin(&stack);               break;
-            case 10: cos(&stack);               break;
-            case 11: out(&stack);               break;
-            case 12: return;
+            case PUSH: push(&stack, src);         break;
+            case IN:   in(&stack);                break;
+            case POP:  pop(&stack, src);          break;
+            case ADD:  add(&stack);               break;
+            case SUB:  sub(&stack);               break;
+            case MUL:  mul(&stack);               break;
+            case DIV:  div(&stack);               break;
+            case SQRT: sqrt(&stack);              break;
+            case SIN:  sin(&stack);               break;
+            case COS:  cos(&stack);               break;
+            case OUT:  out(&stack);               break;
+            case HLT:  return;
             default: assert(0);
         }
-        //print_commands_stack(name_of_file, number_command);
+        //print_commands(name_of_file, number_command);
 
         number_command++;
     }
 
     stack_dtor(&stack);
+    fclose(src);
 }
 
 static void push(Stack *stack, FILE *src)
 {
-    char *value = (char *)calloc(MAX_SIZE_COMMAND, sizeof(char));
-    assert(value);
-
-    int count_input = fscanf(src, "%s", value);
+    int value = 0;
+    int count_input = fscanf(src, "%d", &value);
     assert(count_input == 1);
 
     for (int i = 0; i < COUNT_REGISTERS; i++) {
-        if (strcmp(REGISTERS[i].name, value) == 0) {
+        if (REGISTERS[i].index == value) {
             stack_push(stack, REGISTERS[i].value);
             return;
         }
     }
 
-    stack_push(stack, atoi(value));
+    // value = get_arg();
+
+    stack_push(stack, value);
 }
 
 static void in(Stack *stack)
@@ -87,16 +88,17 @@ static void in(Stack *stack)
 
 static void pop(Stack *stack, FILE *src)
 {
-    char *name_reg = (char *)calloc(MAX_SIZE_COMMAND, sizeof(char));
-    assert(name_reg);
-    int count_input = fscanf(src, "%s", name_reg);
+    int name_reg = 0;
+    int count_input = fscanf(src, "%d", &name_reg);
     assert(count_input == 1);
 
     int x = 0;
+
+    // value = get_arg();
     stack_pop(stack, &x);
 
     for (int i = 0; i < COUNT_REGISTERS; i++) {
-        if (strcmp(REGISTERS[i].name, name_reg) == 0) {
+        if (REGISTERS[i].index == name_reg) {
             REGISTERS[i].value = x;
             return;
         }

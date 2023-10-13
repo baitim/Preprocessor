@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../Stack/Stack.h"
+#include "Stack/Stack.h"
+#include "Errors.h"
 
 long long make_number_canary();
 

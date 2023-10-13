@@ -1,7 +1,8 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "../Main/Config.h"
+#include "../Config.h"
+#include "../Errors.h"
 
 struct Stack {
     long long left_canary_struct;
@@ -12,7 +13,7 @@ struct Stack {
     long long right_canary_struct;
 };
 
-#include "../Main/Debug.h"
+#include "../Debug.h"
 
 Errors stack_ctor(Stack *stack);
 

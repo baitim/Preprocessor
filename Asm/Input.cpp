@@ -1,8 +1,7 @@
-#include "Input.h"
-
 #include "string.h"
 
-static off_t fsize(const char *filename);
+#include "Input.h"
+#include "../Config.h"
 
 static void get_data(Data *data, FILE *stream);
 
@@ -13,6 +12,7 @@ static void write_pointers(Data *data);
 void create_data(Data *data, const char *src)
 {
     FILE *stream = fopen(src, "r");
+    assert(stream);
 
     data->size_file = (int)fsize(src) + 1;
     data->text = (char *) calloc(data->size_file, sizeof(char));
@@ -23,9 +23,10 @@ void create_data(Data *data, const char *src)
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));
     assert(data->pointers);
     write_pointers(data);
+    fclose(stream);
 }
 
-static off_t fsize(const char *filename) {
+off_t fsize(const char *filename) {
     struct stat st = {};
 
     if (stat(filename, &st) == 0)
@@ -105,3 +106,11 @@ static void write_pointers(Data *data)
     }
 }
 
+void dtor_data(Data *data)
+{
+    assert (data);
+    data->size_file = POISON_BYTE;
+    free(data->text);
+    free(data->pointers);
+    data->commands_count = POISON_BYTE;
+}
