@@ -1,12 +1,102 @@
-DEF_CMD(PUSH, 43, 1)
-DEF_CMD(IN,   2,  0)
-DEF_CMD(POP,  33, 1)
-DEF_CMD(ADD,  4,  0)
-DEF_CMD(SUB,  5,  0)
-DEF_CMD(MUL,  6,  0)
-DEF_CMD(DIV,  7,  0)
-DEF_CMD(SQRT, 8,  0)
-DEF_CMD(SIN,  9,  0)
-DEF_CMD(COS,  10, 0)
-DEF_CMD(OUT,  11, 0)
-DEF_CMD(HLT,  12, 0)
+DEF_CMD(PUSH, 43, 1, {
+    int value_elem = 0;
+    int count_input_ = fscanf(src, "%d", &value_elem);
+    assert(count_input_ == 1);
+
+    int is_reg = 0;
+    for (int i = 0; i < COUNT_REGISTERS; i++) {
+        if (REGISTERS[i].index == value_elem) {
+            stack_push(&stack, REGISTERS[i].value);
+            is_reg = 1;
+            break;
+        }
+    }
+
+    if (!is_reg) stack_push(&stack, value_elem);
+    break;})
+
+DEF_CMD(IN, 2, 0, {
+    printf(print_lyellow("Input element: "));
+    int x = 0;
+    int count_input_ = scanf("%d", &x);
+    assert(count_input_ == 1);
+    stack_push(&stack, x);
+    break;})
+
+DEF_CMD(POP, 33, 1, {
+    int name_reg = 0;
+    int count_input_ = fscanf(src, "%d", &name_reg);
+    assert(count_input_ == 1);
+
+    int x = 0;
+
+    stack_pop(&stack, &x);
+
+    for (int i = 0; i < COUNT_REGISTERS; i++) {
+        if (REGISTERS[i].index == name_reg) {
+            REGISTERS[i].value = x;
+            break;
+        }
+    }
+    break;})
+
+DEF_CMD(ADD, 4, 0, {
+    int x = 0;
+    int y = 0;
+    stack_pop(&stack, &x);
+    stack_pop(&stack, &y);
+    stack_push(&stack, x + y);
+    break;})
+
+DEF_CMD(SUB, 5, 0, {
+    int x = 0;
+    int y = 0;
+    stack_pop(&stack, &y);
+    stack_pop(&stack, &x);
+    stack_push(&stack, x - y);
+    break;})
+
+DEF_CMD(MUL, 6, 0, {
+    int x = 0;
+    int y = 0;
+    stack_pop(&stack, &x);
+    stack_pop(&stack, &y);
+    stack_push(&stack, x * y);
+    break;})
+
+DEF_CMD(DIV, 7, 0, {
+    int x = 0;
+    int y = 0;
+    stack_pop(&stack, &y);
+    stack_pop(&stack, &x);
+    stack_push(&stack, x / y);
+    break;})
+
+DEF_CMD(SQRT, 8, 0, {
+    int x = 0;
+    stack_pop(&stack, &x);
+    stack_push(&stack, (type_el)sqrt(x));
+    break;})
+
+DEF_CMD(SIN, 9, 0, {
+    int x = 0;
+    stack_pop(&stack, &x);
+    stack_push(&stack, (type_el)sin(x));
+    break;})
+
+DEF_CMD(COS, 10, 0, {
+    int x = 0;
+    stack_pop(&stack, &x);
+    stack_push(&stack, (type_el)cos(x));
+    break;})
+
+DEF_CMD(OUT, 11, 0, {
+    int answer = 0;
+    stack_pop(&stack, &answer);
+    printf(print_lgreen("Answer = "));
+    printf(print_lcyan("%d\n"), answer);
+    break;})
+
+DEF_CMD(HLT, 12, 0, {
+    return;
+    break;})

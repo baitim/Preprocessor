@@ -4,7 +4,7 @@
 #include "Asm.h"
 #include "../Commands.h"
 
-#define DEF_CMD(name_cmd, num, args)                                                \
+#define DEF_CMD(name_cmd, num, args, code)                                          \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
         fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \ 

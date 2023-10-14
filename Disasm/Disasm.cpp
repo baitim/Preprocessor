@@ -4,7 +4,7 @@
 #include "../Asm/Input.h"
 #include "Disasm.h"
 
-#define DEF_CMD(name_cmd, num, args)                                            \
+#define DEF_CMD(name_cmd, num, args, code)                                      \
     if (int_instruct == CMD_ ## name_cmd) {                                     \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
