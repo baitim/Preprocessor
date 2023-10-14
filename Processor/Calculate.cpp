@@ -36,18 +36,18 @@ void calculate(const char *name_of_file)
             break;
         
         switch (command) {
-            case PUSH: push(&stack, src);         break;
-            case IN:   in(&stack);                break;
-            case POP:  pop(&stack, src);          break;
-            case ADD:  add(&stack);               break;
-            case SUB:  sub(&stack);               break;
-            case MUL:  mul(&stack);               break;
-            case DIV:  div(&stack);               break;
-            case SQRT: sqrt(&stack);              break;
-            case SIN:  sin(&stack);               break;
-            case COS:  cos(&stack);               break;
-            case OUT:  out(&stack);               break;
-            case HLT:  return;
+            case CMD_PUSH: push(&stack, src);         break;
+            case CMD_IN:   in(&stack);                break;
+            case CMD_POP:  pop(&stack, src);          break;
+            case CMD_ADD:  add(&stack);               break;
+            case CMD_SUB:  sub(&stack);               break;
+            case CMD_MUL:  mul(&stack);               break;
+            case CMD_DIV:  div(&stack);               break;
+            case CMD_SQRT: sqrt(&stack);              break;
+            case CMD_SIN:  sin(&stack);               break;
+            case CMD_COS:  cos(&stack);               break;
+            case CMD_OUT:  out(&stack);               break;
+            case CMD_HLT:  return;
             default: assert(0);
         }
         //print_commands(name_of_file, number_command);

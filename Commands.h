@@ -8,7 +8,7 @@ struct Input_commands {
 };
 
 #define DEF_CMD(name, num, args) \
-    name = num,
+    CMD_ ## name = num,
 enum Commands {
     #include "Com.txt"
 };
@@ -22,7 +22,7 @@ enum Arg_types {
 
 const int MAX_SIZE_COMMAND = 10;
 #define DEF_CMD(name, num, args) \
-    { #name, name, args },
+    { #name, CMD_ ## name, args },
 const Input_commands COMMANDS[] = {
     #include "Com.txt"
 };

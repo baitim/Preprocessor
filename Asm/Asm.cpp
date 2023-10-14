@@ -2,7 +2,32 @@
 #include <string.h>
 
 #include "Asm.h"
+#include "../Commands.h"
 
+#define DEF_CMD(name_cmd, num, args)                                                \
+    if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
+    {                                                                               \
+        fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \ 
+        number_string++;                                                            \      
+        if (!args) {                                                                \
+            fprintf(dest, "\n");                                                    \
+            continue;                                                               \
+        }                                                                           \
+        int is_reg = 0;                                                             \ 
+        for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
+            if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
+                fprintf(dest, " %d", REGISTERS[j].index);                           \
+                is_reg = 1;                                                         \
+                break;                                                              \
+            }                                                                       \
+        }                                                                           \ 
+        if (!is_reg)                                                                \   
+            fprintf(dest, " %d", atoi(src->pointers[number_string]));               \
+        number_string++;                                                            \
+        fprintf(dest, "\n");                                                        \
+        continue;                                                                   \
+    }                                                                               \
+    else
 Errors process_input_commands_txt(FILE *dest, const Data *src)
 {
     if (!dest) return ERROR_READ_FILE;
@@ -10,35 +35,16 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
 
     int number_string = 0;
     while (number_string < src->commands_count) {
-        for (int i = 0; i < COUNT_COMMANDS; i++) {
-            if (strcmp(COMMANDS[i].name, src->pointers[number_string]) == 0) {
-                fprintf(dest, "%d", COMMANDS[i].opcode);
 
-                if (COMMANDS[i].arg_types > 0) {
-                    number_string++;
+        #include "../Com.txt"
+        {;}
 
-                    bool is_reg = false;
-                    for (int j = 0; j < COUNT_REGISTERS; j++) {
-                        if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {
-                            fprintf(dest, " %d", REGISTERS[j].index);
-                            is_reg = true;
-                            break;
-                        }
-                    }
-
-                    if (!is_reg) 
-                        fprintf(dest, " %d", atoi(src->pointers[number_string]));
-
-                }
-                
-                break;
-            }
-        }
         number_string++;
         fprintf(dest, "\n");
     }
     return error;
 }
+#undef DEF_CMD
 
 Errors process_input_commands_bin(FILE *dest, const Data *src)
 {

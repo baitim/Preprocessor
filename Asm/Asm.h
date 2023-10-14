@@ -6,7 +6,6 @@
 #include "Input.h"
 
 #include "../Errors.h"
-#include "../Commands.h"
 #include "../Config.h"
 
 Errors process_input_commands_txt(FILE *dest, const Data *src);

@@ -1,6 +1,6 @@
-DEF_CMD(PUSH, 43,  1)
+DEF_CMD(PUSH, 43, 1)
 DEF_CMD(IN,   2,  0)
-DEF_CMD(POP,  33,  1)
+DEF_CMD(POP,  33, 1)
 DEF_CMD(ADD,  4,  0)
 DEF_CMD(SUB,  5,  0)
 DEF_CMD(MUL,  6,  0)
