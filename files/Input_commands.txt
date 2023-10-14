@@ -1,17 +1,17 @@
-in
-pop rax
-in
-pop rbx
-in
-pop rcx
-push rbx
-push rbx
-mul
-push 4
-push rax
-push rcx
-mul
-mul
-sub
-out
+IN
+POP rax
+IN
+POP rbx
+IN
+POP rcx
+PUSH rbx
+PUSH rbx
+MUL
+PUSH 4
+PUSH rax
+PUSH rcx
+MUL
+MUL
+SUB
+OUT
 HLT
