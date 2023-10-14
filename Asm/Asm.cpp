@@ -9,7 +9,7 @@
     {                                                                               \
         fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \ 
         number_string++;                                                            \      
-        if (!args) {                                                                \
+        if (args == 0) {                                                            \
             fprintf(dest, "\n");                                                    \
             continue;                                                               \
         }                                                                           \
@@ -40,7 +40,6 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
         {;}
 
         number_string++;
-        fprintf(dest, "\n");
     }
     return error;
 }

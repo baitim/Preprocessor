@@ -4,6 +4,34 @@
 #include "../Asm/Input.h"
 #include "Disasm.h"
 
+#define DEF_CMD(name_cmd, num, args)                                            \
+    if (int_instruct == CMD_ ## name_cmd) {                                     \
+        fprintf(dest, "%s", #name_cmd);                                         \
+        if (args == 0) {                                                        \
+            fprintf(dest, "\n");                                                \
+            continue;                                                           \
+        }                                                                       \
+        if (args > 0) {                                                         \
+            int value = 0;                                                      \
+            count_input = fscanf(src, "%d", &value);                            \
+            if (count_input != 1)                                               \
+                return ERROR_READ_FILE;                                         \
+                                                                                \
+            bool is_reg = false;                                                \
+            for (int j = 0; j < COUNT_REGISTERS; j++) {                         \
+                if (value == REGISTERS[j].index) {                              \
+                    fprintf(dest, " %s", REGISTERS[j].name);                    \
+                    is_reg = true;                                              \
+                    break;                                                      \
+                }                                                               \
+            }                                                                   \
+            if (!is_reg)                                                        \
+                fprintf(dest, " %d", value);                                    \
+        }                                                                       \
+        fprintf(dest, "\n");                                                    \                                                                      
+        continue;                                                               \
+    }                                                                           \                                                                              
+    else
 Errors process_byte_commands_txt(FILE *dest, FILE *src)
 {
     if (!src) return ERROR_READ_FILE;
@@ -18,39 +46,16 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
         if (count_input != 1)
             break;
 
-        for (int i = 0; i < COUNT_COMMANDS; i++) {
-            if (COMMANDS[i].opcode == int_instruct) {
-                fprintf(dest, "%s", COMMANDS[i].name);
+        #include "../Com.txt"
+        {;}
 
-                if (COMMANDS[i].arg_types > 0) {
-                    int value = 0;
-                    count_input = fscanf(src, "%d", &value);
-                    if (count_input != 1)
-                        return ERROR_READ_FILE; 
-
-                    bool is_reg = false;
-                    for (int j = 0; j < COUNT_REGISTERS; j++) {
-                        if (value == REGISTERS[j].index) {
-                            fprintf(dest, " %s", REGISTERS[j].name);
-                            is_reg = true;
-                            break;
-                        }
-                    }
-
-                    if (!is_reg) 
-                        fprintf(dest, " %d", value);
-
-                }
-
-                break;
-            }
-        }
         fprintf(dest, "\n");
     }
 
     free(instruction);
     return error;
 }
+#undef DEF_CMD
 
 Errors process_byte_commands_bin(FILE *dest, const char *str_src)
 {
