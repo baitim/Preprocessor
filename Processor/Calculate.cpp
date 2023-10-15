@@ -8,6 +8,8 @@
 #include "../Commands.h"
 #include "../Config.h"
 #include "../Output.h"
+#include "../Errors.h"
+#include "../Asm/Input.h"
 
 #define DEF_CMD(name, num, args, code)  \
     case CMD_ ## name:                  \
@@ -15,25 +17,30 @@
 
 void calculate(const char *name_of_file)
 {
-    FILE *src = fopen(name_of_file, "r");
+    FILE *src = fopen(name_of_file, "rb");
+
+    const int size_file = (int)fsize(name_of_file);
+    char *commands = (char *)calloc(size_file, sizeof(int));
+    if (!commands)
+        return;
+
+    int count_read = (int)fread(commands, sizeof(commands[0]), size_file, src);
+    if (count_read != size_file)
+        return;
 
     Stack stack = {};
     stack_ctor(&stack);
 
-    int number_command = 1;
-    while (true) {
-        int command = -1;
-        int count_input = fscanf(src, "%d", &command);
-        if (count_input != 1)
-            break;
+    int number_command = 0;
+    while (number_command * (int)sizeof(int) < size_file) {
+        int command = *((int *)commands + number_command);
+        number_command++;
         
         switch (command) {
             #include "../Com.txt"
             default: assert(0);
         }
         //print_commands(name_of_file, number_command);
-
-        number_command++;
     }
 
     stack_dtor(&stack);

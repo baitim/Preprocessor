@@ -15,7 +15,7 @@ int main()
     printf(print_lcyan(type_el_print "\n"), el_print(value));
     */
 
-    calculate("files/Asm.txt");
+    calculate("files/Asm.bin");
 
     printf(print_lblue("\nBye\n"));
 

@@ -1,7 +1,6 @@
 DEF_CMD(PUSH, 43, 1, {
-    int value_elem = 0;
-    int count_input_ = fscanf(src, "%d", &value_elem);
-    assert(count_input_ == 1);
+    int value_elem = *((int *)commands + number_command);
+    number_command++;
 
     int is_reg = 0;
     for (int i = 0; i < COUNT_REGISTERS; i++) {
@@ -24,9 +23,8 @@ DEF_CMD(IN, 2, 0, {
     break;})
 
 DEF_CMD(POP, 33, 1, {
-    int name_reg = 0;
-    int count_input_ = fscanf(src, "%d", &name_reg);
-    assert(count_input_ == 1);
+    int name_reg = *((int *)commands + number_command);
+    number_command++;
 
     int x = 0;
 

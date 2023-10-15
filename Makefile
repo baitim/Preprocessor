@@ -5,7 +5,7 @@ debug =
 DEFAULT =       $(wildcard Stack/*.cpp) $(wildcard *.cpp) 
 ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)
 DISASM = 	    $(DEFAULT) $(wildcard Disasm/*.cpp) $(wildcard Asm/Input.cpp)
-Main_files = 	$(DEFAULT) $(wildcard Processor/*.cpp)
+Main_files = 	$(DEFAULT) $(wildcard Processor/*.cpp) $(wildcard Asm/Input.cpp)
 
 start : run_asm run_disasm run_main finish_asm finish_disasm finish
 

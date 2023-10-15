@@ -1,15 +1,15 @@
 IN
-POP rax
+POP 0
 IN
-POP rbx
+POP 0
 IN
-POP rcx
-PUSH rbx
-PUSH rbx
+POP 0
+PUSH 0
+PUSH 0
 MUL
-PUSH 4
-PUSH rax
-PUSH rcx
+PUSH 0
+PUSH 0
+PUSH 0
 MUL
 MUL
 SUB
