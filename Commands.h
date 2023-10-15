@@ -21,12 +21,5 @@ enum Arg_types {
 };
 
 const int MAX_SIZE_COMMAND = 10;
-#define DEF_CMD(name, num, args, code) \
-    { #name, CMD_ ## name, args },
-const Input_commands COMMANDS[] = {
-    #include "Com.txt"
-};
-#undef DEF_CMD
-const int COUNT_COMMANDS = sizeof(COMMANDS) / sizeof(Input_commands);
 
 #endif // COMMANDS_H
