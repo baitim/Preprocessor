@@ -4,7 +4,7 @@
 #include "Asm.h"
 #include "../Config.h"
 
-#define DEF_CMD(name_cmd, num, type_args, args, code)                                          \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                               \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
         fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \
@@ -42,7 +42,7 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
 }
 #undef DEF_CMD
 
-#define DEF_CMD(name_cmd, num, type_args, args, code)                                          \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                               \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
         *((int *)command + number_string) = num;                                    \

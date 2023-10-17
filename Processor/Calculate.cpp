@@ -10,9 +10,9 @@
 #include "../Errors.h"
 #include "../Asm/Input.h"
 
-#define DEF_CMD(name, num, type_args, args, code)  \
-    case CMD_ ## name:                  \
-        code                            \
+#define DEF_CMD(name, num, type_args, args, code)   \
+    case CMD_ ## name:                              \
+        code                                        \
 
 void calculate(const char *name_of_file)
 {

@@ -8,6 +8,13 @@ int main(int argc, const char *argv[])
     printf(print_lblue("# Implementation of Processor.\n"
                        "# (c) BAIDIUSENOV TIMUR, 2023\n\n"));
     
+    const int COUNT_FROM_CMD = 2;
+    
+    if (argc < COUNT_FROM_CMD) {
+        printf (print_lred("CMD INPUT ERROR\n"));
+        return 0; 
+    }
+
     calculate("files/Asm.bin");
 
     printf(print_lblue("\nBye\n"));

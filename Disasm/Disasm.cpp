@@ -4,7 +4,7 @@
 #include "../Asm/Input.h"
 #include "Disasm.h"
 
-#define DEF_CMD(name_cmd, num, type_args, args, code)                                      \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                           \
     if (int_instruct == CMD_ ## name_cmd) {                                     \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
@@ -57,7 +57,7 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
 }
 #undef DEF_CMD
 
-#define DEF_CMD(name_cmd, num, type_args, args, code)                                      \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                           \
     if (int_instruct == CMD_ ## name_cmd) {                                     \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
@@ -65,8 +65,7 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
             continue;                                                           \
         }                                                                       \
         if (args > 0) {                                                         \
-            int value = 0;                                                      \
-            int_instruct = *((int *)command + number_command);                  \
+            int value  = *((int *)command + number_command);                    \
             number_command++;                                                   \
                                                                                 \
             int is_reg = 0;                                                     \

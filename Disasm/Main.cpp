@@ -6,7 +6,9 @@
 
 int main(int argc, const char *argv[])
 {
-    if (argc < 5) {
+    const int COUNT_FROM_CMD = 5;
+
+    if (argc < COUNT_FROM_CMD) {
         printf (print_lred("CMD INPUT ERROR\n"));
         return 0; 
     }
