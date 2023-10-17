@@ -8,6 +8,20 @@ const type_el POISON_EL = POISON_BYTE;
 
 void print_el(const type_el* elem);
 
+const int MAX_SIZE_COMMAND = 1;
+#define DEF_CMD(name, num, args, code) \
+    CMD_ ## name = num,
+enum Commands {
+    #include "DSL"
+};
+#undef DEF_CMD
+
+enum Arg_types {
+    NUN = 0,
+    NUM = 1 << 1,
+    REG = 1 << 2,
+};
+
 struct Register {
     const char *name;
     int value;

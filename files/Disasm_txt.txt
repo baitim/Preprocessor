@@ -4,6 +4,14 @@ IN
 POP rbx
 IN
 POP rcx
+PUSH rbx
+PUSH rbx
+MUL
+PUSH 4
 PUSH rax
+PUSH rcx
+MUL
+MUL
+SUB
 OUT
 HLT

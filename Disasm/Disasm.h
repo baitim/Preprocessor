@@ -5,7 +5,6 @@
 
 #include "../Errors.h"
 #include "../Config.h"
-#include "../Commands.h"
 
 Errors process_byte_commands_txt(FILE *dest, FILE *src);
 

@@ -2,7 +2,7 @@
 
 #include "ANSI_colors.h"
 #include "Output.h"
-#include "Commands.h"
+#include "Config.h"
 
 void print_stack(Stack *stack)
 {

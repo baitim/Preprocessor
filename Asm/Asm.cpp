@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "Asm.h"
-#include "../Commands.h"
+#include "../Config.h"
 
 #define DEF_CMD(name_cmd, num, args, code)                                          \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \

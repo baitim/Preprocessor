@@ -5,7 +5,6 @@
 #include "../ANSI_colors.h"
 #include "Calculate.h"
 #include "../Stack/Stack.h"
-#include "../Commands.h"
 #include "../Config.h"
 #include "../Output.h"
 #include "../Errors.h"
