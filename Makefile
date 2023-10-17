@@ -22,7 +22,7 @@ finish_asm:
 	./asm files/Input_commands.txt files/Asm.txt files/Asm.bin
 
 finish_disasm:
-	./disasm
+	./disasm files/Asm.txt files/Disasm_txt.txt files/Asm.bin files/Disasm_bin.txt
 
 finish:	
 	./start files/ASM.bin

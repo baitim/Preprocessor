@@ -4,7 +4,7 @@
 #include "../Asm/Input.h"
 #include "Disasm.h"
 
-#define DEF_CMD(name_cmd, num, args, code)                                      \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                                      \
     if (int_instruct == CMD_ ## name_cmd) {                                     \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
@@ -57,7 +57,7 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
 }
 #undef DEF_CMD
 
-#define DEF_CMD(name_cmd, num, args, code)                                      \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                                      \
     if (int_instruct == CMD_ ## name_cmd) {                                     \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
@@ -84,14 +84,12 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
         continue;                                                               \
     }                                                                           \
     else
-Errors process_byte_commands_bin(FILE *dest, const char *str_src)
+Errors process_byte_commands_bin(FILE *dest, FILE *src, const int size_file)
 {
-    FILE *src =  fopen(str_src, "rb");
     if (!src) return ERROR_READ_FILE;
     if (!dest) return ERROR_READ_FILE;
     Errors error = ERROR_NO;
 
-    const int size_file = (int)fsize(str_src);
     char *command = (char *)calloc(size_file, sizeof(char));
     if (!command)
         return ERROR_ALLOC_FAIL;
