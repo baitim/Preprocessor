@@ -19,10 +19,10 @@ run_main :
 	g++ $(Main_files) -o start $(options) $(debug)
 
 finish_asm:
-	./asm
+	./asm files/Input_commands.txt files/Asm.txt files/Asm.bin
 
 finish_disasm:
 	./disasm
 
 finish:	
-	./start
+	./start files/ASM.bin

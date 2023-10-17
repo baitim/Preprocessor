@@ -7,21 +7,21 @@
 #define DEF_CMD(name_cmd, num, args, code)                                          \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
-        fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \ 
-        number_string++;                                                            \      
+        fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \
+        number_string++;                                                            \
         if (args == 0) {                                                            \
             fprintf(dest, "\n");                                                    \
             continue;                                                               \
         }                                                                           \
-        int is_reg = 0;                                                             \ 
+        int is_reg = 0;                                                             \
         for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
             if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
                 fprintf(dest, " %d", REGISTERS[j].index);                           \
                 is_reg = 1;                                                         \
                 break;                                                              \
             }                                                                       \
-        }                                                                           \ 
-        if (!is_reg)                                                                \   
+        }                                                                           \
+        if (!is_reg)                                                                \
             fprintf(dest, " %d", atoi(src->pointers[number_string]));               \
         number_string++;                                                            \
         fprintf(dest, "\n");                                                        \
@@ -46,18 +46,18 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
         *((int *)command + number_string) = num;                                    \
-        number_string++;                                                            \      
+        number_string++;                                                            \
         if (args == 0)                                                              \
             continue;                                                               \
-        int is_reg = 0;                                                             \ 
+        int is_reg = 0;                                                             \
         for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
             if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
                 *((int *)command + number_string) = REGISTERS[j].index;             \
                 is_reg = 1;                                                         \
                 break;                                                              \
             }                                                                       \
-        }                                                                           \ 
-        if (!is_reg)                                                                \   
+        }                                                                           \
+        if (!is_reg)                                                                \
             *((int *)command + number_string) = atoi(src->pointers[number_string]); \
         number_string++;                                                            \
         continue;                                                                   \

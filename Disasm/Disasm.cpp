@@ -28,9 +28,9 @@
             if (!is_reg)                                                        \
                 fprintf(dest, " %d", value);                                    \
         }                                                                       \
-        fprintf(dest, "\n");                                                    \                                                                      
+        fprintf(dest, "\n");                                                    \
         continue;                                                               \
-    }                                                                           \                                                                              
+    }                                                                           \
     else
 Errors process_byte_commands_txt(FILE *dest, FILE *src)
 {
@@ -80,9 +80,9 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
             if (!is_reg)                                                        \
                 fprintf(dest, " %d", value);                                    \
         }                                                                       \
-        fprintf(dest, "\n");                                                    \                                                                      
+        fprintf(dest, "\n");                                                    \
         continue;                                                               \
-    }                                                                           \                                                                              
+    }                                                                           \
     else
 Errors process_byte_commands_bin(FILE *dest, const char *str_src)
 {
