@@ -9,13 +9,13 @@ int main(int argc, const char *argv[])
                        "# (c) BAIDIUSENOV TIMUR, 2023\n\n"));
     
     const int COUNT_FROM_CMD = 2;
-    
+
     if (argc < COUNT_FROM_CMD) {
         printf (print_lred("CMD INPUT ERROR\n"));
         return 0; 
     }
 
-    calculate("files/Asm.bin");
+    calculate(argv[1]);
 
     printf(print_lblue("\nBye\n"));
 

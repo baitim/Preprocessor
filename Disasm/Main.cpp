@@ -19,12 +19,9 @@ int main(int argc, const char *argv[])
     assert(dest);
     process_byte_commands_txt(dest, src);
 
-    src =  fopen(argv[3], "rb");
-    assert(src);
     dest = fopen(argv[4], "wb");
     assert(dest);
-    const int size_file = (int)fsize(argv[3]);
-    process_byte_commands_bin(dest, src, size_file);
+    process_byte_commands_bin(dest, argv[3]);
 
     fclose(src);
     fclose(dest);

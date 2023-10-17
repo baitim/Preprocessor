@@ -83,11 +83,14 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
         continue;                                                               \
     }                                                                           \
     else
-Errors process_byte_commands_bin(FILE *dest, FILE *src, const int size_file)
+Errors process_byte_commands_bin(FILE *dest, const char *name_src)
 {
+    FILE *src =  fopen(name_src, "rb");
     if (!src) return ERROR_READ_FILE;
     if (!dest) return ERROR_READ_FILE;
     Errors error = ERROR_NO;
+
+    const int size_file = (int)fsize(name_src);
 
     char *command = (char *)calloc(size_file, sizeof(char));
     if (!command)

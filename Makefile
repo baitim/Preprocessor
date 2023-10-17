@@ -25,4 +25,4 @@ finish_disasm:
 	./disasm files/Asm.txt files/Disasm_txt.txt files/Asm.bin files/Disasm_bin.txt
 
 finish:	
-	./start files/ASM.bin
+	./start files/Asm.bin
