@@ -20,7 +20,7 @@ void calculate(const char *name_of_file)
     FILE *src = fopen(name_of_file, "rb");
 
     const int size_file = (int)fsize(name_of_file);
-    char *commands = (char *)calloc(size_file, sizeof(int));
+    char *commands = (char *)calloc(size_file, sizeof(char));
     if (!commands)
         return;
 
@@ -37,7 +37,7 @@ void calculate(const char *name_of_file)
         number_command++;
         
         switch (command) {
-            #include "../Com.txt"
+            #include "../DSL"
             default: assert(0);
         }
         //print_commands(name_of_file, number_command);

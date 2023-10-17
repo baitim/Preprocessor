@@ -46,7 +46,7 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
         if (count_input != 1)
             break;
 
-        #include "../Com.txt"
+        #include "../DSL"
         {;}
 
         fprintf(dest, "\n");
@@ -92,7 +92,7 @@ Errors process_byte_commands_bin(FILE *dest, const char *str_src)
     Errors error = ERROR_NO;
 
     const int size_file = (int)fsize(str_src);
-    char *command = (char *)calloc(size_file, sizeof(int));
+    char *command = (char *)calloc(size_file, sizeof(char));
     if (!command)
         return ERROR_ALLOC_FAIL;
 
@@ -105,7 +105,7 @@ Errors process_byte_commands_bin(FILE *dest, const char *str_src)
         int int_instruct = *((int *)command + number_command);
         number_command++;
         
-        #include "../Com.txt"
+        #include "../DSL"
         {;}
         
         fprintf(dest, "\n");

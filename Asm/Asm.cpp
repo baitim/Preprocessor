@@ -35,7 +35,7 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
 
     int number_string = 0;
     while (number_string < src->commands_count) {
-        #include "../Com.txt"
+        #include "../DSL"
         {;}
     }
     return error;
@@ -74,7 +74,7 @@ Errors process_input_commands_bin(FILE *dest, const Data *src)
 
     int number_string = 0;
     while (number_string < src->commands_count) {
-        #include "../Com.txt"
+        #include "../DSL"
         {;}
     }
     int count_print = (int)fwrite(command, sizeof(command[0]), number_string * sizeof(int), dest);

@@ -10,7 +10,7 @@ struct Input_commands {
 #define DEF_CMD(name, num, args, code) \
     CMD_ ## name = num,
 enum Commands {
-    #include "Com.txt"
+    #include "DSL"
 };
 #undef DEF_CMD
 
@@ -20,6 +20,6 @@ enum Arg_types {
     REG = 1 << 2,
 };
 
-const int MAX_SIZE_COMMAND = 10;
+const int MAX_SIZE_COMMAND = 1;
 
 #endif // COMMANDS_H
