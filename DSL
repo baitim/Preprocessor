@@ -1,3 +1,6 @@
+#define PUSH(arg) stack_push(&stack, arg)
+#define POP(arg) stack_pop(&stack, arg)
+
 DEF_CMD(PUSH, 43, 1, {
     int value_elem = *((int *)commands + number_command);
     number_command++;
@@ -5,13 +8,13 @@ DEF_CMD(PUSH, 43, 1, {
     int is_reg = 0;
     for (int i = 0; i < COUNT_REGISTERS; i++) {
         if (REGISTERS[i].index == value_elem) {
-            stack_push(&stack, REGISTERS[i].value);
+            PUSH(REGISTERS[i].value);
             is_reg = 1;
             break;
         }
     }
 
-    if (!is_reg) stack_push(&stack, value_elem);
+    if (!is_reg) PUSH(value_elem);
     break;})
 
 DEF_CMD(IN, 2, 0, {
@@ -19,7 +22,7 @@ DEF_CMD(IN, 2, 0, {
     int x = 0;
     int count_input_ = scanf("%d", &x);
     assert(count_input_ == 1);
-    stack_push(&stack, x);
+    PUSH(x);
     break;})
 
 DEF_CMD(POP, 33, 1, {
@@ -27,8 +30,7 @@ DEF_CMD(POP, 33, 1, {
     number_command++;
 
     int x = 0;
-
-    stack_pop(&stack, &x);
+    POP(&x);
 
     for (int i = 0; i < COUNT_REGISTERS; i++) {
         if (REGISTERS[i].index == name_reg) {
@@ -41,58 +43,50 @@ DEF_CMD(POP, 33, 1, {
 DEF_CMD(ADD, 4, 0, {
     int x = 0;
     int y = 0;
-    stack_pop(&stack, &x);
-    stack_pop(&stack, &y);
-    stack_push(&stack, x + y);
+    PUSH((POP(&x), x) + (POP(&y), y));
     break;})
 
 DEF_CMD(SUB, 5, 0, {
     int x = 0;
     int y = 0;
-    stack_pop(&stack, &y);
-    stack_pop(&stack, &x);
-    stack_push(&stack, x - y);
+    POP(&x);
+    POP(&y);
+    PUSH(y - x);
     break;})
 
 DEF_CMD(MUL, 6, 0, {
     int x = 0;
     int y = 0;
-    stack_pop(&stack, &x);
-    stack_pop(&stack, &y);
-    stack_push(&stack, x * y);
+    PUSH((POP(&x), x) * (POP(&y), y));
     break;})
 
 DEF_CMD(DIV, 7, 0, {
     int x = 0;
     int y = 0;
-    stack_pop(&stack, &y);
-    stack_pop(&stack, &x);
-    stack_push(&stack, x / y);
+    POP(&x);
+    POP(&y);
+    PUSH(y / x);
     break;})
 
 DEF_CMD(SQRT, 8, 0, {
     int x = 0;
-    stack_pop(&stack, &x);
-    stack_push(&stack, (type_el)sqrt(x));
+    PUSH((type_el)sqrt((POP(&x), x)));
     break;})
 
 DEF_CMD(SIN, 9, 0, {
     int x = 0;
-    stack_pop(&stack, &x);
-    stack_push(&stack, (type_el)sin(x));
+    PUSH((type_el)sin((POP(&x), x)));
     break;})
 
 DEF_CMD(COS, 10, 0, {
     int x = 0;
-    stack_pop(&stack, &x);
-    stack_push(&stack, (type_el)cos(x));
+    PUSH((type_el)cos((POP(&x), x)));
     break;})
 
 DEF_CMD(OUT, 11, 0, {
     int answer = 0;
-    stack_pop(&stack, &answer);
     printf(print_lgreen("Answer = "));
-    printf(print_lcyan("%d\n"), answer);
+    printf(print_lcyan("%d\n"), (POP(&answer), answer));
     break;})
 
 DEF_CMD(HLT, 12, 0, {
