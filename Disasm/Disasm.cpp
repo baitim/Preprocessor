@@ -4,30 +4,31 @@
 #include "../Asm/Input.h"
 #include "Disasm.h"
 
+static int powf(int x, int p);
+
 #define DEF_CMD(name_cmd, num, type_args, args, code)                           \
-    if (int_instruct == CMD_ ## name_cmd) {                                     \
+    if (int_instruct % powf(2, FREE_BYTES)  == CMD_ ## name_cmd) {              \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
             fprintf(dest, "\n");                                                \
             continue;                                                           \
         }                                                                       \
-        if (args > 0) {                                                         \
-            int value = 0;                                                      \
-            count_input = fscanf(src, "%d", &value);                            \
-            if (count_input != 1)                                               \
-                return ERROR_READ_FILE;                                         \
+        int value = 0;                                                          \
+        count_input = fscanf(src, "%d", &value);                                \
+        if (count_input != 1)                                                   \
+            return ERROR_READ_FILE;                                             \
                                                                                 \
-            int is_reg = 0;                                                     \
+        if (int_instruct & (1 << REG)) {                                        \
             for (int j = 0; j < COUNT_REGISTERS; j++) {                         \
                 if (value == REGISTERS[j].index) {                              \
                     fprintf(dest, " %s", REGISTERS[j].name);                    \
-                    is_reg = 1;                                                 \
                     break;                                                      \
                 }                                                               \
             }                                                                   \
-            if (!is_reg)                                                        \
-                fprintf(dest, " %d", value);                                    \
         }                                                                       \
+        if (int_instruct & (1 << NUM))                                          \
+            fprintf(dest, " %d", value);                                        \
+                                                                                \
         fprintf(dest, "\n");                                                    \
         continue;                                                               \
     }                                                                           \
@@ -58,27 +59,26 @@ Errors process_byte_commands_txt(FILE *dest, FILE *src)
 #undef DEF_CMD
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                           \
-    if (int_instruct == CMD_ ## name_cmd) {                                     \
+    if (int_instruct % powf(2, FREE_BYTES)  == CMD_ ## name_cmd) {              \
         fprintf(dest, "%s", #name_cmd);                                         \
         if (args == 0) {                                                        \
             fprintf(dest, "\n");                                                \
             continue;                                                           \
         }                                                                       \
-        if (args > 0) {                                                         \
-            int value  = *((int *)command + number_command);                    \
-            number_command++;                                                   \
+        int value  = *((int *)command + number_command);                        \
+        number_command++;                                                       \
                                                                                 \
-            int is_reg = 0;                                                     \
+         if (int_instruct & (1 << REG)) {                                       \
             for (int j = 0; j < COUNT_REGISTERS; j++) {                         \
                 if (value == REGISTERS[j].index) {                              \
                     fprintf(dest, " %s", REGISTERS[j].name);                    \
-                    is_reg = 1;                                                 \
                     break;                                                      \
                 }                                                               \
             }                                                                   \
-            if (!is_reg)                                                        \
-                fprintf(dest, " %d", value);                                    \
         }                                                                       \
+        if (int_instruct & (1 << NUM))                                          \
+            fprintf(dest, " %d", value);                                        \
+                                                                                \
         fprintf(dest, "\n");                                                    \
         continue;                                                               \
     }                                                                           \
@@ -115,3 +115,11 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
     return error;
 }
 #undef DEF_CMD
+
+static int powf(int x, int p)
+{
+    if (p == 0) return 1;
+    if (p % 2 == 1) return x * powf(x, p - 1);
+    int z = powf(x, p/2);
+    return z * z;
+}

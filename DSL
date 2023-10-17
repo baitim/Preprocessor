@@ -1,3 +1,4 @@
+#define FREE_BYTES 5
 #define NUN 0
 #define REG 5
 #define NUM 6
@@ -5,20 +6,20 @@
 #define PUSH(arg) stack_push(&stack, arg)
 #define POP(arg) stack_pop(&stack, arg)
 
-DEF_CMD(PUSH, 43, REG | NUM, 1, {
+DEF_CMD(PUSH, 1, REG | NUM, 1, {
     int value_elem = *((int *)commands + number_command);
     number_command++;
 
-    int is_reg = 0;
-    for (int i = 0; i < COUNT_REGISTERS; i++) {
-        if (REGISTERS[i].index == value_elem) {
-            PUSH(REGISTERS[i].value * PRECISION);
-            is_reg = 1;
-            break;
+    if (command & (1 << REG)) {
+        for (int i = 0; i < COUNT_REGISTERS; i++) {
+            if (REGISTERS[i].index == value_elem) {
+                PUSH(REGISTERS[i].value * PRECISION);
+                break;
+            }
         }
     }
 
-    if (!is_reg) PUSH(value_elem * PRECISION);
+    if (command & (1 << NUM)) PUSH(value_elem * PRECISION);
     break;})
 
 DEF_CMD(IN, 2, NUN, 0, {
@@ -29,7 +30,7 @@ DEF_CMD(IN, 2, NUN, 0, {
     PUSH(x);
     break;})
 
-DEF_CMD(POP, 33, REG, 1, {
+DEF_CMD(POP, 3, REG, 1, {
     int name_reg = *((int *)commands + number_command);
     number_command++;
 

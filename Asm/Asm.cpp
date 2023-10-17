@@ -7,22 +7,25 @@
 #define DEF_CMD(name_cmd, num, type_args, args, code)                               \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
-        fprintf(dest, "%d ", CMD_ ## name_cmd);                                     \
         number_string++;                                                            \
         if (args == 0) {                                                            \
+            fprintf(dest, "%d ", CMD_ ## name_cmd);                                 \
             fprintf(dest, "\n");                                                    \
             continue;                                                               \
         }                                                                           \
         int is_reg = 0;                                                             \
         for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
             if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
+                fprintf(dest, "%d ", (CMD_ ## name_cmd) + (1 << REG));              \
                 fprintf(dest, " %d", REGISTERS[j].index);                           \
                 is_reg = 1;                                                         \
                 break;                                                              \
             }                                                                       \
         }                                                                           \
-        if (!is_reg)                                                                \
+        if (!is_reg) {                                                              \
+            fprintf(dest, "%d ", (CMD_ ## name_cmd) + (1 << NUM));                  \
             fprintf(dest, " %d", atoi(src->pointers[number_string]));               \
+        }                                                                           \
         number_string++;                                                            \
         fprintf(dest, "\n");                                                        \
         continue;                                                                   \
@@ -45,20 +48,29 @@ Errors process_input_commands_txt(FILE *dest, const Data *src)
 #define DEF_CMD(name_cmd, num, type_args, args, code)                               \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                       \
     {                                                                               \
-        *((int *)command + number_string) = num;                                    \
-        number_string++;                                                            \
-        if (args == 0)                                                              \
+        if (args == 0) {                                                            \
+            *((int *)command + number_string) = num;                                \
+            number_string++;                                                        \
             continue;                                                               \
+        }                                                                           \
+        number_string++;                                                            \
         int is_reg = 0;                                                             \
         for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
             if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
+                number_string--;                                                    \
+                *((int *)command + number_string) = (CMD_ ## name_cmd) + (1 << REG);\
+                number_string++;                                                    \
                 *((int *)command + number_string) = REGISTERS[j].index;             \
                 is_reg = 1;                                                         \
                 break;                                                              \
             }                                                                       \
         }                                                                           \
-        if (!is_reg)                                                                \
+        if (!is_reg) {                                                              \
+            number_string--;                                                        \
+            *((int *)command + number_string) = (CMD_ ## name_cmd) + (1 << NUM);    \
+            number_string++;                                                        \
             *((int *)command + number_string) = atoi(src->pointers[number_string]); \
+        }                                                                           \
         number_string++;                                                            \
         continue;                                                                   \
     }                                                                               \

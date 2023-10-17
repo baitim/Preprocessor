@@ -10,9 +10,11 @@
 #include "../Errors.h"
 #include "../Asm/Input.h"
 
-#define DEF_CMD(name, num, type_args, args, code)   \
-    case CMD_ ## name:                              \
-        code                                        \
+#include <math.h>
+
+#define DEF_CMD(name, num, type_args, args, code)       \
+    case CMD_ ## name:                                  \
+        code                                            \
 
 void calculate(const char *name_of_file)
 {
@@ -35,7 +37,7 @@ void calculate(const char *name_of_file)
         int command = *((int *)commands + number_command);
         number_command++;
         
-        switch (command) {
+        switch ((int)command % (int)powf(2, FREE_BYTES)) {
             #include "../DSL"
             default: assert(0);
         }
@@ -46,3 +48,11 @@ void calculate(const char *name_of_file)
     fclose(src);
 }
 #undef CMD_DEF
+
+static int powf(int x, int p)
+{
+    if (p == 0) return 1;
+    if (p % 2 == 1) return x * powf(x, p - 1);
+    int z = powf(x, p/2);
+    return z * z;
+}
