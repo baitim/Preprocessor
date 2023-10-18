@@ -21,7 +21,6 @@ struct Register {
     int value;
     int index;
 };
-
 static Register REGISTERS[] = {
     {"rax", 0, 0xAA},
     {"rbx", 0, 0xAB},
@@ -29,5 +28,13 @@ static Register REGISTERS[] = {
     {"rdx", 0, 0xAD}
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
+
+const int MAX_SIZE_LABEL = 100;
+struct Label {
+    const char *name;
+    int index;
+};
+const int MAX_COUNT_LABELS = 20;
+static Label LABELS[MAX_COUNT_LABELS] = {};
 
 #endif // CONFIG_H

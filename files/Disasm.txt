@@ -1,6 +1,5 @@
 PUSH 1
 POP rax
-lable:
 PUSH rax
 PUSH rax
 MUL
@@ -8,7 +7,6 @@ OUT
 PUSH rax
 PUSH 1
 ADD
-cring:
 POP rax
-JMP lable:
+JMP
 HLT

@@ -8,7 +8,7 @@ int main(int argc, const char *argv[])
     printf(print_lblue("# Implementation of Processor.\n"
                        "# (c) BAIDIUSENOV TIMUR, 2023\n\n"));
     
-    const int COUNT_FROM_CMD = 2;
+    const int COUNT_FROM_CMD = 3;
 
     if (argc < COUNT_FROM_CMD) {
         printf (print_lred("CMD INPUT ERROR\n"));

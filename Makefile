@@ -7,7 +7,7 @@ ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)
 DISASM = 	    $(DEFAULT) $(wildcard Disasm/*.cpp) $(wildcard Asm/Input.cpp)
 Main_files = 	$(DEFAULT) $(wildcard Processor/*.cpp) $(wildcard Asm/Input.cpp)
 
-start : run_asm run_disasm run_main finish_asm finish_disasm finish
+start : run_asm  finish_asm 
 
 run_asm :
 	g++ $(ASM) -o asm $(options) $(debug)
@@ -19,10 +19,10 @@ run_main :
 	g++ $(Main_files) -o start $(options) $(debug)
 
 finish_asm:
-	./asm files/Input_commands.txt files/Asm.txt files/Asm.bin
+	./asm files/Input_commands.txt files/Asm.bin Labels
 
 finish_disasm:
-	./disasm files/Asm.txt files/Disasm_txt.txt files/Asm.bin files/Disasm_bin.txt
+	./disasm files/Asm.bin files/Disasm.txt Labels
 
 finish:	
-	./start files/Asm.bin
+	./start files/Asm.bin Labels
