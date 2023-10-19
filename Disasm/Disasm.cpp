@@ -23,14 +23,9 @@ static int powf(int x, int p);
                     }                                                           \
                 }                                                               \
             }                                                                   \
-            if (int_instruct & (1 << LAB)) {                                    \
-                for (int j = 0; j < MAX_COUNT_LABELS; j++) {                    \
-                    if (value == LABELS[j].index) {                             \
-                        fprintf(dest, " %s", LABELS[j].name);                   \
-                        break;                                                  \
-                    }                                                           \
-                }                                                               \
-            }                                                                   \
+            if (int_instruct & (1 << LAB))                                      \
+                fprintf(dest, " %d", value);                                    \
+                                                                                \
             if (int_instruct & (1 << NUM))                                      \
                 fprintf(dest, " %d", value);                                    \
                                                                                 \
@@ -83,7 +78,7 @@ Errors read_labels(Data *label_index)
         number_word++;
         number_label++;
     }
-    fprintf(stderr, "END_FUNC\n");
+    return ERROR_NO;
 }
 
 static int powf(int x, int p)

@@ -15,7 +15,7 @@
         }                                                                                   \
         for (int i = 0; i < args; i++) {                                                    \
             int is_reg = 0;                                                                 \
-            int is_lable = 0;                                                               \
+            int is_label = 0;                                                               \
             for (int j = 0; j < COUNT_REGISTERS; j++) {                                     \
                 if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {         \
                     *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << REG);      \
@@ -28,18 +28,23 @@
                                                                                             \
             const int len_command = (int)strlen(src->pointers[number_string]);              \
             if (src->pointers[number_string][len_command-1] == ':') {                       \
-                    *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << LAB);      \
-                    index_write++;                                                          \
-                    for (int j = 0; j < MAX_COUNT_LABELS; j++) {                            \
-                        if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {    \
-                            *((int *)command + index_write) = LABELS[j].index;              \
-                            is_lable = 1;                                                   \
-                            break;                                                          \
-                        }                                                                   \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << LAB);          \
+                index_write++;                                                              \
+                for (int j = 0; j < MAX_COUNT_LABELS; j++) {                                \
+                    if (!LABELS[j].name) break;                                             \
+                    if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {        \
+                        *((int *)command + index_write) = LABELS[j].index;                  \
+                        is_label = 1;                                                       \
+                        break;                                                              \
                     }                                                                       \
+                }                                                                           \
+                if (!is_label) {                                                            \
+                    *((int *)command + index_write) = POISON_LABEL;                         \
+                    is_label = 1;                                                           \
+                }                                                                           \
             }                                                                               \
                                                                                             \
-            if (!is_reg && !is_lable) {                                                     \
+            if (!is_reg && !is_label) {                                                     \
                 *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);          \
                 index_write++;                                                              \
                 *((int *)command + index_write) = atoi(src->pointers[number_string]);       \

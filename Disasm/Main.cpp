@@ -17,7 +17,6 @@ int main(int argc, const char *argv[])
     create_data(&label_index, argv[3]);
 
     read_labels(&label_index);
-    fprintf(stderr, "END_IN_MAIN\n");
 
     FILE *dest = fopen(argv[2], "wb");
     assert(dest);

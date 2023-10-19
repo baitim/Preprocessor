@@ -1,6 +1,6 @@
 PUSH 1
 POP rax
-lable1:
+label1:
 PUSH rax
 PUSH rax
 MUL
@@ -8,7 +8,7 @@ OUT
 PUSH rax
 PUSH 1
 ADD
-lable2:
+label2:
 POP rax
-JMP lable1:
+JMP label1:
 HLT
