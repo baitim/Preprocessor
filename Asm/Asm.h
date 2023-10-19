@@ -8,8 +8,6 @@
 #include "../Errors.h"
 #include "../Config.h"
 
-Errors process_input_commands_txt(FILE *dest, const Data *src);
-
-Errors process_input_commands_bin(FILE *dest, const Data *src);
+Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels);
 
 #endif // TO_BYTE_CODE_H
