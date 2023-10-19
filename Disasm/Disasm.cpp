@@ -72,6 +72,8 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
 
 Errors read_labels(Data *label_index)
 {
+    assert(label_index);
+    
     int number_word = 0;
     int number_label = 0;
     while (number_word < label_index->commands_count - 1) {

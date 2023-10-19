@@ -31,7 +31,7 @@
                     *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << LAB);      \
                     index_write++;                                                          \
                     for (int j = 0; j < MAX_COUNT_LABELS; j++) {                            \
-                        if (strcmp(src->pointers[number_string], LABELS[j].name)) {         \
+                        if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {    \
                             *((int *)command + index_write) = LABELS[j].index;              \
                             is_lable = 1;                                                   \
                             break;                                                          \
@@ -67,8 +67,8 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels)
         {
             const int len_command = (int)strlen(src->pointers[number_string]);
             if (src->pointers[number_string][len_command-1] == ':') {
-                LABELS[number_lable] = (Label){src->pointers[number_string], number_string + 1};
-                fprintf(labels, "%s\n%d\n", src->pointers[number_string], number_string + 1);
+                LABELS[number_lable] = (Label){src->pointers[number_string], index_write};
+                fprintf(labels, "%s\n%d\n", src->pointers[number_string], index_write);
                 number_string++;
                 number_lable++;
             }

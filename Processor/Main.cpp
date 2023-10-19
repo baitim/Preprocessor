@@ -2,6 +2,7 @@
 #include "Calculate.h"
 #include "../Debug.h"
 #include "../Stack/Stack.h"
+#include "../Asm/Input.h"
 
 int main(int argc, const char *argv[])
 {
@@ -15,7 +16,12 @@ int main(int argc, const char *argv[])
         return 0; 
     }
 
+    Data label_index = {};
+    create_data(&label_index, argv[2]);
+
     calculate(argv[1]);
+
+    dtor_data(&label_index);
 
     printf(print_lblue("\nBye\n"));
 

@@ -33,7 +33,6 @@ void calculate(const char *name_of_file)
     stack_ctor(&stack);
 
     int number_command = 0;
-    int xx = 0;
     while (number_command * (int)sizeof(int) < size_file) {
         int command = *((int *)commands + number_command);
         number_command++;
@@ -42,8 +41,6 @@ void calculate(const char *name_of_file)
             #include "../DSL"
             default: assert(0);
         }
-        xx++;
-        if (xx == 100) break;
         //print_commands(name_of_file, number_command);
     }
 

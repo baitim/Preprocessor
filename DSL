@@ -97,6 +97,7 @@ DEF_CMD(OUT, 11, NUN, 0, {
 
 DEF_CMD(JMP, 12, NUM | LAB, 1, {
     number_command = *((int *)commands + number_command);
+    printf("NUM = %d\n", number_command);
     break;})
 
 DEF_CMD(HLT, 13, NUN, 0, {

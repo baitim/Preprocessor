@@ -21,7 +21,7 @@ int main(int argc, const char *argv[])
 
     FILE *dest = fopen(argv[2], "wb");
     assert(dest);
-    //process_byte_commands_bin(dest, argv[1]);
+    process_byte_commands_bin(dest, argv[1]);
 
     dtor_data(&label_index);
     fclose(dest);
