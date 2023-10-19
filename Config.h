@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <time.h>
+
 typedef int type_el;
 
 const unsigned char POISON_BYTE = 0xbe;

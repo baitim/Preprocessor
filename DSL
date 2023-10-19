@@ -156,3 +156,11 @@ DEF_CMD(JNE, 19, NUM | LAB, 1, {
     if (y != x) number_command = *((int *)commands + number_command);
     else        number_command++;
     break;})
+
+DEF_CMD(JMON, 20, NUM | LAB, 1, {
+    long int time_ = time(NULL);
+    struct tm *loc_time;
+    loc_time = localtime(&time_);
+    if (loc_time->tm_wday == 1) number_command = *((int *)commands + number_command);
+    else                        number_command++;
+    break;})
