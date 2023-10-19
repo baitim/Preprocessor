@@ -10,5 +10,7 @@ PUSH 1
 ADD
 label2:
 POP rax
-JMP label1:
+PUSH rax
+PUSH 15
+JBE label1:
 HLT

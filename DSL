@@ -95,10 +95,64 @@ DEF_CMD(OUT, 11, NUN, 0, {
     printf(print_lcyan("%.3lf\n"), double((POP(&answer), answer)) / PRECISION);
     break;})
 
-DEF_CMD(JMP, 12, NUM | LAB, 1, {
+DEF_CMD(HLT, 12, NUN, 0, {
+    return;
+    break;})
+
+DEF_CMD(JMP, 13, NUM | LAB, 1, {
     number_command = *((int *)commands + number_command);
     break;})
 
-DEF_CMD(HLT, 13, NUN, 0, {
-    return;
+DEF_CMD(JA, 14, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y > x) number_command = *((int *)commands + number_command);
+    else       number_command++;
+    break;})
+
+DEF_CMD(JAE, 15, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y >= x) number_command = *((int *)commands + number_command);
+    else        number_command++;
+    break;})
+
+DEF_CMD(JB, 16, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y < x) number_command = *((int *)commands + number_command);
+    else       number_command++;
+    break;})
+
+DEF_CMD(JBE, 17, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y <= x) number_command = *((int *)commands + number_command);
+    else        number_command++;
+    break;})
+
+DEF_CMD(JE, 18, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y == x) number_command = *((int *)commands + number_command);
+    else        number_command++;
+    break;})
+
+DEF_CMD(JNE, 19, NUM | LAB, 1, {
+    int x = 0;
+    int y = 0;
+    POP(&x);
+    POP(&y);
+    if (y != x) number_command = *((int *)commands + number_command);
+    else        number_command++;
     break;})

@@ -8,5 +8,7 @@ PUSH rax
 PUSH 1
 ADD
 POP rax
-JMP 4
+PUSH rax
+PUSH 15
+JBE 4
 HLT
