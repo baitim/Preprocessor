@@ -1,6 +1,9 @@
 PUSH 1
 POP rax
-label1:
+next:
+PUSH 15
+PUSH rax
+JB stop:
 PUSH rax
 PUSH rax
 MUL
@@ -8,9 +11,7 @@ OUT
 PUSH rax
 PUSH 1
 ADD
-label2:
 POP rax
-PUSH rax
-PUSH 10
-JBE label1:
+JMP next:
+stop:
 HLT

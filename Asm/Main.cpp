@@ -18,13 +18,22 @@ int main(int argc, const char *argv[])
     assert(dest);
     FILE *labels = fopen(argv[3], "w"); 
     assert(labels);
-    if (process_input_commands_bin(dest, &src, labels)) {
+
+    int count_fixup = 0;
+    int *fixup = (int *)calloc(MAX_COUNT_LABELS, sizeof(int));
+
+    if (process_input_commands_bin(dest, &src, labels, fixup, &count_fixup)) {
+        printf (print_lred("ERROR\n"));
+        return 0;
+    }
+    fclose(dest);
+
+    if (process_fixup(&src, argv[2], fixup, count_fixup)) {
         printf (print_lred("ERROR\n"));
         return 0;
     }
 
     dtor_data(&src);
-    fclose(dest);
     fclose(labels);
     return 0;
 }
