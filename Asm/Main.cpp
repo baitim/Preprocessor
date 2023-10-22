@@ -18,6 +18,11 @@ int main(int argc, const char *argv[])
     Data src = {};
     create_data(&src, argv[1]);
 
+    printf("count  = %d\n", src.commands_count);
+    for (int i = 0; i < src.commands_count; i++)
+        puts(src.pointers[i]);
+    fprintf(stderr, "----------------\n");
+
     FILE *dest = fopen(argv[2], "wb");
     assert(dest);
     FILE *labels = fopen(argv[3], "w"); 

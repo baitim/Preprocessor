@@ -24,6 +24,9 @@ void create_data(Data *data, const char *src)
     assert(data->text);
     get_data(data, stream);
 
+    puts(data->text);
+    puts("----------------");
+
     data->commands_count = count_pointers(data->text) + 1;
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));
     assert(data->pointers);
@@ -61,15 +64,28 @@ static int count_pointers(const char *text)
     int count = 0;
 
     while (text[i] != '\0') {
+        if (text[i] == ' ') {
+            while (text[i] == ' ')
+                i++;
+            i--;
+        }
+        if (text[i] == '\n') {
+            i++;
+            while (text[i] == ' ')
+                i++;
+            if (text[i] == '\0') break;
+            if (text[i] == ';') continue;
+            if (text[i] == '\n') continue;
+            count++;
+        }
         if (text[i] == '\n' || text[i] == ' ')
             count++;
         i++;
-        if (text[i] == '#') {
+        if (text[i] == ';') {
             while (text[i] != '\n')
                 i++;
         }
     }
-
     return count;
 }
 
@@ -87,7 +103,7 @@ static void write_pointers(Data *data)
         if (data->text[i] == ' ') {
             while(data->text[i] == ' ') 
                 i++;
-            if (data->text[i] == '\0' || data->text[i] == '\n' || data->text[i] == '#')
+            if (data->text[i] == ';')
                 break;
 
             i--;
@@ -96,7 +112,7 @@ static void write_pointers(Data *data)
             data->pointers[count] = data->text + i + 1;
             count++;
         }
-        if (data->text[i] == '#') {
+        if (data->text[i] == ';') {
             data->text[i] = '\0';
             i++;
             while(data->text[i] != '\n' && data->text[i] != '\0')
@@ -104,7 +120,13 @@ static void write_pointers(Data *data)
         }
         if (data->text[i] == '\n') {
             data->text[i] = '\0';
-            data->pointers[count] = data->text + i + 1;
+            i++;
+            while (data->text[i] == ' ')
+                i++;
+            if (data->text[i] == '\0') break;
+            if (data->text[i] == ';') continue;
+            if (data->text[i] == '\n') continue;
+            data->pointers[count] = data->text + i;
             count++;
         }
         i++;

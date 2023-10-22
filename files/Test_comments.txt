@@ -1,0 +1,14 @@
+CALL MAIN:; hiuriher
+HLT
+;wgbreg
+
+MAIN:
+
+PUSH 1
+PUSH 2
+
+ADD
+
+OUT
+
+RET

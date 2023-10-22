@@ -84,14 +84,7 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
     int number_string = 0;
     int index_write = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
     int number_fixup = 0;
-    int empty_strings = 0;
     while (number_string < src->commands_count) {
-        if (strlen(src->pointers[number_string]) == 0) { 
-            number_string++;
-            empty_strings++;
-            continue;
-        }
-        
         #include "../DSL"
         {
             const int len_command = (int)strlen(src->pointers[number_string]);

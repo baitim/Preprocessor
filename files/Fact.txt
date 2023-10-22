@@ -3,17 +3,17 @@ CALL PRINT_HELLO:
 CALL MAIN:
 HLT
 
-MAIN:
+MAIN:           ; main function
 PUSH 0
 POP rax
-PUSH 10
+PUSH 7
 POP rbx
 PUSH 1
 POP rcx
-CALL FACT:
+CALL FACT:      ; function change rax, rbx and rcx
 RET
 
-FACT:
+FACT:           ; calculate and print
 PUSH rax
 PUSH rbx
 JAE ret:
