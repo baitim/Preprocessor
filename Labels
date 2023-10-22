@@ -1,4 +1,6 @@
 next:
-4
+6
 stop:
-25
+27
+PRINT_HELLO:
+28

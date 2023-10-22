@@ -32,6 +32,9 @@ void calculate(const char *name_of_file)
     Stack stack = {};
     stack_ctor(&stack);
 
+    Stack stack_commands = {};
+    stack_ctor(&stack_commands);
+
     int number_command = 0;
     while (number_command * (int)sizeof(int) < size_file) {
         int command = *((int *)commands + number_command);
@@ -51,6 +54,7 @@ void calculate(const char *name_of_file)
     }
 
     free(commands);
+    stack_dtor(&stack_commands);
     stack_dtor(&stack);
     fclose(src);
 }

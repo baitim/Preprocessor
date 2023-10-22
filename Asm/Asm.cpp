@@ -83,8 +83,9 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
     int index_write = 0;
     int number_fixup = 0;
     int empty_strings = 0;
+    printf("src->commands_count = %d\n", src->commands_count);
     while (number_string < src->commands_count) {
-        
+        printf("number_string = %d\n", number_string);
         if (strlen(src->pointers[number_string]) == 0) { 
             number_string++;
             empty_strings++;
