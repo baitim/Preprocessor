@@ -1,18 +1,13 @@
 CALL PRINT_HELLO:
-
 PUSH 1
-
 POP rax
 next:
 PUSH 15
 PUSH rax
-
-
 JB stop:
 PUSH rax
 PUSH rax
 MUL
-
 OUT
 PUSH rax
 PUSH 1
@@ -21,7 +16,6 @@ POP rax
 JMP next:
 stop:
 HLT
-
 PRINT_HELLO:
 PUSH 72
 OUTC

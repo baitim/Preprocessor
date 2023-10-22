@@ -83,9 +83,7 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
     int index_write = 0;
     int number_fixup = 0;
     int empty_strings = 0;
-    printf("src->commands_count = %d\n", src->commands_count);
     while (number_string < src->commands_count) {
-        printf("number_string = %d\n", number_string);
         if (strlen(src->pointers[number_string]) == 0) { 
             number_string++;
             empty_strings++;
@@ -128,7 +126,7 @@ Errors process_fixup(const Data *src, const char *bin_file, Pointers_label *poin
         for (int j = 0; j < MAX_COUNT_LABELS; j++) {
             if (!LABELS[j].name) break;
             if (strcmp(src->pointers[pointers_labels[i].in_src], LABELS[j].name) == 0) {
-                fseek(bin_stream, (pointers_labels[i].in_bin - i) * (int)sizeof(int), SEEK_SET);
+                fseek(bin_stream, (pointers_labels[i].in_bin) * (int)sizeof(int), SEEK_SET);
                 int new_value[1] = {};
                 new_value[0] = LABELS[j].index;
                 int count_write = (int)fwrite(new_value, sizeof(int), 1, bin_stream);

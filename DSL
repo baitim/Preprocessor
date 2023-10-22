@@ -166,7 +166,7 @@ DEF_CMD(JMON, 20, NUM | LAB, 1, {
     break;})
 
 DEF_CMD(CALL, 21, LAB | NUM, 1, {
-    stack_push(&stack_commands, number_command);
+    stack_push(&stack_commands, number_command + 1);
     number_command = *((int *)commands + number_command);
     break;})
 
@@ -176,5 +176,5 @@ DEF_CMD(RET, 22, NUN, 0, {
 
 DEF_CMD(OUTC, 23, NUN, 0, {
     int print_value = 0;
-    printf("%c", ((POP(&print_value), print_value) / PRECISION));
+    printf(print_lyellow("%c"), ((POP(&print_value), print_value) / PRECISION));
     break;})
