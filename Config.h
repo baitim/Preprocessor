@@ -31,13 +31,4 @@ static Register REGISTERS[] = {
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
 
-const int POISON_LABEL = -1;
-const int MAX_SIZE_LABEL = 100;
-struct Label {
-    const char *name;
-    int index;
-};
-const int MAX_COUNT_LABELS = 20;
-static Label LABELS[MAX_COUNT_LABELS] = {};
-
 #endif // CONFIG_H

@@ -2,6 +2,9 @@
 #include <string.h>
 
 #include "Disasm.h"
+#include "../Labels.h"
+
+static Label LABELS[MAX_COUNT_LABELS] = {};
 
 static int powf(int x, int p);
 
@@ -16,12 +19,7 @@ static int powf(int x, int p);
             int value  = *((int *)command + number_command);                    \
             number_command++;                                                   \
             if (int_instruct & (1 << REG)) {                                    \
-                for (int j = 0; j < COUNT_REGISTERS; j++) {                     \
-                    if (value == REGISTERS[j].index) {                          \
-                        fprintf(dest, " %s", REGISTERS[j].name);                \
-                        break;                                                  \
-                    }                                                           \
-                }                                                               \
+                fprintf(dest, " %d", value);                        \
             }                                                                   \
             if (int_instruct & (1 << LAB))                                      \
                 fprintf(dest, " %d", value);                                    \
@@ -67,7 +65,8 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
 
 Errors read_labels(Data *label_index)
 {
-    assert(label_index);
+    if (!label_index)
+        return ERROR_READ_FILE;
     
     int number_word = 0;
     int number_label = 0;

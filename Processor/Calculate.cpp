@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "../ANSI_colors.h"
@@ -9,8 +11,6 @@
 #include "../Output.h"
 #include "../Errors.h"
 #include "../Asm/Input.h"
-
-#include <math.h>
 
 #define DEF_CMD(name, num, type_args, args, code)       \
     case CMD_ ## name:                                  \
@@ -39,7 +39,7 @@ void calculate(const char *name_of_file)
 
         switch ((int)command % (int)powf(2, FREE_BYTES)) {
             #include "../DSL"
-            default: assert(0);
+            default: { printf(print_lred("ERROR\n")); return; };
         }
         //print_commands(name_of_file, number_command);
     }

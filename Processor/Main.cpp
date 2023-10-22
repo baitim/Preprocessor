@@ -1,7 +1,8 @@
+#include <stdio.h>
+
 #include "../ANSI_colors.h"
 #include "Calculate.h"
 #include "../Debug.h"
-#include "../Stack/Stack.h"
 #include "../Asm/Input.h"
 
 int main(int argc, const char *argv[])

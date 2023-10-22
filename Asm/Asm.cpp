@@ -1,9 +1,12 @@
-#include <stdlib.h>
 #include <string.h>
 #include <cstdio>
+#include <stdlib.h>
 
 #include "Asm.h"
 #include "../Config.h"
+#include "../Labels.h"
+
+static Label LABELS[MAX_COUNT_LABELS] = {};
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strcmp(src->pointers[number_string], #name_cmd) == 0)                               \

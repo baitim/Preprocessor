@@ -2,6 +2,10 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
+INPUT_txt = files/Input_commands.txt
+ASM_bin = files/Asm.bin
+DISASM_txt = files/Disasm.txt
+
 DEFAULT =       $(wildcard Stack/*.cpp) $(wildcard *.cpp) 
 ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)
 DISASM = 	    $(DEFAULT) $(wildcard Disasm/*.cpp) $(wildcard Asm/Input.cpp)
@@ -19,10 +23,10 @@ run_main :
 	g++ $(Main_files) -o start $(options) $(debug)
 
 finish_asm:
-	./asm files/Input_commands.txt files/Asm.bin Labels
+	./asm $(INPUT_txt) $(ASM_bin) Labels
 
 finish_disasm:
-	./disasm files/Asm.bin files/Disasm.txt Labels
+	./disasm $(ASM_bin) $(DISASM_txt) Labels
 
 finish:	
-	./start files/Asm.bin Labels
+	./start $(ASM_bin) Labels

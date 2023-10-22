@@ -1,6 +1,7 @@
 #include "Debug.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ANSI_colors.h"
 #include "Config.h"

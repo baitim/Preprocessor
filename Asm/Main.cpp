@@ -1,5 +1,9 @@
+#include <assert.h>
+#include <stdlib.h>
+
 #include "Input.h"
 #include "Asm.h"
+#include "../Labels.h"
 #include "../ANSI_colors.h"
 
 int main(int argc, const char *argv[])
