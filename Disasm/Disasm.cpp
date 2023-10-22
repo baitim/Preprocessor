@@ -41,7 +41,7 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
 
     const int size_file = (int)fsize(name_src);
 
-    char *command = (char *)calloc(size_file, sizeof(char));
+    char *command = (char *)calloc((size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION), sizeof(char));
     if (!command)
         return ERROR_ALLOC_FAIL;
 
@@ -49,8 +49,8 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
     if (count_read != size_file)
         return ERROR_READ_FILE;
                                                         
-    int number_command = 0;
-    while (number_command * (int)sizeof(int) < size_file) {
+    int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
+    while ((number_command - COUNT_INTS_IN_BINARY_TO_DECRIPTION) * (int)sizeof(int) < size_file) {
         int int_instruct = *((int *)command + number_command);
         number_command++;
         

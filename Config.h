@@ -4,6 +4,9 @@
 #include <time.h>
 
 typedef int type_el;
+const int COUNT_BYTES_IN_BINARY_TO_DECRIPTION = 17;
+const char FIRST_DATA_IN_BINARY[COUNT_BYTES_IN_BINARY_TO_DECRIPTION] = "TIMUR BAIDUSENOV";
+const int COUNT_INTS_IN_BINARY_TO_DECRIPTION = (COUNT_BYTES_IN_BINARY_TO_DECRIPTION + 3) / 4;
 
 const unsigned char POISON_BYTE = 0xbe;
 const type_el POISON_EL = POISON_BYTE;

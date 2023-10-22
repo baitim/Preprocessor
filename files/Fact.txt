@@ -1,21 +1,45 @@
 CALL PRINT_HELLO:
-PUSH 1
+
+CALL MAIN:
+HLT
+
+MAIN:
+PUSH 0
 POP rax
-next:
-PUSH 15
+PUSH 10
+POP rbx
+PUSH 1
+POP rcx
+CALL FACT:
+RET
+
+FACT:
 PUSH rax
-JB stop:
-PUSH rax
-PUSH rax
-MUL
+PUSH rbx
+JAE ret:
+CALL ADD_1_TO_RAX:
+CALL MUL_RAX_RCX:
+PUSH rcx
 OUT
+CALL FACT:
+ret:
+RET
+
+ADD_1_TO_RAX:
 PUSH rax
 PUSH 1
 ADD
 POP rax
-JMP next:
-stop:
-HLT
+RET
+
+
+MUL_RAX_RCX:
+PUSH rcx
+PUSH rax
+MUL
+POP rcx
+RET
+
 PRINT_HELLO:
 PUSH 72
 OUTC

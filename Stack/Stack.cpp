@@ -5,9 +5,9 @@
 
 const int DEFAULT_SIZE = 0;
 
-const int DEFAULT_CAPACITY = 7;
+const int DEFAULT_CAPACITY = 20;
 
-const double MULTIPLIER_CAPACITY = 2;
+const double MULTIPLIER_CAPACITY = 1.5;
 
 enum RESIZE_MULTIPLIER {
     MULTIPLIER_REDUCE   = -1,
@@ -63,11 +63,9 @@ static Errors stack_resize(Stack *stack, int multiplier)
     stack->data = (type_el *)((long long *)stack->data - 1);
     *((long long *)stack->data) = POISON_BYTE;
     *((long long *)stack->data + 1 + get_right_canary_index(stack)) = POISON_BYTE;
-    type_el *new_data = (type_el *)realloc(stack->data, stack->capacity * sizeof(type_el) + sizeof(long long) * 2);
-    if (!new_data)
-        return ERROR_ALLOC_FAIL;
-    else if(stack->data != new_data)
-        stack->data = new_data; 
+    stack->data = (type_el *)realloc(stack->data, stack->capacity * sizeof(type_el) + sizeof(long long) * 2);
+    if (!stack->data)
+        return ERROR_ALLOC_FAIL; 
 
     *((long long *)stack->data) = DEFAULT_CANARY;
     stack->data = (type_el *)((long long *)stack->data + 1);
@@ -75,13 +73,13 @@ static Errors stack_resize(Stack *stack, int multiplier)
     stack->hash = get_hash(stack);
     return stack_dump(stack);
 }
-
+#include <stdio.h>
 Errors stack_push(Stack *stack, type_el value)
 {
     Errors error = stack_dump(stack);
     if (error) return error;
 
-    if (stack->size == stack->capacity)
+    if (stack->size >= stack->capacity)
         error = stack_resize(stack, MULTIPLIER_INCREASE);
 
     if (error) return error;

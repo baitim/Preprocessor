@@ -1,6 +1,12 @@
-next:
-6
-stop:
-27
+MAIN:
+10
+FACT:
+25
+ret:
+40
+ADD_1_TO_RAX:
+41
+MUL_RAX_RCX:
+49
 PRINT_HELLO:
-28
+57

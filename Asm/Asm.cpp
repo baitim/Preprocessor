@@ -74,13 +74,15 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
     if (!dest) return ERROR_READ_FILE;
     Errors error = ERROR_NO;
 
-    char *command = (char *)calloc(src->commands_count * sizeof(int), sizeof(char));
+    char *command = (char *)calloc((src->commands_count + COUNT_INTS_IN_BINARY_TO_DECRIPTION) * sizeof(int), sizeof(char));
     if (!command)
         return ERROR_READ_FILE;
 
+    memcpy(command, FIRST_DATA_IN_BINARY, COUNT_BYTES_IN_BINARY_TO_DECRIPTION);
+
     int number_lable = 0;
     int number_string = 0;
-    int index_write = 0;
+    int index_write = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
     int number_fixup = 0;
     int empty_strings = 0;
     while (number_string < src->commands_count) {

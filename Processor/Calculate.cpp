@@ -14,14 +14,14 @@
 
 #define DEF_CMD(name, num, type_args, args, code)       \
     case CMD_ ## name:                                  \
-        code                                            \
+        code
 
 void calculate(const char *name_of_file)
 {
     FILE *src = fopen(name_of_file, "rb");
 
     const int size_file = (int)fsize(name_of_file);
-    char *commands = (char *)calloc(size_file, sizeof(char));
+    char *commands = (char *)calloc(size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION, sizeof(char));
     if (!commands)
         return;
 
@@ -35,7 +35,7 @@ void calculate(const char *name_of_file)
     Stack stack_commands = {};
     stack_ctor(&stack_commands);
 
-    int number_command = 0;
+    int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
     while (number_command * (int)sizeof(int) < size_file) {
         int command = *((int *)commands + number_command);
         number_command++;
