@@ -11,7 +11,7 @@ int main(int argc, const char *argv[])
     const int COUNT_FROM_CMD = 4;
 
     if (argc < COUNT_FROM_CMD) {
-        printf (print_lred("CMD INPUT ERROR\n"));
+        printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 0; 
     }
 
@@ -24,16 +24,16 @@ int main(int argc, const char *argv[])
     assert(labels);
 
     int count_fixup = 0;
-    int *fixup = (int *)calloc(MAX_COUNT_LABELS, sizeof(int));
+    Pointers_label pointers_labels[MAX_COUNT_LABELS] = {};
 
-    if (process_input_commands_bin(dest, &src, labels, fixup, &count_fixup)) {
-        printf (print_lred("ERROR\n"));
+    if (process_input_commands_bin(dest, &src, labels, pointers_labels, &count_fixup)) {
+        printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 0;
     }
     fclose(dest);
 
-    if (process_fixup(&src, argv[2], fixup, count_fixup)) {
-        printf (print_lred("ERROR\n"));
+    if (process_fixup(&src, argv[2], pointers_labels, count_fixup)) {
+        printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 0;
     }
 

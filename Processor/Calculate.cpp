@@ -39,7 +39,13 @@ void calculate(const char *name_of_file)
 
         switch ((int)command % (int)powf(2, FREE_BYTES)) {
             #include "../DSL"
-            default: { printf(print_lred("ERROR\n")); return; };
+            default: {
+                printf(print_lred("DEFAULT CASE!\nERROR in %s %s %d\n"),
+                __FILE__, __PRETTY_FUNCTION__, __LINE__);
+                printf(print_lred("Number command = %d\n"), number_command);
+                return;
+                };
+
         }
         //print_commands(name_of_file, number_command);
     }

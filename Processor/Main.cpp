@@ -13,7 +13,7 @@ int main(int argc, const char *argv[])
     const int COUNT_FROM_CMD = 3;
 
     if (argc < COUNT_FROM_CMD) {
-        printf (print_lred("CMD INPUT ERROR\n"));
+        printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 0; 
     }
 
