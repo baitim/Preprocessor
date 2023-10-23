@@ -10,9 +10,12 @@
 
 //#define PRINT_COMMANDS
 
-DEF_CMD(PUSH, 1, REG | NUM, 1, {
+DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
     int value_elem = *((int *)commands + number_command);
     number_command++;
+
+    if (command & (1 << MEM))
+        PUSH(ram[value_elem]);
 
     if (command & (1 << REG)) {
         for (int i = 0; i < COUNT_REGISTERS; i++) {
@@ -34,17 +37,22 @@ DEF_CMD(IN, 2, NUN, 0, {
     PUSH(x * PRECISION);
     break;})
 
-DEF_CMD(POP, 3, REG, 1, {
-    int name_reg = *((int *)commands + number_command);
+DEF_CMD(POP, 3, REG | MEM, 1, {
+    int place_to_write = *((int *)commands + number_command);
     number_command++;
 
     int x = 0;
     POP(&x);
 
-    for (int i = 0; i < COUNT_REGISTERS; i++) {
-        if (REGISTERS[i].index == name_reg) {
-            REGISTERS[i].value = x;
-            break;
+    if (command & (1 << MEM))
+        ram[place_to_write] = x;
+
+    if (command & (1 << REG)) {
+        for (int i = 0; i < COUNT_REGISTERS; i++) {
+            if (REGISTERS[i].index == place_to_write) {
+                REGISTERS[i].value = x;
+                break;
+            }
         }
     }
     break;})

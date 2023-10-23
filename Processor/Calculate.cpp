@@ -35,6 +35,8 @@ void calculate(const char *name_of_file)
     Stack stack_commands = {};
     stack_ctor(&stack_commands);
 
+    int ram[MAX_SIZE_RAM] = {};
+
     int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
     while (number_command * (int)sizeof(int) < size_file) {
         int command = *((int *)commands + number_command);

@@ -11,7 +11,8 @@ static Label LABELS[MAX_COUNT_LABELS] = {};
 enum Type_arg {
     TYPE_ARG_NUM = 1,
     TYPE_ARG_REG = 2,
-    TYPE_ARG_LAB = 3
+    TYPE_ARG_LAB = 3,
+    TYPE_ARG_MEM = 4
 };
 
 static Type_arg check_type_arg(const char *arg);
@@ -27,7 +28,12 @@ static Type_arg check_type_arg(const char *arg);
         }                                                                                   \
         for (int i = 0; i < args; i++) {                                                    \
             int type_arg = check_type_arg(src->pointers[number_string]);                    \
-            if (type_arg == TYPE_ARG_REG) {                                                          \
+            if (type_arg == TYPE_ARG_MEM) {                                                 \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << MEM);          \
+                index_write++;                                                              \
+            }                                                                               \
+                                                                                            \
+            if (type_arg == TYPE_ARG_REG) {                                                 \
                 for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
                     if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
                         *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << REG);  \
@@ -52,8 +58,8 @@ static Type_arg check_type_arg(const char *arg);
                 }                                                                           \
                 if (!was_label) {                                                           \
                     *((int *)command + index_write) = POISON_LABEL;                         \
-                    pointers_labels[number_fixup].in_src = number_string;                  \
-                    pointers_labels[number_fixup].in_bin = index_write;                    \
+                    pointers_labels[number_fixup].in_src = number_string;                   \
+                    pointers_labels[number_fixup].in_bin = index_write;                     \
                     number_fixup++;                                                         \
                 }                                                                           \
             }                                                                               \
@@ -63,9 +69,9 @@ static Type_arg check_type_arg(const char *arg);
                 index_write++;                                                              \
                 *((int *)command + index_write) = atoi(src->pointers[number_string]);       \
             }                                                                               \
+            index_write++;                                                                  \
+            number_string++;                                                                \
         }                                                                                   \
-        index_write++;                                                                      \
-        number_string++;                                                                    \
         continue;                                                                           \
     }                                                                                       \
     else
@@ -143,6 +149,9 @@ Errors process_fixup(const Data *src, const char *bin_file, Pointers_label *poin
 Type_arg check_type_arg(const char *arg)
 {
     const int len_arg = (int)strlen(arg);
+
+    if (arg[0] == '[' && arg[len_arg-1] == ']') return TYPE_ARG_MEM;
+
     if (arg[len_arg-1] == ':') return TYPE_ARG_LAB;
 
     for (int j = 0; j < COUNT_REGISTERS; j++) {

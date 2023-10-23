@@ -18,17 +18,9 @@ static int powf(int x, int p);
         for (int i = 0; i < args; i++) {                                        \
             int value  = *((int *)command + number_command);                    \
             number_command++;                                                   \
-            if (int_instruct & (1 << REG)) {                                    \
-                fprintf(dest, " %d", value);                        \
-            }                                                                   \
-            if (int_instruct & (1 << LAB))                                      \
-                fprintf(dest, " %d", value);                                    \
-                                                                                \
-            if (int_instruct & (1 << NUM))                                      \
-                fprintf(dest, " %d", value);                                    \
-                                                                                \
-            fprintf(dest, "\n");                                                \
+            fprintf(dest, " %d", value);                                        \
         }                                                                       \
+        fprintf(dest, "\n");                                                    \
         continue;                                                               \
     }                                                                           \
     else

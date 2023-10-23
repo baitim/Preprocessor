@@ -23,7 +23,7 @@ FACT:
     PUSH rcx
     OUT
     CALL FACT:          / calc and print again
-ret_fact:
+    ret_fact:
     RET
 
 ADD_1_TO_RAX:
