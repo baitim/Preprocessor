@@ -2,8 +2,7 @@
 #define NUN 0
 #define REG 5
 #define NUM 6
-#define LAB 7
-#define MEM 8
+#define MEM 7
 #define PRECISION 100
 #define PUSH(arg) stack_push(&stack, arg)
 #define POP(arg) stack_pop(&stack, arg)
@@ -126,11 +125,11 @@ DEF_CMD(HLT, 12, NUN, 0, {
     return;
     break;})
 
-DEF_CMD(JMP, 13, NUM | LAB, 1, {
+DEF_CMD(JMP, 13, NUM, 1, {
     number_command = *((int *)commands + number_command);
     break;})
 
-DEF_CMD(JA, 14, NUM | LAB, 1, {
+DEF_CMD(JA, 14, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -139,7 +138,7 @@ DEF_CMD(JA, 14, NUM | LAB, 1, {
     else       number_command++;
     break;})
 
-DEF_CMD(JAE, 15, NUM | LAB, 1, {
+DEF_CMD(JAE, 15, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -148,7 +147,7 @@ DEF_CMD(JAE, 15, NUM | LAB, 1, {
     else        number_command++;
     break;})
 
-DEF_CMD(JB, 16, NUM | LAB, 1, {
+DEF_CMD(JB, 16, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -157,7 +156,7 @@ DEF_CMD(JB, 16, NUM | LAB, 1, {
     else       number_command++;
     break;})
 
-DEF_CMD(JBE, 17, NUM | LAB, 1, {
+DEF_CMD(JBE, 17, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -166,7 +165,7 @@ DEF_CMD(JBE, 17, NUM | LAB, 1, {
     else        number_command++;
     break;})
 
-DEF_CMD(JE, 18, NUM | LAB, 1, {
+DEF_CMD(JE, 18, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -175,7 +174,7 @@ DEF_CMD(JE, 18, NUM | LAB, 1, {
     else        number_command++;
     break;})
 
-DEF_CMD(JNE, 19, NUM | LAB, 1, {
+DEF_CMD(JNE, 19, NUM, 1, {
     int x = 0;
     int y = 0;
     POP(&x);
@@ -184,7 +183,7 @@ DEF_CMD(JNE, 19, NUM | LAB, 1, {
     else        number_command++;
     break;})
 
-DEF_CMD(JMON, 20, NUM | LAB, 1, {
+DEF_CMD(JMON, 20, NUM, 1, {
     long int time_ = time(NULL);
     struct tm *loc_time;
     loc_time = localtime(&time_);
@@ -192,7 +191,7 @@ DEF_CMD(JMON, 20, NUM | LAB, 1, {
     else                        number_command++;
     break;})
 
-DEF_CMD(CALL, 21, LAB | NUM, 1, {
+DEF_CMD(CALL, 21, NUM, 1, {
     stack_push(&stack_commands, number_command + 1);
     number_command = *((int *)commands + number_command);
     break;})

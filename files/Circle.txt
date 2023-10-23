@@ -1,3 +1,4 @@
+PUSH [5]
 CALL MAIN:
 HLT
 

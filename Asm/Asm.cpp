@@ -46,7 +46,7 @@ static Type_arg check_type_arg(const char *arg);
                                                                                             \
             int was_label = 0;                                                              \
             if (type_arg == TYPE_ARG_LAB) {                                                 \
-                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << LAB);          \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);          \
                 index_write++;                                                              \
                 for (int j = 0; j < MAX_COUNT_LABELS; j++) {                                \
                     if (!LABELS[j].name) break;                                             \
