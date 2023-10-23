@@ -117,6 +117,7 @@ Errors process_fixup(const Data *src, const char *bin_file, Pointers_label *poin
     FILE *bin_stream = fopen(bin_file, "r+");
     if (!bin_stream)
         return ERROR_READ_FILE;
+
     for (int i = 0; i < count_fixup; i++) {
         for (int j = 0; j < MAX_COUNT_LABELS; j++) {
             if (!LABELS[j].name) break;

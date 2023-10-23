@@ -1,8 +1,9 @@
-CALL PRINT_HELLO:
 CALL MAIN:
 HLT
 
 MAIN:
+    CALL PRINT_HELLO:
+
     PUSH 0
     POP  rax            / start value
     PUSH 7
@@ -12,17 +13,17 @@ MAIN:
     CALL FACT:
     RET
 
-/ WARNING function changes registers values
+/ WARNING function changes registers values (rax rcx)
 FACT:
     PUSH rax
     PUSH rbx
-    JAE  ret:           / return
+    JAE  ret_fact:      / return
     CALL ADD_1_TO_RAX:
     CALL MUL_RAX_RCX:
     PUSH rcx
     OUT
     CALL FACT:          / calc and print again
-    ret:
+ret_fact:
     RET
 
 ADD_1_TO_RAX:

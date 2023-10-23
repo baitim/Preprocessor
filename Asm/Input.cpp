@@ -111,6 +111,7 @@ static void write_pointers(Data *data)
                     i++;
                 continue;
             }
+            if (data->text[i] == '\n') continue;
             i--;
             data->text[i] = '\0';
             data->pointers[count] = data->text + i + 1;

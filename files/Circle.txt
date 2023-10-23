@@ -1,0 +1,145 @@
+CALL MAIN:
+HLT
+
+MAIN:
+    CALL PRINT_HELLO:
+    PUSH 40
+    POP rax
+    CALL PRINT_CIRCLE:
+    RET
+
+/ WARNING function changes registers values (rbx rcx)
+PRINT_CIRCLE:
+    PUSH 0                      /  обнуление rbx
+    POP rbx
+
+    for_X:                          / внешний
+        PUSH rbx
+        PUSH rax
+        JA ret_print_circle:       / условие выхода
+
+        PUSH 0
+        POP rcx                     / обнуление rcx 
+
+        for_Y:                          
+            PUSH rcx
+            PUSH rax
+            JA end_for_Y:       / условие выхода
+
+            CALL PRINT_DOT_OR_STAR:
+
+            CALL ADD_1_TO_RCX:
+        JMP for_Y:
+        end_for_Y:                      / выход из внутреннего цикла
+        CALL PRINT_NEW_LINE:
+        CALL ADD_1_TO_RBX:
+    JMP for_X:
+    ret_print_circle:               / выход из внешнего цикла
+    RET
+
+PRINT_DOT_OR_STAR:
+    CALL PUSH_DISTANCE_X_TO_O:
+    CALL PUSH_DISTANCE_X_TO_O:
+    MUL
+    CALL PUSH_DISTANCE_Y_TO_O:
+    CALL PUSH_DISTANCE_Y_TO_O:
+    MUL
+    ADD
+    CALL PUSH_RADIUS:
+    CALL PUSH_RADIUS:
+    MUL
+    JBE print_star:
+    JMP print_dot:
+
+    print_star:
+    CALL PRINT_STAR:
+    RET
+
+    print_dot:
+    CALL PRINT_DOT:
+    RET
+
+PRINT_HELLO:
+    PUSH 72
+    OUTC
+    PUSH 69
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 79
+    OUTC
+    PUSH 33
+    OUTC
+    PUSH 10
+    OUTC
+    RET
+
+ADD_1_TO_RBX:
+    PUSH rbx
+    PUSH 1
+    ADD
+    POP  rbx
+    RET
+
+ADD_1_TO_RCX:
+    PUSH rcx
+    PUSH 1
+    ADD
+    POP  rcx
+    RET
+
+PRINT_DOT:
+    PUSH 46
+    OUTC
+    RET
+
+PRINT_STAR:
+    PUSH 42
+    OUTC
+    RET
+
+PRINT_NEW_LINE:
+    PUSH 10
+    OUTC
+    RET
+
+PRINT_RAX:
+    PUSH rax
+    OUT
+    RET
+
+PRINT_RBX:
+    PUSH rbx
+    OUT
+    RET
+
+PRINT_RCX:
+    PUSH rcx
+    OUT
+    RET
+
+PUSH_DISTANCE_X_TO_O:
+    PUSH rbx
+    PUSH rax
+    PUSH 2
+    DIV
+    SUB
+    RET
+
+PUSH_DISTANCE_Y_TO_O:
+    PUSH rcx
+    PUSH rax
+    PUSH 2
+    DIV
+    SUB
+    PUSH 2
+    DIV
+    RET
+
+PUSH_RADIUS:
+    PUSH rax
+    PUSH 4
+    DIV
+    RET

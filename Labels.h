@@ -7,6 +7,6 @@ struct Label {
     const char *name;
     int index;
 };
-const int MAX_COUNT_LABELS = 20;
+const int MAX_COUNT_LABELS = 50;
 
 #endif // LABELS_H

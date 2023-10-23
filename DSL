@@ -3,9 +3,12 @@
 #define REG 5
 #define NUM 6
 #define LAB 7
+#define MEM 8
 #define PRECISION 100
 #define PUSH(arg) stack_push(&stack, arg)
 #define POP(arg) stack_pop(&stack, arg)
+
+//#define PRINT_COMMANDS
 
 DEF_CMD(PUSH, 1, REG | NUM, 1, {
     int value_elem = *((int *)commands + number_command);
@@ -47,12 +50,20 @@ DEF_CMD(POP, 3, REG, 1, {
     break;})
 
 DEF_CMD(ADD, 4, NUN, 0, {
+#ifdef PRINT_COMMANDS
+    printf("ADD\n");
+    print_stack(&stack);
+#endif
     int x = 0;
     int y = 0;
     PUSH((POP(&x), x) + (POP(&y), y));
     break;})
 
 DEF_CMD(SUB, 5, NUN, 0, {
+#ifdef PRINT_COMMANDS
+    printf("SUB\n");
+    print_stack(&stack);
+#endif
     int x = 0;
     int y = 0;
     POP(&x);
@@ -61,12 +72,20 @@ DEF_CMD(SUB, 5, NUN, 0, {
     break;})
 
 DEF_CMD(MUL, 6, NUN, 0, {
+#ifdef PRINT_COMMANDS
+    printf("MUL\n");
+    print_stack(&stack);
+#endif
     int x = 0;
     int y = 0;
     PUSH((POP(&x), x) * (POP(&y), y) / PRECISION);
     break;})
 
 DEF_CMD(DIV, 7, NUN, 0, {
+#ifdef PRINT_COMMANDS
+    printf("DIV\n");
+    print_stack(&stack);
+#endif
     int x = 0;
     int y = 0;
     POP(&x);
