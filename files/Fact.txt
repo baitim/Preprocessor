@@ -3,56 +3,56 @@ CALL PRINT_HELLO:
 CALL MAIN:
 HLT
 
-MAIN:           ; main function
-PUSH 0
-POP rax
-PUSH 7
-POP rbx
-PUSH 1
-POP rcx
-CALL FACT:      ; function change rax, rbx and rcx
-RET
+MAIN:
+    PUSH 0
+    POP  rax            / start value
+    PUSH 7
+    POP  rbx            / upper bound of values
+    PUSH 1
+    POP  rcx            / fact
+    CALL FACT:
+    RET
 
-FACT:           ; calculate and print
-PUSH rax
-PUSH rbx
-JAE ret:
-CALL ADD_1_TO_RAX:
-CALL MUL_RAX_RCX:
-PUSH rcx
-OUT
-CALL FACT:
-ret:
-RET
+FACT:                   / WARNING function changes registers values    
+    PUSH rax
+    PUSH rbx
+    JAE  ret:           / return
+    CALL ADD_1_TO_RAX:
+    CALL MUL_RAX_RCX:
+    PUSH rcx
+    OUT
+    CALL FACT:          / calc and print again
+    ret:
+    RET
 
 ADD_1_TO_RAX:
-PUSH rax
-PUSH 1
-ADD
-POP rax
-RET
+    PUSH rax
+    PUSH 1
+    ADD
+    POP  rax
+    RET
 
 
 MUL_RAX_RCX:
-PUSH rcx
-PUSH rax
-MUL
-POP rcx
-RET
+    PUSH rcx
+    PUSH rax
+    MUL
+    POP  rcx
+    RET
 
 PRINT_HELLO:
-PUSH 72
-OUTC
-PUSH 69
-OUTC
-PUSH 76
-OUTC
-PUSH 76
-OUTC
-PUSH 79
-OUTC
-PUSH 33
-OUTC
-PUSH 10
-OUTC
-RET
+    PUSH 72
+    OUTC
+    PUSH 69
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 79
+    OUTC
+    PUSH 33
+    OUTC
+    PUSH 10
+    OUTC
+    RET

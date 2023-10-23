@@ -2,9 +2,9 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
-INPUT_txt = files/Test_comments.txt
-ASM_bin = files/Asm.bin
-DISASM_txt = files/Disasm.txt
+INPUT_txt = 	files/Fact.txt
+ASM_bin = 		files/Asm.bin
+DISASM_txt = 	files/Disasm.txt
 
 DEFAULT =       $(wildcard Stack/*.cpp) $(wildcard *.cpp) 
 ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)
