@@ -24,9 +24,6 @@ void create_data(Data *data, const char *src)
     assert(data->text);
     get_data(data, stream);
 
-    puts(data->text);
-    puts("----------------");
-
     data->commands_count = count_pointers(data->text) + 1;
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));
     assert(data->pointers);
@@ -75,7 +72,6 @@ static int count_pointers(const char *text)
         if (text[i] == '/') {
             while (text[i] != '\n')
                 i++;
-            i++;
             continue;
         }
         if (text[i] == '\n') {
@@ -102,7 +98,7 @@ static void write_pointers(Data *data)
 
     data->pointers[0] = data->text;
 
-    while (count < data->commands_count && data->text[i] != '\0') {
+    while (i < data->size_file) {
         if (data->text[i] == ' ') {
             while(data->text[i] == ' ') {
                 data->text[i] = '\0';
@@ -111,13 +107,11 @@ static void write_pointers(Data *data)
             if (data->text[i] == '/'){
                 data->text[i] = '\0';
                 i++;
-                while(data->text[i] != '\n' && data->text[i] != '\0')
+                while(i < data->size_file && data->text[i] != '\n')
                     i++;
-                i++;
                 continue;
             }
             i--;
-
             data->text[i] = '\0';
             data->pointers[count] = data->text + i + 1;
             count++;
@@ -125,15 +119,14 @@ static void write_pointers(Data *data)
         if (data->text[i] == '/') {
             data->text[i] = '\0';
             i++;
-            while(data->text[i] != '\n' && data->text[i] != '\0')
+            while(i < data->size_file && data->text[i] != '\n')
                 i++;
-            i++;
             continue;
         }
         if (data->text[i] == '\n') {
             data->text[i] = '\0';
             i++;
-            while (data->text[i] == ' ')
+            while (i < data->size_file && data->text[i] == ' ')
                 i++;
             if (data->text[i] == '\0') break;
             if (data->text[i] == '/') continue;

@@ -1,5 +1,4 @@
 CALL PRINT_HELLO:
-
 CALL MAIN:
 HLT
 
@@ -13,7 +12,8 @@ MAIN:
     CALL FACT:
     RET
 
-FACT:                   / WARNING function changes registers values    
+/ WARNING function changes registers values
+FACT:
     PUSH rax
     PUSH rbx
     JAE  ret:           / return
