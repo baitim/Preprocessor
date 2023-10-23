@@ -1,0 +1,271 @@
+CALL MAIN:
+HLT
+
+/ WARNING function changes ram[11], ram[22] (root1 in ram[11], root2 in ram[22])
+MAIN:
+    CALL PRINT_HELLO:
+
+    IN
+    POP rax
+    IN
+    POP rbx
+    IN
+    POP rcx
+
+    CALL IS_INFINITY: / answer in ram[0], if ram[0] == 1 equation is infinity
+    PUSH [0]
+    PUSH 1
+    JE inf_print_hlt:
+
+    CALL IS_ZERO: / answer in ram[0], if ram[0] == 1 zero roots, checks a == 0 and b == 0(doesn't check D)
+    PUSH [0]
+    PUSH 1
+    JE zero_print_hlt:
+
+    CALL IS_LINEAR: / answer in ram[0], if ram[0] == 1 equation is linear
+    PUSH [0]
+    PUSH 1
+    JE line_calc_print_hlt:
+
+    RET
+
+    inf_print_hlt:
+    CALL PRINT_INFINITY:    / HLT
+
+    zero_print_hlt:
+    CALL PRINT_ZERO:        / HLT
+
+    line_calc_print_hlt:
+    CALL LINEAR:            / HLT
+
+/ WARNING function changes ram[0]
+IS_INFINITY:
+    PUSH rax
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH rbx
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH rcx
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH 1
+    POP [0]
+    RET
+
+    return_infinity:
+    PUSH 0
+    POP [0]
+    RET
+
+/ WARNING function does HLT
+PRINT_INFINITY:
+    PUSH 73
+    OUTC
+    PUSH 78
+    OUTC
+    PUSH 70
+    OUTC
+    PUSH 73
+    OUTC
+    PUSH 78
+    OUTC
+    PUSH 73
+    OUTC
+    PUSH 84
+    OUTC
+    PUSH 89
+    OUTC
+    PUSH 10
+    OUTC
+    HLT
+
+/ WARNING function changes ram[0]
+IS_ZERO:
+    PUSH rax
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH rbx
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH 1
+    POP [0]
+    RET
+
+    return_infinity:
+    PUSH 0
+    POP [0]
+    RET
+
+/ WARNING function does HLT
+PRINT_ZERO:
+    PUSH 90
+    OUTC
+    PUSH 69
+    OUTC
+    PUSH 82
+    OUTC
+    PUSH 79
+    OUTC
+    PUSH 10
+    OUTC
+    HLT
+
+/ WARNING function changes ram[0]
+IS_LINEAR:
+    PUSH rax
+    PUSH 0
+    JNE return_infinity:
+
+    PUSH 1
+    POP [0]
+    RET
+
+    return_infinity:
+    PUSH 0
+    POP [0]
+    RET
+
+/ WARNING function changes ram[11] (root in ram[11])
+LINEAR:
+    PUSH 0
+    PUSH rcx
+    PUSH rbx
+    DIV
+    SUB
+    POP [11]
+
+    CALL PRINT_LINEAR_HLT:
+    RET
+
+PRINT_LINEAR:
+    PUSH 1
+    OUT
+    PUSH 32
+    OUTC
+    PUSH 114
+    OUTC
+    PUSH 111
+    OUTC
+    PUSH 111
+    OUTC
+    PUSH 116
+    OUTC
+    PUSH 58
+    OUTC
+    PUSH 32
+    OUTC
+    PUSH [11]
+    OUT
+    RET
+
+ADD_1_TO_RAX:
+    PUSH rax
+    PUSH 1
+    ADD
+    POP  rax
+    RET
+
+ADD_1_TO_RBX:
+    PUSH rbx
+    PUSH 1
+    ADD
+    POP  rbx
+    RET
+
+ADD_1_TO_RCX:
+    PUSH rcx
+    PUSH 1
+    ADD
+    POP  rcx
+    RET
+
+PRINT_NEW_LINE:
+    PUSH 10
+    OUTC
+    RET
+
+PRINT_REGS:
+    CALL PRINT_RAX:
+    CALL PRINT_RBX:
+    CALL PRINT_RCX:
+    CALL PRINT_RDX:
+    RET
+
+PRINT_RAX:
+    PUSH rax
+    OUT
+    RET
+
+PRINT_RBX:
+    PUSH rbx
+    OUT
+    RET
+
+PRINT_RCX:
+    PUSH rcx
+    OUT
+    RET
+
+PRINT_RDX:
+    PUSH rdx
+    OUT
+    RET
+
+PRINT_HELLO:
+    PUSH 72
+    OUTC
+    PUSH 101
+    OUTC
+    PUSH 108
+    OUTC
+    PUSH 108
+    OUTC
+    PUSH 111
+    OUTC
+    PUSH 33
+    OUTC
+    PUSH 10
+    OUTC
+    PUSH 73
+    OUTC
+    PUSH 110
+    OUTC
+    PUSH 112
+    OUTC
+    PUSH 117
+    OUTC
+    PUSH 116
+    OUTC
+    PUSH 32
+    OUTC
+    PUSH 60
+    OUTC
+    PUSH 97
+    OUTC
+    PUSH 62
+    OUTC
+    PUSH 32
+    OUTC
+    PUSH 60
+    OUTC
+    PUSH 98
+    OUTC
+    PUSH 62
+    OUTC
+    PUSH 32
+    OUTC
+    PUSH 60
+    OUTC
+    PUSH 99
+    OUTC
+    PUSH 62
+    OUTC
+    PUSH 10
+    OUTC
+    RET

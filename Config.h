@@ -30,10 +30,10 @@ struct Register {
     int index;
 };
 static Register REGISTERS[] = {
-    {"rax", 0, 0xAA},
-    {"rbx", 0, 0xAB},
-    {"rcx", 0, 0xAC},
-    {"rdx", 0, 0xAD}
+    {"rax", POISON_BYTE, 0xAA},
+    {"rbx", POISON_BYTE, 0xAB},
+    {"rcx", POISON_BYTE, 0xAC},
+    {"rdx", POISON_BYTE, 0xAD}
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
 
