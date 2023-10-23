@@ -7,15 +7,19 @@
 #define PUSH(arg) stack_push(&stack, arg)
 #define POP(arg) stack_pop(&stack, arg)
 
+#define IS_REG (command & (1 << REG))
+#define IS_NUM (command & (1 << NUM))
+#define IS_MEM (command & (1 << MEM))
+
 //#define PRINT_COMMANDS
 
 DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
     int value_elem = *((int *)commands + number_command);
     number_command++;
 
-    int push_value = value_elem;
+    int push_value = 0;
 
-    if (command & (1 << REG)) {
+    if (IS_REG) {
         for (int i = 0; i < COUNT_REGISTERS; i++) {
             if (REGISTERS[i].index == value_elem) {
                 push_value = REGISTERS[i].value;
@@ -24,12 +28,17 @@ DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
         }
     }
 
-    if (!(command & (1 << MEM)) && (command & (1 << NUM))) push_value = value_elem * PRECISION;
-
-    if (command & (1 << MEM))
-        PUSH(ram[push_value]);
-    else 
-        PUSH(push_value);
+    if (IS_MEM) {
+        if (IS_NUM)
+            PUSH(ram[value_elem]);
+        else
+            PUSH(ram[push_value]);
+    } else {
+        if (IS_NUM)
+            PUSH(value_elem * PRECISION);
+        else
+            PUSH(push_value);
+    }
 
     break;})
 
@@ -50,20 +59,25 @@ DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
 
     int number_reg = 0;
 
-    if (command & (1 << REG)) {
+    if (IS_REG) {
         for (int i = 0; i < COUNT_REGISTERS; i++) {
             if (REGISTERS[i].index == place_to_write) {
                 number_reg = i;
-                place_to_write = REGISTERS[number_reg].value;
                 break;
             }
         }
     }
 
-    if (command & (1 << MEM))
-        ram[place_to_write] = x;
-    else 
-        REGISTERS[number_reg].value = x;
+    if (IS_MEM) {
+        if (IS_NUM)
+            ram[place_to_write] = x;
+        else {
+            ram[REGISTERS[number_reg].value / PRECISION] = x;
+        }
+    } else {
+        if (IS_REG)
+            REGISTERS[number_reg].value = x;
+    }
 
     break;})
 

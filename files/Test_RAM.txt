@@ -1,0 +1,32 @@
+CALL MAIN:
+HLT
+
+MAIN:
+    CALL PRINT_HELLO:
+
+    PUSH 5
+    POP rax
+
+    PUSH 70
+    POP [rax]
+    PUSH [5]
+    OUT
+
+    RET
+
+PRINT_HELLO:
+    PUSH 72
+    OUTC
+    PUSH 69
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 79
+    OUTC
+    PUSH 33
+    OUTC
+    PUSH 10
+    OUTC
+    RET

@@ -59,23 +59,6 @@ PRINT_DOT_OR_STAR:
     CALL PRINT_DOT:
     RET
 
-PRINT_HELLO:
-    PUSH 72
-    OUTC
-    PUSH 69
-    OUTC
-    PUSH 76
-    OUTC
-    PUSH 76
-    OUTC
-    PUSH 79
-    OUTC
-    PUSH 33
-    OUTC
-    PUSH 10
-    OUTC
-    RET
-
 ADD_1_TO_RBX:
     PUSH rbx
     PUSH 1
@@ -142,4 +125,21 @@ PUSH_RADIUS:
     PUSH rax
     PUSH 4
     DIV
+    RET
+
+PRINT_HELLO:
+    PUSH 72
+    OUTC
+    PUSH 69
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 76
+    OUTC
+    PUSH 79
+    OUTC
+    PUSH 33
+    OUTC
+    PUSH 10
+    OUTC
     RET

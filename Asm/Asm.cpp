@@ -17,63 +17,81 @@ enum Type_arg {
 
 static Type_arg check_type_arg(const char *arg);
 
-#define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
-    if (strcmp(src->pointers[number_string], #name_cmd) == 0)                               \
-    {                                                                                       \
-        number_string++;                                                                    \
-        if (args == 0) {                                                                    \
-            *((int *)command + index_write) = num;                                          \
-            index_write++;                                                                  \
-            continue;                                                                       \
-        }                                                                                   \
-        for (int i = 0; i < args; i++) {                                                    \
-            int type_arg = check_type_arg(src->pointers[number_string]);                    \
-            if (type_arg == TYPE_ARG_MEM) {                                                 \
-                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << MEM);          \
-                index_write++;                                                              \
-            }                                                                               \
-                                                                                            \
-            if (type_arg == TYPE_ARG_REG) {                                                 \
-                for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
-                    if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {     \
-                        *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << REG);  \
-                        index_write++;                                                      \
-                        *((int *)command + index_write) = REGISTERS[j].index;               \
-                        break;                                                              \
-                    }                                                                       \
-                }                                                                           \
-            }                                                                               \
-                                                                                            \
-            int was_label = 0;                                                              \
-            if (type_arg == TYPE_ARG_LAB) {                                                 \
-                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);          \
-                index_write++;                                                              \
-                for (int j = 0; j < MAX_COUNT_LABELS; j++) {                                \
-                    if (!LABELS[j].name) break;                                             \
-                    if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {        \
-                        *((int *)command + index_write) = LABELS[j].index;                  \
-                        was_label = 1;                                                      \
-                        break;                                                              \
-                    }                                                                       \
-                }                                                                           \
-                if (!was_label) {                                                           \
-                    *((int *)command + index_write) = POISON_LABEL;                         \
-                    pointers_labels[number_fixup].in_src = number_string;                   \
-                    pointers_labels[number_fixup].in_bin = index_write;                     \
-                    number_fixup++;                                                         \
-                }                                                                           \
-            }                                                                               \
-                                                                                            \
-            if (type_arg == TYPE_ARG_NUM) {                                                 \
-                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);          \
-                index_write++;                                                              \
-                *((int *)command + index_write) = atoi(src->pointers[number_string]);       \
-            }                                                                               \
-            index_write++;                                                                  \
-            number_string++;                                                                \
-        }                                                                                   \
-        continue;                                                                           \
-    }                                                                                       \
+#define DEF_CMD(name_cmd, num, type_args, args, code)                                           \
+    if (strcmp(src->pointers[number_string], #name_cmd) == 0)                                   \
+    {                                                                                           \
+        number_string++;                                                                        \
+        if (args == 0) {                                                                        \
+            *((int *)command + index_write) = num;                                              \
+            index_write++;                                                                      \
+            continue;                                                                           \
+        }                                                                                       \
+        for (int i = 0; i < args; i++) {                                                        \
+            int type_arg = check_type_arg(src->pointers[number_string]);                        \
+            if (type_arg == TYPE_ARG_MEM) {                                                     \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << MEM);              \
+                const int len_mem_command = (int)strlen(src->pointers[number_string]) - 2;      \
+                char *memory_command = (char *)calloc(len_mem_command, sizeof(char));           \
+                memcpy(memory_command, src->pointers[number_string] + 1, len_mem_command);      \
+                int type_mem_arg = check_type_arg(memory_command);                              \
+                if (type_mem_arg == TYPE_ARG_REG) {                                             \
+                    for (int j = 0; j < COUNT_REGISTERS; j++) {                                 \
+                        if (strcmp(memory_command, REGISTERS[j].name) == 0) {                   \
+                            *((int *)command + index_write) += (1 << REG);                      \
+                            index_write++;                                                      \
+                            *((int *)command + index_write) = REGISTERS[j].index;               \
+                            break;                                                              \
+                        }                                                                       \
+                    }                                                                           \
+                }                                                                               \
+                if (type_mem_arg == TYPE_ARG_NUM) {                                             \
+                    *((int *)command + index_write) += (1 << NUM);                              \
+                    index_write++;                                                              \
+                    *((int *)command + index_write) = atoi(memory_command);                     \
+                }                                                                               \
+            }                                                                                   \
+                                                                                                \
+            if (type_arg == TYPE_ARG_REG) {                                                     \
+                for (int j = 0; j < COUNT_REGISTERS; j++) {                                     \
+                    if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {         \
+                        *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << REG);      \
+                        index_write++;                                                          \
+                        *((int *)command + index_write) = REGISTERS[j].index;                   \
+                        break;                                                                  \
+                    }                                                                           \
+                }                                                                               \
+            }                                                                                   \
+                                                                                                \
+            int was_label = 0;                                                                  \
+            if (type_arg == TYPE_ARG_LAB) {                                                     \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);              \
+                index_write++;                                                                  \
+                for (int j = 0; j < MAX_COUNT_LABELS; j++) {                                    \
+                    if (!LABELS[j].name) break;                                                 \
+                    if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {            \
+                        *((int *)command + index_write) = LABELS[j].index;                      \
+                        was_label = 1;                                                          \
+                        break;                                                                  \
+                    }                                                                           \
+                }                                                                               \
+                if (!was_label) {                                                               \
+                    *((int *)command + index_write) = POISON_LABEL;                             \
+                    pointers_labels[number_fixup].in_src = number_string;                       \
+                    pointers_labels[number_fixup].in_bin = index_write;                         \
+                    number_fixup++;                                                             \
+                }                                                                               \
+            }                                                                                   \
+                                                                                                \
+            if (type_arg == TYPE_ARG_NUM) {                                                     \
+                *((int *)command + index_write) = (CMD_ ## name_cmd) + (1 << NUM);              \
+                index_write++;                                                                  \
+                *((int *)command + index_write) = atoi(src->pointers[number_string]);           \
+            }                                                                                   \
+            index_write++;                                                                      \
+            number_string++;                                                                    \
+        }                                                                                       \
+        continue;                                                                               \
+    }                                                                                           \
     else
 Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Pointers_label *pointers_labels, int *count_fixup)
 {
