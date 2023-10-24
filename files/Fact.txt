@@ -13,9 +13,9 @@ MAIN:
     CALL FACT:
     RET
 
-/ WARNING function changes registers values (rax rcx)
+    / WARNING function changes registers values (rax rcx)
 FACT:
-    PUSH rax
+    PUSH   [  rax  ]  /  
     PUSH rbx
     JAE  ret_fact:      / return
     CALL ADD_1_TO_RAX:

@@ -18,19 +18,28 @@ void create_data(Data *data, const char *src)
 {
     FILE *stream = fopen(src, "r");
     assert(stream);
+    //????
 
     data->size_file = (int)fsize(src) + 1;
+    //????
     data->text = (char *) calloc(data->size_file, sizeof(char));
     assert(data->text);
-    get_data(data, stream);
+    //????
 
-    // puts(data->text);
-    // puts("---------------");
+    get_data(data, stream);
+    //????
+
+    puts(data->text);
+    puts("---------------");
 
     data->commands_count = count_pointers(data->text) + 1;
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));
     assert(data->pointers);
+    //????
+
     write_pointers(data);
+    //????
+
     fclose(stream);
 }
 
@@ -52,6 +61,7 @@ static void get_data(Data *data, FILE *stream)
 
     int is_read = (int)fread(data->text, data->size_file, size, stream);
     assert(is_read != data->size_file);
+    //????
 
     data->text[data->size_file - 1] = '\0';
 }
@@ -64,30 +74,11 @@ static int count_pointers(const char *text)
     int count = 0;
 
     while (text[i] != '\0') {
-        if (text[i] == ' ') {
-            while (text[i] == ' ')
-                i++;
-            if (text[i] == '\0') break;
-            if (text[i] == '/') continue;
-            if (text[i] == '\n') continue;
+        if (text[i] == '\n')
             count++;
-        }
-        if (text[i] == '/') {
-            while (text[i] != '\n')
-                i++;
-            continue;
-        }
-        if (text[i] == '\n') {
-            i++;
-            while (text[i] == ' ')
-                i++;
-            if (text[i] == '\0') break;
-            if (text[i] == '/') continue;
-            if (text[i] == '\n') continue;
-            count++;
-        }
         i++;
     }
+
     return count;
 }
 
@@ -101,41 +92,10 @@ static void write_pointers(Data *data)
 
     data->pointers[0] = data->text;
 
-    while (i < data->size_file) {
-        if (data->text[i] == ' ') {
-            while(data->text[i] == ' ') {
-                data->text[i] = '\0';
-                i++;
-            }
-            if (data->text[i] == '/'){
-                data->text[i] = '\0';
-                i++;
-                while(i < data->size_file && data->text[i] != '\n')
-                    i++;
-                continue;
-            }
-            if (data->text[i] == '\n') continue;
-            i--;
-            data->text[i] = '\0';
-            data->pointers[count] = data->text + i + 1;
-            count++;
-        }
-        if (data->text[i] == '/') {
-            data->text[i] = '\0';
-            i++;
-            while(i < data->size_file && data->text[i] != '\n')
-                i++;
-            continue;
-        }
+    while (data->text[i] != '\0') {
         if (data->text[i] == '\n') {
             data->text[i] = '\0';
-            i++;
-            while (i < data->size_file && data->text[i] == ' ')
-                i++;
-            if (data->text[i] == '\0') break;
-            if (data->text[i] == '/') continue;
-            if (data->text[i] == '\n') continue;
-            data->pointers[count] = data->text + i;
+            data->pointers[count] = data->text + i + 1;
             count++;
         }
         i++;

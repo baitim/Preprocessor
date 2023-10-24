@@ -1,15 +1,15 @@
 #define FREE_BYTES 5
 #define NUN 0
-#define REG 5
-#define NUM 6
-#define MEM 7
+#define REG (1 << 5)
+#define NUM (1 << 6)
+#define MEM (1 << 7)
 #define PRECISION 100
 #define PUSH(arg) stack_push(&stack, arg)
 #define POP(arg) stack_pop(&stack, arg)
 
-#define IS_REG (command & (1 << REG))
-#define IS_NUM (command & (1 << NUM))
-#define IS_MEM (command & (1 << MEM))
+#define IS_REG (command & REG)
+#define IS_NUM (command & NUM)
+#define IS_MEM (command & MEM)
 
 //#define PRINT_COMMANDS
 

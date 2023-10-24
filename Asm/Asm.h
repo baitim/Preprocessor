@@ -10,6 +10,8 @@
 struct Pointers_label {
     int in_src;
     int in_bin;
+    int len;
+    int start;
 };
 
 Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Pointers_label *pointers_labels, int *count_fixup);
