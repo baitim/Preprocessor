@@ -1,5 +1,10 @@
-PUSH 4
-POP rax
-PUSH rax
+CALL second:   /  eihire
+
+first: / ojioejver
+PUSH 4   / ieriger
+OUT
+second:
+
+PUSH 5   / ihrgr
 OUT
 HLT

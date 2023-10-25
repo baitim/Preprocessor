@@ -29,8 +29,8 @@ void create_data(Data *data, const char *src)
     get_data(data, stream);
     //????
 
-    puts(data->text);
-    puts("---------------");
+    // puts(data->text);
+    // puts("---------------");
 
     data->commands_count = count_pointers(data->text) + 1;
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));

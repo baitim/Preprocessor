@@ -19,10 +19,10 @@ int main(int argc, const char *argv[])
     create_data(&src, argv[1]);
     // ??
 
-    printf("count commands = %d\n", src.commands_count);
-    for (int i = 0; i < src.commands_count; i++)
-        puts(src.pointers[i]);
-    puts("---------------");
+    // printf("count commands = %d\n", src.commands_count);
+    // for (int i = 0; i < src.commands_count; i++)
+    //     puts(src.pointers[i]);
+    // puts("---------------");
 
     FILE *dest = fopen(argv[2], "wb");
     assert(dest);
