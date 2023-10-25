@@ -60,10 +60,10 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
     int number_fixup = 0;
     while (number_string < src->commands_count) {
 
-        if (strlen(src->pointers[number_string]) == 0) { number_string++; continue; }
-
         char *comment = strchr(src->pointers[number_string], '/');
         if (comment) comment[0] = '\0';
+
+        if (strlen(src->pointers[number_string]) == 0) { number_string++; continue; }
 
         printf("%d\t", index_write - COUNT_INTS_IN_BINARY_TO_DECRIPTION);
         printf("%d\t",number_string);
@@ -79,8 +79,9 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
 
         #include "../DSL"
         {
-            const int len_str = (int)strlen(src->pointers[number_string]);
-            if (src->pointers[number_string][len_str - 1] == ':') {
+            int len_lable = 0, count_arg_spaces = 0;
+            read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);
+            if (src->pointers[number_string][number_char + len_lable - 1] == ':') {
                 LABELS[number_lable] = (Label){&src->pointers[number_string][number_char], index_write};
                 printf("%s\t", &src->pointers[number_string][number_char]);
                 fprintf(labels, "%s\n%d\n", &src->pointers[number_string][number_char], index_write);
@@ -249,7 +250,5 @@ static Errors read_len_arg(int *count_spaces, int *len_arg, char *str)
             (*len_arg)++;
 
     str[(*count_spaces) + (*len_arg)] = '\0';
-    (*len_arg)++;
-
     return ERROR_NO;
 }

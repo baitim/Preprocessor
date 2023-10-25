@@ -3,7 +3,7 @@ CALL second:   /  eihire
 first: / ojioejver
 PUSH 4   / ieriger
 OUT
-second:
+    second: / jierire
 
 PUSH 5   / ihrgr
 OUT

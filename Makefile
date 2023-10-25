@@ -2,7 +2,7 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
-INPUT_txt = 	files/Test_Input.txt
+INPUT_txt = 	files/Quadratic.txt
 ASM_bin = 		files/Asm.bin
 DISASM_txt = 	files/Disasm.txt
 
