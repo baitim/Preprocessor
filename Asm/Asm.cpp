@@ -17,7 +17,7 @@ enum Type_arg {
 
 static Errors get_arg(const Data *src, int *number_char, int *command, 
                       int *index_write, int *number_fixup, int number_string, 
-                      Pointers_label *pointers_labels);
+                      Pointers_label *pointers_labels, FILE *listing);
 
 static Type_arg check_type_arg(const char *arg);
 
@@ -38,29 +38,30 @@ static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
     {                                                                                       \
-        printf ("%s\t", #name_cmd);                                                         \
+        fprintf(listing, "%s\t", #name_cmd);                                                \
         command[index_write] = num;                                                         \
         number_char += len_command;                                                         \
         if (args > 0) {                                                                     \
             get_arg(src, &number_char, command, &index_write,                               \
-                    &number_fixup, number_string, pointers_labels);                         \
+                    &number_fixup, number_string, pointers_labels,                          \
+                    listing);                                                               \
         /*????*/                                                                            \
-            printf("%d\t", command[index_write - 1]);                                       \
+            fprintf(listing, "%d\t%d\t", num, command[index_write]);                        \
         } else {                                                                            \
-            printf("%d\t", command[index_write]);                                           \
-            printf("-\t");                                                                  \
+            fprintf(listing, "-\t%d\t-\t", num);                                            \
         }                                                                                   \
-        printf("%d\t", command[index_write]);                                               \
         index_write++;                                                                      \
     }                                                                                       \
     else
 
-Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Pointers_label *pointers_labels, int *count_fixup)
+Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, 
+                                  Pointers_label *pointers_labels, int *count_fixup,
+                                  FILE *listing)
 {
     if (!dest) return ERROR_READ_FILE;
     Errors error = ERROR_NO;
 
-    printf("index\tnum_str\tcommand\targ\tbin_com\n");
+    fprintf(listing, "index\tnum_str\tcommand\targ\tbin_com\tbin_arg\n");
 
     int *command = (int *)calloc(2 * (src->commands_count + COUNT_INTS_IN_BINARY_TO_DECRIPTION), sizeof(int));
     if (!command)
@@ -80,8 +81,8 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
         if (strlen(src->pointers[number_string]) == 0) { number_string++; continue; }
         if (check_empty(src->pointers[number_string])) { number_string++; continue; }
 
-        printf("%d\t", index_write - COUNT_INTS_IN_BINARY_TO_DECRIPTION);
-        printf("%d\t",number_string);
+        fprintf(listing, "%d\t", index_write - COUNT_INTS_IN_BINARY_TO_DECRIPTION);
+        fprintf(listing, "%d\t",number_string);
         int number_char = 0;
         while (src->pointers[number_string][number_char] == ' ')
             number_char++;
@@ -98,12 +99,12 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
             read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);
             if (src->pointers[number_string][number_char + len_lable - 1] == ':') {
                 LABELS[number_lable] = (Label){&src->pointers[number_string][number_char], index_write};
-                printf("%s\t", &src->pointers[number_string][number_char]);
+                fprintf(listing, "%s\t", &src->pointers[number_string][number_char]);
                 fprintf(labels, "%s\n%d\n", &src->pointers[number_string][number_char], index_write);
                 number_lable++;
             }
         }
-        printf("\n");
+        fprintf(listing, "\n");
         number_string++;
     }
     *count_fixup = number_fixup;
@@ -122,7 +123,8 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
 }
 #undef DEF_CMD
 
-Errors process_fixup(const Data *src, const char *bin_file, Pointers_label *pointers_labels, int count_fixup)
+Errors process_fixup(const Data *src, const char *bin_file, 
+                     Pointers_label *pointers_labels, int count_fixup)
 {
     FILE *bin_stream = fopen(bin_file, "r+");
     if (!bin_stream)
@@ -157,7 +159,7 @@ Errors process_fixup(const Data *src, const char *bin_file, Pointers_label *poin
 
 static Errors get_arg(const Data *src, int *number_char, int *command, 
                     int *index_write, int *number_fixup, int number_string, 
-                    Pointers_label *pointers_labels)
+                    Pointers_label *pointers_labels, FILE *listing)
 {
     int int_arg = 0;
     int count_read = sscanf(&src->pointers[number_string][*number_char], "%d", &int_arg);
@@ -165,7 +167,7 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
         command[*index_write] += NUM;
         (*index_write)++;
         command[*index_write] = int_arg;
-        printf("%d\t", int_arg);
+        fprintf(listing, "%d\t", int_arg);
         return ERROR_NO;
     }
 
@@ -179,7 +181,7 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
         return ERROR_ALLOC_FAIL;
 
     memcpy(argument, &src->pointers[number_string][*number_char + count_arg_spaces], len_arg);
-    printf("%s\t", argument);
+    fprintf(listing, "%s\t", argument);
     int type_arg = check_type_arg(argument);
     if (type_arg == TYPE_ARG_MEM) {
         command[*index_write] += MEM;

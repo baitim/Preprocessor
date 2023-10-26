@@ -2,9 +2,11 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
-INPUT_txt = 	files/Quadratic.txt
+INPUT_txt = 	files/Quadratic
 ASM_bin = 		files/Asm.bin
-DISASM_txt = 	files/Disasm.txt
+DISASM_txt = 	files/Disasm
+LABELS =        files/Labels
+LISTING =       files/Listing
 
 DEFAULT =       $(wildcard Stack/*.cpp) $(wildcard *.cpp) 
 ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)
@@ -23,7 +25,7 @@ run_main :
 	g++ $(Main_files) -o start $(options) $(debug)
 
 finish_asm:
-	./asm $(INPUT_txt) $(ASM_bin) Labels
+	./asm $(INPUT_txt) $(ASM_bin) $(LABELS) $(LISTING)
 
 finish_disasm:
 	./disasm $(ASM_bin) $(DISASM_txt)

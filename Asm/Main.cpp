@@ -8,7 +8,7 @@
 
 int main(int argc, const char *argv[])
 {
-    const int COUNT_FROM_CMD = 4;
+    const int COUNT_FROM_CMD = 5;
 
     if (argc < COUNT_FROM_CMD) {
         fprintf(stderr, print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
@@ -30,11 +30,14 @@ int main(int argc, const char *argv[])
     FILE *labels = fopen(argv[3], "w"); 
     assert(labels);
     //????
+    FILE *listing = fopen(argv[4], "w"); 
+    assert(listing);
+    // ???
 
     int count_fixup = 0;
     Pointers_label pointers_labels[MAX_COUNT_LABELS] = {};
 
-    if (process_input_commands_bin(dest, &src, labels, pointers_labels, &count_fixup)) {
+    if (process_input_commands_bin(dest, &src, labels, pointers_labels, &count_fixup, listing)) {
         printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 0;
     }
