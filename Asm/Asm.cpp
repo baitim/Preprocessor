@@ -21,6 +21,16 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
 
 static Type_arg check_type_arg(const char *arg);
 
+static int check_empty(const char *string)
+{
+    int i = 0;
+    while (string[i] == ' ')
+        i++;
+
+    if ((int)strlen(string) == i) return 1;
+    return 0;
+}
+
 static Errors read_len_arg(int *count_spaces, int *len_arg, char *str);
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
@@ -64,6 +74,7 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, Poi
         if (comment) comment[0] = '\0';
 
         if (strlen(src->pointers[number_string]) == 0) { number_string++; continue; }
+        if (check_empty(src->pointers[number_string])) { number_string++; continue; }
 
         printf("%d\t", index_write - COUNT_INTS_IN_BINARY_TO_DECRIPTION);
         printf("%d\t",number_string);

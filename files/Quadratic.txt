@@ -4,7 +4,6 @@ HLT
 / WARNING function changes ram[11], ram[22] (root1 in ram[11], root2 in ram[22])
 MAIN:
     CALL PRINT_HELLO:
-
     IN
     POP rax
     IN

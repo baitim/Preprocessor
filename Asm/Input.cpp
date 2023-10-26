@@ -5,16 +5,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "Input.h"
 #include "../Config.h"
+#include "Input.h"
 
-static void get_data(Data *data, FILE *stream);
+static Errors get_data(Data *data, FILE *stream);
 
 static int count_pointers(const char *text);
 
 static void write_pointers(Data *data);
 
-void create_data(Data *data, const char *src)
+Errors create_data(Data *data, const char *src)
 {
     FILE *stream = fopen(src, "r");
     assert(stream);
@@ -41,6 +41,7 @@ void create_data(Data *data, const char *src)
     //????
 
     fclose(stream);
+    return ERROR_NO;
 }
 
 off_t fsize(const char *filename) {
@@ -52,7 +53,7 @@ off_t fsize(const char *filename) {
     return -1;
 }
 
-static void get_data(Data *data, FILE *stream)
+static Errors get_data(Data *data, FILE *stream)
 {
     assert(data->text);
     assert(stream);
@@ -64,6 +65,7 @@ static void get_data(Data *data, FILE *stream)
     //????
 
     data->text[data->size_file - 1] = '\0';
+    return ERROR_NO;
 }
 
 static int count_pointers(const char *text)

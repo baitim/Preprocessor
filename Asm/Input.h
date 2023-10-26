@@ -1,6 +1,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include "../Errors.h"
+
 struct Data {
     int size_file;
     char *text;
@@ -10,7 +12,7 @@ struct Data {
 
 off_t fsize(const char *filename);
 
-void create_data(Data *data, const char *src);
+Errors create_data(Data *data, const char *src);
 
 void dtor_data(Data *data);
 
