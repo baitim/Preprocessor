@@ -29,13 +29,13 @@ MAIN:
     RET
 
     inf_print_hlt:
-    CALL PRINT_INFINITY:    / HLT
+    CALL PRINT_INFINITY_HLT:       / HLT
 
     zero_print_hlt:
-    CALL PRINT_ZERO:        / HLT
+    CALL PRINT_ZERO_HLT:           / HLT
 
     line_calc_print_hlt:
-    CALL LINEAR:            / HLT
+    CALL LINEAR_HLT:                   / HLT
 
 / WARNING function changes ram[ 0 ]
 IS_INFINITY:
@@ -61,7 +61,7 @@ IS_INFINITY:
     RET
 
 / WARNING function does HLT
-PRINT_INFINITY:
+PRINT_INFINITY_HLT:
     PUSH 73
     OUTC
     PUSH 78
@@ -102,7 +102,7 @@ IS_ZERO:
     RET
 
 / WARNING function does HLT
-PRINT_ZERO:
+PRINT_ZERO_HLT:
     PUSH 90
     OUTC
     PUSH 69
@@ -131,7 +131,7 @@ IS_LINEAR:
     RET
 
 / WARNING function changes ram[ 11 ] (root in ram[ 11 ])
-LINEAR:
+LINEAR_HLT:
     PUSH 0
     PUSH rcx
     PUSH rbx
@@ -142,7 +142,7 @@ LINEAR:
     CALL PRINT_LINEAR_HLT:
     RET
 
-PRINT_LINEAR:
+PRINT_LINEAR_HLT:
     PUSH 1
     OUT
     PUSH 32
@@ -161,7 +161,7 @@ PRINT_LINEAR:
     OUTC
     PUSH [ 11 ]
     OUT
-    RET
+    HLT
 
 ADD_1_TO_RAX:
     PUSH rax

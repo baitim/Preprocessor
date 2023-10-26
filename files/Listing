@@ -23,11 +23,11 @@ index	num_str	command	arg	bin_com	bin_arg
 36	26	JE	line_calc_print_hlt:	18	-1	
 38	28	RET	-	22	-	
 39	30	inf_print_hlt:	
-39	31	CALL	PRINT_INFINITY:	21	-1	
+39	31	CALL	PRINT_INFINITY_HLT:	21	-1	
 41	33	zero_print_hlt:	
-41	34	CALL	PRINT_ZERO:	21	-1	
+41	34	CALL	PRINT_ZERO_HLT:	21	-1	
 43	36	line_calc_print_hlt:	
-43	37	CALL	LINEAR:	21	-1	
+43	37	CALL	LINEAR_HLT:	21	-1	
 45	40	IS_INFINITY:	
 45	41	PUSH	rax	1	170	
 47	42	PUSH	0	1	0	
@@ -45,7 +45,7 @@ index	num_str	command	arg	bin_com	bin_arg
 68	58	PUSH	0	1	0	
 70	59	POP	[ 0 ]	3	0	
 72	60	RET	-	22	-	
-73	63	PRINT_INFINITY:	
+73	63	PRINT_INFINITY_HLT:	
 73	64	PUSH	73	1	73	
 75	65	OUTC	-	23	-	
 76	66	PUSH	78	1	78	
@@ -79,7 +79,7 @@ index	num_str	command	arg	bin_com	bin_arg
 118	99	PUSH	0	1	0	
 120	100	POP	[ 0 ]	3	0	
 122	101	RET	-	22	-	
-123	104	PRINT_ZERO:	
+123	104	PRINT_ZERO_HLT:	
 123	105	PUSH	90	1	90	
 125	106	OUTC	-	23	-	
 126	107	PUSH	69	1	69	
@@ -102,7 +102,7 @@ index	num_str	command	arg	bin_com	bin_arg
 150	128	PUSH	0	1	0	
 152	129	POP	[ 0 ]	3	0	
 154	130	RET	-	22	-	
-155	133	LINEAR:	
+155	133	LINEAR_HLT:	
 155	134	PUSH	0	1	0	
 157	135	PUSH	rcx	1	172	
 159	136	PUSH	rbx	1	171	
@@ -111,7 +111,7 @@ index	num_str	command	arg	bin_com	bin_arg
 163	139	POP	[ 11 ]	3	11	
 165	141	CALL	PRINT_LINEAR_HLT:	21	-1	
 167	142	RET	-	22	-	
-168	144	PRINT_LINEAR:	
+168	144	PRINT_LINEAR_HLT:	
 168	145	PUSH	1	1	1	
 170	146	OUT	-	11	-	
 171	147	PUSH	32	1	32	
@@ -130,7 +130,7 @@ index	num_str	command	arg	bin_com	bin_arg
 191	160	OUTC	-	23	-	
 192	161	PUSH	[ 11 ]	1	11	
 194	162	OUT	-	11	-	
-195	163	RET	-	22	-	
+195	163	HLT	-	12	-	
 196	165	ADD_1_TO_RAX:	
 196	166	PUSH	rax	1	170	
 198	167	PUSH	1	1	1	
