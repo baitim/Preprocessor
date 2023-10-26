@@ -1,7 +1,7 @@
 CALL MAIN:
 HLT
 
-/ WARNING function changes ram[11], ram[22] (root1 in ram[11], root2 in ram[22])
+/ WARNING function changes ram[ 11 ], ram[ 22 ] (root1 in ram[ 11 ], root2 in ram[ 22 ])
 MAIN:
     CALL PRINT_HELLO:
     IN
@@ -11,18 +11,18 @@ MAIN:
     IN
     POP rcx
 
-    CALL IS_INFINITY: / answer in ram[0], if ram[0] == 1 equation is infinity
-    PUSH [0]
+    CALL IS_INFINITY: / answer in ram[ 0 ], if ram[ 0 ] == 1 equation is infinity
+    PUSH [ 0 ]
     PUSH 1
     JE inf_print_hlt:
 
-    CALL IS_ZERO: / answer in ram[0], if ram[0] == 1 zero roots, checks a == 0 and b == 0(doesn't check D)
-    PUSH [0]
+    CALL IS_ZERO: / answer in ram[ 0 ], if ram[ 0 ] == 1 zero roots, checks a == 0 and b == 0(doesn't check D)
+    PUSH [ 0 ]
     PUSH 1
     JE zero_print_hlt:
 
-    CALL IS_LINEAR: / answer in ram[0], if ram[0] == 1 equation is linear
-    PUSH [0]
+    CALL IS_LINEAR: / answer in ram[ 0 ], if ram[ 0 ] == 1 equation is linear
+    PUSH [ 0 ]
     PUSH 1
     JE line_calc_print_hlt:
 
@@ -37,7 +37,7 @@ MAIN:
     line_calc_print_hlt:
     CALL LINEAR:            / HLT
 
-/ WARNING function changes ram[0]
+/ WARNING function changes ram[ 0 ]
 IS_INFINITY:
     PUSH rax
     PUSH 0
@@ -52,12 +52,12 @@ IS_INFINITY:
     JNE return_infinity:
 
     PUSH 1
-    POP [0]
+    POP [ 0 ]
     RET
 
     return_infinity:
     PUSH 0
-    POP [0]
+    POP [ 0 ]
     RET
 
 / WARNING function does HLT
@@ -82,7 +82,7 @@ PRINT_INFINITY:
     OUTC
     HLT
 
-/ WARNING function changes ram[0]
+/ WARNING function changes ram[ 0 ]
 IS_ZERO:
     PUSH rax
     PUSH 0
@@ -93,12 +93,12 @@ IS_ZERO:
     JNE return_infinity:
 
     PUSH 1
-    POP [0]
+    POP [ 0 ]
     RET
 
     return_infinity:
     PUSH 0
-    POP [0]
+    POP [ 0 ]
     RET
 
 / WARNING function does HLT
@@ -115,29 +115,29 @@ PRINT_ZERO:
     OUTC
     HLT
 
-/ WARNING function changes ram[0]
+/ WARNING function changes ram[ 0 ]
 IS_LINEAR:
     PUSH rax
     PUSH 0
     JNE return_infinity:
 
     PUSH 1
-    POP [0]
+    POP [ 0 ]
     RET
 
     return_infinity:
     PUSH 0
-    POP [0]
+    POP [ 0 ]
     RET
 
-/ WARNING function changes ram[11] (root in ram[11])
+/ WARNING function changes ram[ 11 ] (root in ram[ 11 ])
 LINEAR:
     PUSH 0
     PUSH rcx
     PUSH rbx
     DIV
     SUB
-    POP [11]
+    POP [ 11 ]
 
     CALL PRINT_LINEAR_HLT:
     RET
@@ -159,7 +159,7 @@ PRINT_LINEAR:
     OUTC
     PUSH 32
     OUTC
-    PUSH [11]
+    PUSH [ 11 ]
     OUT
     RET
 

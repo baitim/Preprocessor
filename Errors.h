@@ -16,6 +16,7 @@ enum Errors {
     ERROR_STACK_DATA_EMPTY =            1 << 10,
     ERROR_READ_FILE =                   1 << 11,
     ERROR_WRITE_FILE =                  1 << 12,
+    ERROR_INPUT_FILE =                  1 << 13,
 };
 
 struct ProcessErrors {
@@ -38,6 +39,7 @@ const ProcessErrors errors[] = {
     {ERROR_ALLOC_FAIL,                  "realloc fail"},
     {ERROR_READ_FILE,                   "file read error"},
     {ERROR_WRITE_FILE,                  "file write error"},
+    {ERROR_INPUT_FILE,                  "can't read input file"}
 };
 const int COUNT_ERRORS = sizeof(errors) / sizeof(ProcessErrors);
 

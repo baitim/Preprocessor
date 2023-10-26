@@ -33,6 +33,8 @@ static int check_empty(const char *string)
 
 static Errors read_len_arg(int *count_spaces, int *len_arg, char *str);
 
+static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
+
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
     {                                                                                       \
@@ -40,10 +42,12 @@ static Errors read_len_arg(int *count_spaces, int *len_arg, char *str);
         command[index_write] = num;                                                         \
         number_char += len_command;                                                         \
         if (args > 0) {                                                                     \
-        get_arg(src, &number_char, command, &index_write,                                   \
-                &number_fixup, number_string, pointers_labels);                             \
+            get_arg(src, &number_char, command, &index_write,                               \
+                    &number_fixup, number_string, pointers_labels);                         \
         /*????*/                                                                            \
+            printf("%d\t", command[index_write - 1]);                                       \
         } else {                                                                            \
+            printf("%d\t", command[index_write]);                                           \
             printf("-\t");                                                                  \
         }                                                                                   \
         printf("%d\t", command[index_write]);                                               \
@@ -180,6 +184,7 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
     if (type_arg == TYPE_ARG_MEM) {
         command[*index_write] += MEM;
         int l_space = 1, r_space = 1;
+        get_spaces_lr(&l_space, &r_space, argument);
         const int len_mem_command = len_arg - l_space - r_space;
         char *memory_command = (char *)calloc(len_mem_command, sizeof(char));
         memcpy(memory_command, argument + l_space, len_mem_command);
@@ -255,11 +260,48 @@ static Errors read_len_arg(int *count_spaces, int *len_arg, char *str)
     while (str[*count_spaces] == ' ')
         (*count_spaces)++;
 
+    if (str[*count_spaces] == '[') {
+
+        (*len_arg)++;
+        while (str[*count_spaces + (*len_arg)] == ' ')
+            (*len_arg)++;
+
+        while (str[*count_spaces + (*len_arg)] != ' ')
+            (*len_arg)++;
+
+        while (str[*count_spaces + (*len_arg)] == ' ')
+            (*len_arg)++;
+
+        if (str[*count_spaces + (*len_arg)] != ']')
+            return ERROR_INPUT_FILE;
+
+        (*len_arg)++;
+
+        str[(*count_spaces) + (*len_arg)] = '\0';
+
+        return ERROR_NO;
+    }
+
     while(str[(*count_spaces) + (*len_arg)] != '\n' &&
           str[(*count_spaces) + (*len_arg)] != '\0' &&
           str[(*count_spaces) + (*len_arg)] != ' ')
             (*len_arg)++;
 
     str[(*count_spaces) + (*len_arg)] = '\0';
+    return ERROR_NO;
+}
+
+static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
+{
+    while (str[*l_spaces] == ' ')
+        (*l_spaces)++;
+
+    int len = 0;
+    while (str[*l_spaces + len] != ']' && str[*l_spaces + len] != ' ')
+        len++;
+    
+    while (str[*l_spaces] == ' ')
+        (*r_spaces)++;
+
     return ERROR_NO;
 }

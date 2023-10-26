@@ -4,8 +4,6 @@
 #include "Disasm.h"
 #include "../Labels.h"
 
-static Label LABELS[MAX_COUNT_LABELS] = {};
-
 static int powf(int x, int p);
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                           \
@@ -54,23 +52,6 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
     return error;
 }
 #undef DEF_CMD
-
-Errors read_labels(Data *label_index)
-{
-    if (!label_index)
-        return ERROR_READ_FILE;
-    
-    int number_word = 0;
-    int number_label = 0;
-    while (number_word < label_index->commands_count - 1) {
-        LABELS[number_label].name = label_index->pointers[number_word];
-        number_word++;
-        LABELS[number_label].index = atoi(label_index->pointers[number_word]);
-        number_word++;
-        number_label++;
-    }
-    return ERROR_NO;
-}
 
 static int powf(int x, int p)
 {

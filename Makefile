@@ -26,7 +26,7 @@ finish_asm:
 	./asm $(INPUT_txt) $(ASM_bin) Labels
 
 finish_disasm:
-	./disasm $(ASM_bin) $(DISASM_txt) Labels
+	./disasm $(ASM_bin) $(DISASM_txt)
 
 finish:	
-	./start $(ASM_bin) Labels
+	./start $(ASM_bin)
