@@ -15,13 +15,13 @@ static int powf(int x, int st);
 
 static int calculate_hash(void *data, int size);
 
-Errors stack_dump_(Stack *stack, const char *file, const char *func, int line, const char *stk)
+StackErrors stack_dump_(Stack *stack, const char *file, const char *func, int line, const char *stk)
 {
-    Errors type_error = (Errors)stack_check_error(stack);
+    StackErrors type_error = (StackErrors)stack_check_error(stack);
 
-    if (type_error == ERROR_NO) {
+    if (type_error == STACK_ERROR_NO) {
         //fprintf(stderr, print_lgreen("stack_dump: OK\n"));
-        return ERROR_NO;
+        return STACK_ERROR_NO;
     }
 
     fprintf(stderr, print_lred("ERROR: in stack[%p], called from FILE = %s, FUNCTION = %s, LINE = %d, with %s\n"), 
@@ -29,9 +29,9 @@ Errors stack_dump_(Stack *stack, const char *file, const char *func, int line, c
 
     print_stack_pointers(stack);
 
-    for (int i = 1; i < COUNT_ERRORS; i++) {
+    for (int i = 1; i < COUNT_STACK_ERRORS; i++) {
         if (type_error & powf(2, i - 1))
-            print_error(type_error, errors[i].description);
+            print_error(type_error, STACK_ERRORS[i].description);
     }
     print_stack(stack);
     return type_error;
@@ -39,18 +39,18 @@ Errors stack_dump_(Stack *stack, const char *file, const char *func, int line, c
 
 static int stack_check_error(Stack *stack)
 {
-    int error = ERROR_NO;
-    if (!stack)                                        return error |= ERROR_STACK_EMPTY;
-    if (!stack->data)                                  return error |= ERROR_STACK_DATA_EMPTY;
-    if (stack->capacity < 0)                           return error |= ERROR_STACK_CAPACITY;
-    if (stack->size < 0)                               return error |= ERROR_STACK_SIZE;
-    if (stack->capacity < stack->size)                 return error |= ERROR_STACK_CAPACITY_LESS_SIZE;
-    if (stack->left_canary_struct != DEFAULT_CANARY)   return error |= ERROR_LEFT_CANARY_STRUCT;
-    if (stack->right_canary_struct != DEFAULT_CANARY)  return error |= ERROR_RIGHT_CANARY_STRUCT;
+    int error = STACK_ERROR_NO;
+    if (!stack)                                        return error |= STACK_ERROR_STACK_EMPTY;
+    if (!stack->data)                                  return error |= STACK_ERROR_STACK_DATA_EMPTY;
+    if (stack->capacity < 0)                           return error |= STACK_ERROR_STACK_CAPACITY;
+    if (stack->size < 0)                               return error |= STACK_ERROR_STACK_SIZE;
+    if (stack->capacity < stack->size)                 return error |= STACK_ERROR_STACK_CAPACITY_LESS_SIZE;
+    if (stack->left_canary_struct != DEFAULT_CANARY)   return error |= STACK_ERROR_LEFT_CANARY_STRUCT;
+    if (stack->right_canary_struct != DEFAULT_CANARY)  return error |= STACK_ERROR_RIGHT_CANARY_STRUCT;
     int hash = get_hash(stack);
-    if (stack->hash != hash)                           return error |= ERROR_HASH;
-    if (*((long long *)stack->data + get_left_canary_index(stack)) != DEFAULT_CANARY)  return error |= ERROR_LEFT_CANARY_DATA;
-    if (*((long long *)stack->data + get_right_canary_index(stack)) != DEFAULT_CANARY)  return error |= ERROR_RIGHT_CANARY_DATA;
+    if (stack->hash != hash)                           return error |= STACK_ERROR_HASH;
+    if (*((long long *)stack->data + get_left_canary_index(stack)) != DEFAULT_CANARY)  return error |= STACK_ERROR_LEFT_CANARY_DATA;
+    if (*((long long *)stack->data + get_right_canary_index(stack)) != DEFAULT_CANARY)  return error |= STACK_ERROR_RIGHT_CANARY_DATA;
     return error; 
 }
 

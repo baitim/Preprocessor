@@ -147,7 +147,7 @@ DEF_CMD(OUT, 11, NUN, 0, {
     break;})
 
 DEF_CMD(HLT, 12, NUN, 0, {
-    return;
+    return GLOBAL_ERROR_NO;
     break;})
 
 DEF_CMD(JMP, 13, NUM, 1, {

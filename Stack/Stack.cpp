@@ -14,9 +14,9 @@ enum RESIZE_MULTIPLIER {
     MULTIPLIER_INCREASE =  1
 };
 
-static Errors stack_resize(Stack *stack, int multiplier);
+static StackErrors stack_resize(Stack *stack, int multiplier);
 
-Errors stack_ctor(Stack *stack)
+StackErrors stack_ctor(Stack *stack)
 {
     stack->left_canary_struct = DEFAULT_CANARY;
     stack->right_canary_struct = DEFAULT_CANARY;
@@ -24,10 +24,10 @@ Errors stack_ctor(Stack *stack)
     stack->capacity = DEFAULT_CAPACITY;
     type_el *new_data = (type_el *)realloc(stack->data, DEFAULT_CAPACITY * sizeof(type_el) + sizeof(long long) * 2);
     if (!new_data)
-        return ERROR_ALLOC_FAIL;
+        return STACK_ERROR_ALLOC_FAIL;
     memset(new_data, POISON_BYTE, DEFAULT_CAPACITY);
     if (!new_data)
-        return ERROR_ALLOC_FAIL;
+        return STACK_ERROR_ALLOC_FAIL;
     else if(stack->data != new_data)
         stack->data = new_data;
 
@@ -38,9 +38,9 @@ Errors stack_ctor(Stack *stack)
     return stack_dump(stack); 
 }
 
-Errors stack_dtor(Stack *stack)
+StackErrors stack_dtor(Stack *stack)
 {
-    Errors error = stack_dump(stack);
+    StackErrors error = stack_dump(stack);
     if (error) return error;
 
     stack->data = (type_el *)((char *)stack->data - sizeof(long long));
@@ -54,9 +54,9 @@ Errors stack_dtor(Stack *stack)
     return error;
 }
 
-static Errors stack_resize(Stack *stack, int multiplier)
+static StackErrors stack_resize(Stack *stack, int multiplier)
 {
-    Errors error = stack_dump(stack);
+    StackErrors error = stack_dump(stack);
     if (error) return error;
     if (multiplier == MULTIPLIER_REDUCE)    stack->capacity = (int)(stack->capacity / MULTIPLIER_CAPACITY);
     if (multiplier == MULTIPLIER_INCREASE)  stack->capacity = (int)(stack->capacity * MULTIPLIER_CAPACITY);
@@ -65,7 +65,7 @@ static Errors stack_resize(Stack *stack, int multiplier)
     *((long long *)stack->data + 1 + get_right_canary_index(stack)) = POISON_BYTE;
     stack->data = (type_el *)realloc(stack->data, stack->capacity * sizeof(type_el) + sizeof(long long) * 2);
     if (!stack->data)
-        return ERROR_ALLOC_FAIL; 
+        return STACK_ERROR_ALLOC_FAIL; 
 
     *((long long *)stack->data) = DEFAULT_CANARY;
     stack->data = (type_el *)((long long *)stack->data + 1);
@@ -74,9 +74,9 @@ static Errors stack_resize(Stack *stack, int multiplier)
     return stack_dump(stack);
 }
 #include <stdio.h>
-Errors stack_push(Stack *stack, type_el value)
+StackErrors stack_push(Stack *stack, type_el value)
 {
-    Errors error = stack_dump(stack);
+    StackErrors error = stack_dump(stack);
     if (error) return error;
 
     if (stack->size >= stack->capacity)
@@ -90,9 +90,9 @@ Errors stack_push(Stack *stack, type_el value)
     return stack_dump(stack);
 }
 
-Errors stack_pop(Stack *stack, type_el *value)
+StackErrors stack_pop(Stack *stack, type_el *value)
 {
-    Errors error = stack_dump(stack);
+    StackErrors error = stack_dump(stack);
     if (error) return error;
 
     if (stack->size < stack->capacity / (MULTIPLIER_CAPACITY + 1))

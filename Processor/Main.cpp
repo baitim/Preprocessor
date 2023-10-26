@@ -4,6 +4,7 @@
 #include "Calculate.h"
 #include "../Debug.h"
 #include "../Asm/Input.h"
+#include "../Output.h"
 
 int main(int argc, const char *argv[])
 {
@@ -14,10 +15,14 @@ int main(int argc, const char *argv[])
 
     if (argc < COUNT_FROM_CMD) {
         printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
-        return 0; 
+        return 1; 
     }
 
-    calculate(argv[1]);
+    int error = calculate(argv[1]);
+    if (error) {
+        dump(error);
+        return 1;
+    }
 
     printf(print_lblue("\nBye\n"));
 

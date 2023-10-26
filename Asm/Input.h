@@ -10,9 +10,9 @@ struct Data {
     char **pointers;
 };
 
-off_t fsize(const char *filename);
+GlobalErrors fsize(int *size_file, const char *filename);
 
-Errors create_data(Data *data, const char *src);
+GlobalErrors create_data(Data *data, const char *src);
 
 void dtor_data(Data *data);
 

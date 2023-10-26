@@ -7,6 +7,6 @@
 #include "../Config.h"
 #include "../Asm/Input.h"
 
-Errors process_byte_commands_bin(FILE *dest, const char *name_src);
+GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src);
 
 #endif // FROM_BYTE_CODE_H

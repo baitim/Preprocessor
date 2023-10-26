@@ -15,13 +15,13 @@ struct Stack {
 
 #include "../Debug.h"
 
-Errors stack_ctor(Stack *stack);
+StackErrors stack_ctor(Stack *stack);
 
-Errors stack_dtor(Stack *stack);
+StackErrors stack_dtor(Stack *stack);
 
-Errors stack_push(Stack *stack, type_el value);
+StackErrors stack_push(Stack *stack, type_el value);
 
-Errors stack_pop(Stack *stack, type_el *value);
+StackErrors stack_pop(Stack *stack, type_el *value);
 
 int get_left_canary_index(const Stack */*stack*/);
 

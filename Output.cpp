@@ -6,6 +6,31 @@
 #include "Output.h"
 #include "Config.h"
 
+static void print_error(int error, const char *s);
+
+static int powf(int x, int st);
+
+void dump_(int err, const char *file, const char *func, int line)
+{
+    if (err == GLOBAL_ERROR_NO) {
+        //fprintf(stderr, print_lgreen("dump: OK\n"));
+        return;
+    }
+
+    fprintf(stderr, print_lred("ERROR: called from FILE = %s, FUNCTION = %s, LINE = %d\n"), 
+                               file, func, line);
+
+    for (int i = 1; i < COUNT_GLOBAL_ERRORS; i++) {
+        if (err & powf(2, i - 1))
+            print_error(err, GLOBAL_ERRORS[i].description);
+    }
+}
+
+static void print_error(int error, const char *s)
+{
+    fprintf(stderr, print_lred("ERROR: %d %s\n"), error, s);
+}
+
 void print_stack(Stack *stack)
 {
     if (stack && stack->data) {
@@ -36,4 +61,12 @@ void print_commands(const char *name_of_file, int number_command)
 
     printf("\n");
     fclose(src);
+}
+
+static int powf(int x, int st)
+{
+    if (st == 0) return 1;
+    if (st % 2 == 1) return x * powf(x, st - 1);
+    int z = powf(x, st / 2);
+    return z * z;
 }

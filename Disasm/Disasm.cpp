@@ -22,22 +22,23 @@ static int powf(int x, int p);
         continue;                                                               \
     }                                                                           \
     else
-Errors process_byte_commands_bin(FILE *dest, const char *name_src)
+GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
 {
     FILE *src =  fopen(name_src, "rb");
-    if (!src) return ERROR_READ_FILE;
-    if (!dest) return ERROR_READ_FILE;
-    Errors error = ERROR_NO;
+    if (!src) return GLOBAL_ERROR_READ_FILE;
+    if (!dest) return GLOBAL_ERROR_READ_FILE;
 
-    const int size_file = (int)fsize(name_src);
+    int size_file = 0;
+    if (fsize(&size_file, name_src))
+        return GLOBAL_ERROR_READ_FILE;
 
     char *command = (char *)calloc((size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION), sizeof(char));
     if (!command)
-        return ERROR_ALLOC_FAIL;
+        return GLOBAL_ERROR_ALLOC_FAIL;
 
     int count_read = (int)fread(command, sizeof(command[0]), size_file, src);
     if (count_read != size_file)
-        return ERROR_READ_FILE;
+        return GLOBAL_ERROR_READ_FILE;
                                                         
     int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
     while ((number_command - COUNT_INTS_IN_BINARY_TO_DECRIPTION) * (int)sizeof(int) < size_file) {
@@ -49,7 +50,7 @@ Errors process_byte_commands_bin(FILE *dest, const char *name_src)
     }
 
     free(command);
-    return error;
+    return GLOBAL_ERROR_NO;
 }
 #undef DEF_CMD
 

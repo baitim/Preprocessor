@@ -16,18 +16,22 @@
     case CMD_ ## name:                                  \
         code
 
-void calculate(const char *name_of_file)
+GlobalErrors calculate(const char *name_of_file)
 {
     FILE *src = fopen(name_of_file, "rb");
+    if (!src) return GLOBAL_ERROR_READ_FILE;
 
-    const int size_file = (int)fsize(name_of_file);
+    int size_file = 0;
+    if (fsize(&size_file, name_of_file))
+        return GLOBAL_ERROR_READ_FILE;
+        
     char *commands = (char *)calloc(size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION, sizeof(char));
     if (!commands)
-        return;
+        return GLOBAL_ERROR_NO;
 
     int count_read = (int)fread(commands, sizeof(commands[0]), size_file, src);
     if (count_read != size_file)
-        return;
+        return GLOBAL_ERROR_NO;
 
     Stack stack = {};
     stack_ctor(&stack);
@@ -48,7 +52,7 @@ void calculate(const char *name_of_file)
                 printf(print_lred("DEFAULT CASE!\nERROR in %s %s %d\n"),
                 __FILE__, __PRETTY_FUNCTION__, __LINE__);
                 printf(print_lred("Number command = %d\n"), number_command);
-                return;
+                return GLOBAL_ERROR_NO;
                 };
 
         }
@@ -59,6 +63,7 @@ void calculate(const char *name_of_file)
     stack_dtor(&stack_commands);
     stack_dtor(&stack);
     fclose(src);
+    return GLOBAL_ERROR_NO;
 }
 #undef CMD_DEF
 

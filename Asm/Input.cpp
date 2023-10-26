@@ -8,64 +8,64 @@
 #include "../Config.h"
 #include "Input.h"
 
-static Errors get_data(Data *data, FILE *stream);
+static GlobalErrors get_data(Data *data, FILE *stream);
 
 static int count_pointers(const char *text);
 
-static void write_pointers(Data *data);
+static GlobalErrors write_pointers(Data *data);
 
-Errors create_data(Data *data, const char *src)
+GlobalErrors create_data(Data *data, const char *src)
 {
     FILE *stream = fopen(src, "r");
-    assert(stream);
-    //????
+    if (!stream)
+        return GLOBAL_ERROR_READ_FILE;
 
-    data->size_file = (int)fsize(src) + 1;
-    //????
+    if (fsize(&data->size_file, src))
+        return GLOBAL_ERROR_READ_FILE;
+    data->size_file++;
+
     data->text = (char *) calloc(data->size_file, sizeof(char));
-    assert(data->text);
-    //????
+    if (!data->text)
+        return GLOBAL_ERROR_ALLOC_FAIL;
 
-    get_data(data, stream);
-    //????
-
-    // puts(data->text);
-    // puts("---------------");
+    if (get_data(data, stream)) 
+        return GLOBAL_ERROR_READ_FILE;
 
     data->commands_count = count_pointers(data->text) + 1;
     data->pointers = (char **) calloc(data->commands_count, sizeof(char *));
-    assert(data->pointers);
-    //????
+    if (!data->pointers)
+        return GLOBAL_ERROR_ALLOC_FAIL;
 
-    write_pointers(data);
-    //????
+    if (write_pointers(data))
+        return GLOBAL_ERROR_READ_FILE;
 
     fclose(stream);
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
 
-off_t fsize(const char *filename) {
+GlobalErrors fsize(int *size_file, const char *filename) {
     struct stat st = {};
 
     if (stat(filename, &st) == 0)
-        return st.st_size;
+        *size_file = (int)st.st_size;
+    else 
+        return GLOBAL_ERROR_READ_FILE;
 
-    return -1;
+    return GLOBAL_ERROR_NO;
 }
 
-static Errors get_data(Data *data, FILE *stream)
+static GlobalErrors get_data(Data *data, FILE *stream)
 {
     assert(data->text);
     assert(stream);
 
     const int size = 1;
 
-    int is_read = (int)fread(data->text, data->size_file, size, stream);
-    assert(is_read != data->size_file);
-    //????
+    if ((int)fread(data->text, data->size_file, size, stream) != 0)
+        return GLOBAL_ERROR_ALLOC_FAIL;
 
     data->text[data->size_file - 1] = '\0';
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
 
 static int count_pointers(const char *text)
@@ -84,7 +84,7 @@ static int count_pointers(const char *text)
     return count;
 }
 
-static void write_pointers(Data *data)
+static GlobalErrors write_pointers(Data *data)
 {
     assert(data->pointers);
     assert(data->text);
@@ -102,6 +102,7 @@ static void write_pointers(Data *data)
         }
         i++;
     }
+    return GLOBAL_ERROR_NO;
 }
 
 void dtor_data(Data *data)

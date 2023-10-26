@@ -15,7 +15,7 @@ enum Type_arg {
     TYPE_ARG_MEM = 4
 };
 
-static Errors get_arg(const Data *src, int *number_char, int *command, 
+static GlobalErrors get_arg(const Data *src, int *number_char, int *command, 
                       int *index_write, int *number_fixup, int number_string, 
                       Pointers_label *pointers_labels, FILE *listing);
 
@@ -31,9 +31,9 @@ static int check_empty(const char *string)
     return 0;
 }
 
-static Errors read_len_arg(int *count_spaces, int *len_arg, char *str);
+static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str);
 
-static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
+static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
@@ -42,10 +42,10 @@ static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
         command[index_write] = num;                                                         \
         number_char += len_command;                                                         \
         if (args > 0) {                                                                     \
-            get_arg(src, &number_char, command, &index_write,                               \
-                    &number_fixup, number_string, pointers_labels,                          \
-                    listing);                                                               \
-        /*????*/                                                                            \
+            error = get_arg(src, &number_char, command, &index_write,                       \
+                            &number_fixup, number_string, pointers_labels,                  \
+                            listing);                                                       \
+            if (error) return error;                                                        \
             fprintf(listing, "%d\t%d\t", num, command[index_write]);                        \
         } else {                                                                            \
             fprintf(listing, "-\t%d\t-\t", num);                                            \
@@ -54,18 +54,18 @@ static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
     }                                                                                       \
     else
 
-Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, 
-                                  Pointers_label *pointers_labels, int *count_fixup,
-                                  FILE *listing)
+GlobalErrors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels, 
+                                        Pointers_label *pointers_labels, int *count_fixup,
+                                        FILE *listing)
 {
-    if (!dest) return ERROR_READ_FILE;
-    Errors error = ERROR_NO;
+    GlobalErrors error = GLOBAL_ERROR_NO;
+    if (!dest) return GLOBAL_ERROR_READ_FILE;
 
     fprintf(listing, "index\tnum_str\tcommand\targ\tbin_com\tbin_arg\n");
 
     int *command = (int *)calloc(2 * (src->commands_count + COUNT_INTS_IN_BINARY_TO_DECRIPTION), sizeof(int));
     if (!command)
-        return ERROR_READ_FILE;
+        return GLOBAL_ERROR_READ_FILE;
 
     memcpy(command, FIRST_DATA_IN_BINARY, COUNT_BYTES_IN_BINARY_TO_DECRIPTION);
 
@@ -96,7 +96,9 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels,
         #include "../DSL"
         {
             int len_lable = 0, count_arg_spaces = 0;
-            read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);
+            error = read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);
+            if (error) return error;
+
             if (src->pointers[number_string][number_char + len_lable - 1] == ':') {
                 LABELS[number_lable] = (Label){&src->pointers[number_string][number_char], index_write};
                 fprintf(listing, "%s\t", &src->pointers[number_string][number_char]);
@@ -111,24 +113,24 @@ Errors process_input_commands_bin(FILE *dest, const Data *src, FILE *labels,
 
     command = (int *)realloc(command, index_write);
     if (!command)
-        return ERROR_READ_FILE;
+        return GLOBAL_ERROR_READ_FILE;
 
     int count_print = (int)fwrite(command, sizeof(command[0]), index_write, dest);
     if (count_print != index_write) {
         free(command);
-        return ERROR_WRITE_FILE;
+        return GLOBAL_ERROR_WRITE_FILE;
     }
     free(command);
-    return error;
+    return GLOBAL_ERROR_NO;
 }
 #undef DEF_CMD
 
-Errors process_fixup(const Data *src, const char *bin_file, 
-                     Pointers_label *pointers_labels, int count_fixup)
+GlobalErrors process_fixup(const Data *src, const char *bin_file, 
+                           Pointers_label *pointers_labels, int count_fixup)
 {
     FILE *bin_stream = fopen(bin_file, "r+");
     if (!bin_stream)
-        return ERROR_READ_FILE;
+        return GLOBAL_ERROR_READ_FILE;
 
     printf("FIXUP:\n");
 
@@ -146,7 +148,7 @@ Errors process_fixup(const Data *src, const char *bin_file,
                 printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
                 if (count_write != 1) {
                     fclose(bin_stream);
-                    return ERROR_WRITE_FILE;
+                    return GLOBAL_ERROR_WRITE_FILE;
                 }
                 break;
             }
@@ -154,13 +156,15 @@ Errors process_fixup(const Data *src, const char *bin_file,
     }
 
     fclose(bin_stream);
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
 
-static Errors get_arg(const Data *src, int *number_char, int *command, 
-                    int *index_write, int *number_fixup, int number_string, 
-                    Pointers_label *pointers_labels, FILE *listing)
+static GlobalErrors get_arg(const Data *src, int *number_char, int *command, 
+                            int *index_write, int *number_fixup, int number_string, 
+                            Pointers_label *pointers_labels, FILE *listing)
 {
+    GlobalErrors error = GLOBAL_ERROR_NO;
+
     int int_arg = 0;
     int count_read = sscanf(&src->pointers[number_string][*number_char], "%d", &int_arg);
     if (count_read == 1) {
@@ -168,17 +172,18 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
         (*index_write)++;
         command[*index_write] = int_arg;
         fprintf(listing, "%d\t", int_arg);
-        return ERROR_NO;
+        return GLOBAL_ERROR_NO;
     }
 
     char *argument = (char *)calloc(MAX_SIZE_ARGUMENT, sizeof(char));
     int len_arg = 0;
     int count_arg_spaces = 0;
-    read_len_arg(&count_arg_spaces, &len_arg, &src->pointers[number_string][*number_char]);
+    error = read_len_arg(&count_arg_spaces, &len_arg, &src->pointers[number_string][*number_char]);
+    if(error) return error;
 
     argument = (char *)realloc(argument, len_arg * sizeof(char));
     if (!argument)
-        return ERROR_ALLOC_FAIL;
+        return GLOBAL_ERROR_ALLOC_FAIL;
 
     memcpy(argument, &src->pointers[number_string][*number_char + count_arg_spaces], len_arg);
     fprintf(listing, "%s\t", argument);
@@ -186,7 +191,9 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
     if (type_arg == TYPE_ARG_MEM) {
         command[*index_write] += MEM;
         int l_space = 1, r_space = 1;
-        get_spaces_lr(&l_space, &r_space, argument);
+        error = get_spaces_lr(&l_space, &r_space, argument);
+        if (error) return error;
+
         const int len_mem_command = len_arg - l_space - r_space;
         char *memory_command = (char *)calloc(len_mem_command, sizeof(char));
         memcpy(memory_command, argument + l_space, len_mem_command);
@@ -239,7 +246,7 @@ static Errors get_arg(const Data *src, int *number_char, int *command,
         }
     }
     free(argument);
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
 
 static Type_arg check_type_arg(const char *arg)
@@ -257,7 +264,7 @@ static Type_arg check_type_arg(const char *arg)
     return TYPE_ARG_NUM;
 }
 
-static Errors read_len_arg(int *count_spaces, int *len_arg, char *str)
+static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str)
 {
     while (str[*count_spaces] == ' ')
         (*count_spaces)++;
@@ -275,13 +282,13 @@ static Errors read_len_arg(int *count_spaces, int *len_arg, char *str)
             (*len_arg)++;
 
         if (str[*count_spaces + (*len_arg)] != ']')
-            return ERROR_INPUT_FILE;
+            return GLOBAL_ERROR_INPUT_FILE;
 
         (*len_arg)++;
 
         str[(*count_spaces) + (*len_arg)] = '\0';
 
-        return ERROR_NO;
+        return GLOBAL_ERROR_NO;
     }
 
     while(str[(*count_spaces) + (*len_arg)] != '\n' &&
@@ -290,10 +297,10 @@ static Errors read_len_arg(int *count_spaces, int *len_arg, char *str)
             (*len_arg)++;
 
     str[(*count_spaces) + (*len_arg)] = '\0';
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
 
-static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
+static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
 {
     while (str[*l_spaces] == ' ')
         (*l_spaces)++;
@@ -305,5 +312,5 @@ static Errors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
     while (str[*l_spaces] == ' ')
         (*r_spaces)++;
 
-    return ERROR_NO;
+    return GLOBAL_ERROR_NO;
 }
