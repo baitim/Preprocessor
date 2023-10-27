@@ -35,29 +35,29 @@
 * Ram is supported
 
 * Implemented functions:
-    * PUSH <code> < register | num | ram > </code>
-    * IN
-    * POP <code> < register | ram > </code>
-    * ADD
-    * SUB
-    * MUL
-    * DIV
-    * SQRT
-    * SIN
-    * COS
-    * OUT
-    * HLT
-    * JMP <code> < lable | num > </code>
-    * JA <code> < lable | num > </code>
-    * JAE <code> < lable | num > </code>
-    * JB <code> < lable | num > </code>
-    * JBE <code> < lable | num > </code>
-    * JE <code> < lable | num > </code>
-    * JNE <code> < lable | num > </code>
-    * JMON <code> < lable | num > </code>
-    * CALL <code> < lable > </code>
-    * RET
-    * OUTC
+    * <code> PUSH < register | num | ram > </code>
+    * <code> IN </code>
+    * <code> POP < register | ram > </code>
+    * <code> ADD </code>
+    * <code> SUB </code>
+    * <code> MUL </code>
+    * <code> DIV </code>
+    * <code> SQRT </code>
+    * <code> SIN </code>
+    * <code> COS </code>
+    * <code> OUT </code>
+    * <code> HLT </code>
+    * <code> JMP < lable | num > </code>
+    * <code> JA < lable | num > </code>
+    * <code> JAE < lable | num > </code>
+    * <code> JB < lable | num > </code>
+    * <code> JBE < lable | num > </code>
+    * <code> JE < lable | num > </code>
+    * <code> JNE < lable | num > </code>
+    * <code> JMON < lable | num > </code>
+    * <code> CALL < lable > </code>
+    * <code> RET </code>
+    * <code> OUTC </code>
 
 
 
