@@ -10,11 +10,13 @@ MAIN:
 
 / WARNING function changes registers values (rbx rcx)
 PRINT_CIRCLE:
-    PUSH 0                      /  обнуление rbx
+    PUSH 10                      /  обнуление rbx
     POP rbx
 
     for_X:                          / внешний
         PUSH rbx
+        PUSH 10
+        ADD
         PUSH rax
         JA ret_print_circle:       / условие выхода
 

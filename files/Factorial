@@ -22,6 +22,8 @@ FACT:
     CALL MUL_RAX_RCX:
     PUSH rcx
     OUT
+    PUSH 10
+    OUTC
     CALL FACT:          / calc and print again
     ret_fact:
     RET

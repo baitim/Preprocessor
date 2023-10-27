@@ -142,14 +142,14 @@ DEF_CMD(SQRT, 8, NUN, 0, {
 DEF_CMD(SIN, 9, NUN, 0, {
     int x = 0;
     POP(&x);
-    PUSH((int)sin((double)x * (double)100));
+    PUSH((int)sin((double)x / (double)100));
     break;
 })
 
 DEF_CMD(COS, 10, NUN, 0, {
     int x = 0;
     POP(&x);
-    PUSH((int)cos((double)x * (double)100));
+    PUSH((int)cos((double)x / (double)100));
     break;
 })
 

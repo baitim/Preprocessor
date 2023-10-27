@@ -145,6 +145,10 @@ LINEAR_HLT:
     RET
 
 PRINT_LINEAR_HLT:
+    PUSH 49
+    OUTC
+    PUSH 32
+    OUTC
     CALL PRINT_ROOT:
     PUSH 58
     OUTC
@@ -221,6 +225,10 @@ QUAD_2_HLT:
     RET
 
 PRINT_2_ROOTS_HLT:
+    PUSH 50
+    OUTC
+    PUSH 32
+    OUTC
     CALL PRINT_ROOT:
     PUSH 115
     OUTC
@@ -318,10 +326,6 @@ PRINT_RDX:
     RET
 
 PRINT_ROOT:
-    PUSH 49
-    OUTC
-    PUSH 32
-    OUTC
     PUSH 114
     OUTC
     PUSH 111
