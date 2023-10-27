@@ -18,7 +18,7 @@
 4. Run <br>
         write <code>.\start.exe</code> in termina
 
-<p align="center"><img src="https://github.com/baitim/Preprocessor/blob/main/images/cat.gif" width="50%"></p>
+<p align="center"><img src="https://github.com/baitim/Processor/blob/main/images/cat.gif" width="50%"></p>
 
 ## Feats
 
