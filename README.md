@@ -30,7 +30,7 @@
 
 * Labels are supported
 
-* Functions is supported
+* Functions are supported
 
 * Ram is supported
 
