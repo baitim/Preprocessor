@@ -40,7 +40,8 @@ DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
             PUSH(push_value);
     }
 
-    break;})
+    break;
+})
 
 DEF_CMD(IN, 2, NUN, 0, {
     printf(print_lyellow("Input element: "));
@@ -48,7 +49,8 @@ DEF_CMD(IN, 2, NUN, 0, {
     int count_input_ = scanf("%d", &x);
     assert(count_input_ == 1);
     PUSH(x * PRECISION);
-    break;})
+    break;
+})
 
 DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
     int place_to_write = *((int *)commands + number_command);
@@ -79,7 +81,8 @@ DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
             REGISTERS[number_reg].value = x;
     }
 
-    break;})
+    break;
+})
 
 DEF_CMD(ADD, 4, NUN, 0, {
 #ifdef PRINT_COMMANDS
@@ -89,7 +92,8 @@ DEF_CMD(ADD, 4, NUN, 0, {
     int x = 0;
     int y = 0;
     PUSH((POP(&x), x) + (POP(&y), y));
-    break;})
+    break;
+})
 
 DEF_CMD(SUB, 5, NUN, 0, {
 #ifdef PRINT_COMMANDS
@@ -101,7 +105,8 @@ DEF_CMD(SUB, 5, NUN, 0, {
     POP(&x);
     POP(&y);
     PUSH(y - x);
-    break;})
+    break;
+})
 
 DEF_CMD(MUL, 6, NUN, 0, {
 #ifdef PRINT_COMMANDS
@@ -111,7 +116,8 @@ DEF_CMD(MUL, 6, NUN, 0, {
     int x = 0;
     int y = 0;
     PUSH((POP(&x), x) * (POP(&y), y) / PRECISION);
-    break;})
+    break;
+})
 
 DEF_CMD(DIV, 7, NUN, 0, {
 #ifdef PRINT_COMMANDS
@@ -123,36 +129,45 @@ DEF_CMD(DIV, 7, NUN, 0, {
     POP(&x);
     POP(&y);
     PUSH(y * PRECISION / x);
-    break;})
+    break;
+})
 
 DEF_CMD(SQRT, 8, NUN, 0, {
     int x = 0;
-    PUSH((type_el)sqrt((POP(&x), x / 100) * 100));
-    break;})
+    POP(&x);
+    PUSH((int)sqrt((double)x * (double)100));
+    break;
+})
 
 DEF_CMD(SIN, 9, NUN, 0, {
     int x = 0;
-    PUSH((type_el)sin((POP(&x), x) / 100) * 100);
-    break;})
+    POP(&x);
+    PUSH((int)sin((double)x * (double)100));
+    break;
+})
 
 DEF_CMD(COS, 10, NUN, 0, {
     int x = 0;
-    PUSH((type_el)cos((POP(&x), x) / 100) * 100);
-    break;})
+    POP(&x);
+    PUSH((int)cos((double)x * (double)100));
+    break;
+})
 
 DEF_CMD(OUT, 11, NUN, 0, {
     int answer = 0;
-    printf(print_lgreen("OUT: "));
-    printf(print_lcyan("%.3lf\n"), double((POP(&answer), answer)) / PRECISION);
-    break;})
+    printf(print_lcyan("%.3lf"), double((POP(&answer), answer)) / PRECISION);
+    break;
+})
 
 DEF_CMD(HLT, 12, NUN, 0, {
     return GLOBAL_ERROR_NO;
-    break;})
+    break;
+})
 
 DEF_CMD(JMP, 13, NUM, 1, {
     number_command = *((int *)commands + number_command);
-    break;})
+    break;
+})
 
 DEF_CMD(JA, 14, NUM, 1, {
     int x = 0;
@@ -161,7 +176,8 @@ DEF_CMD(JA, 14, NUM, 1, {
     POP(&y);
     if (y > x) number_command = *((int *)commands + number_command);
     else       number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JAE, 15, NUM, 1, {
     int x = 0;
@@ -170,7 +186,8 @@ DEF_CMD(JAE, 15, NUM, 1, {
     POP(&y);
     if (y >= x) number_command = *((int *)commands + number_command);
     else        number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JB, 16, NUM, 1, {
     int x = 0;
@@ -179,7 +196,8 @@ DEF_CMD(JB, 16, NUM, 1, {
     POP(&y);
     if (y < x) number_command = *((int *)commands + number_command);
     else       number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JBE, 17, NUM, 1, {
     int x = 0;
@@ -188,7 +206,8 @@ DEF_CMD(JBE, 17, NUM, 1, {
     POP(&y);
     if (y <= x) number_command = *((int *)commands + number_command);
     else        number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JE, 18, NUM, 1, {
     int x = 0;
@@ -197,7 +216,8 @@ DEF_CMD(JE, 18, NUM, 1, {
     POP(&y);
     if (y == x) number_command = *((int *)commands + number_command);
     else        number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JNE, 19, NUM, 1, {
     int x = 0;
@@ -206,7 +226,8 @@ DEF_CMD(JNE, 19, NUM, 1, {
     POP(&y);
     if (y != x) number_command = *((int *)commands + number_command);
     else        number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(JMON, 20, NUM, 1, {
     long int time_ = time(NULL);
@@ -214,18 +235,22 @@ DEF_CMD(JMON, 20, NUM, 1, {
     loc_time = localtime(&time_);
     if (loc_time->tm_wday == 1) number_command = *((int *)commands + number_command);
     else                        number_command++;
-    break;})
+    break;
+})
 
 DEF_CMD(CALL, 21, NUM, 1, {
     stack_push(&stack_commands, number_command + 1);
     number_command = *((int *)commands + number_command);
-    break;})
+    break;
+})
 
 DEF_CMD(RET, 22, NUN, 0, {
     stack_pop(&stack_commands, &number_command);
-    break;})
+    break;
+})
 
 DEF_CMD(OUTC, 23, NUN, 0, {
     int print_value = 0;
     printf(print_lyellow("%c"), ((POP(&print_value), print_value) / PRECISION));
-    break;})
+    break;
+})

@@ -1,7 +1,7 @@
 CALL MAIN:
 HLT
 
-/ WARNING function changes ram[ 11 ], ram[ 22 ] (root1 in ram[ 11 ], root2 in ram[ 22 ])
+/ WARNING function changes ram[ 11 ], ram[ 22 ], ram[ 33 ] (root1 in ram[ 11 ], root2 in ram[ 22 ])
 MAIN:
     CALL PRINT_HELLO:
     IN
@@ -26,16 +26,18 @@ MAIN:
     PUSH 1
     JE line_calc_print_hlt:
 
-    RET
+    CALL QUAD_HLT:                  / HLT
+
+    RET                            
 
     inf_print_hlt:
-    CALL PRINT_INFINITY_HLT:       / HLT
+    CALL PRINT_INFINITY_HLT:        / HLT
 
     zero_print_hlt:
-    CALL PRINT_ZERO_HLT:           / HLT
+    CALL PRINT_ZERO_HLT:            / HLT
 
     line_calc_print_hlt:
-    CALL LINEAR_HLT:                   / HLT
+    CALL LINEAR_HLT:                / HLT
 
 / WARNING function changes ram[ 0 ]
 IS_INFINITY:
@@ -143,18 +145,7 @@ LINEAR_HLT:
     RET
 
 PRINT_LINEAR_HLT:
-    PUSH 1
-    OUT
-    PUSH 32
-    OUTC
-    PUSH 114
-    OUTC
-    PUSH 111
-    OUTC
-    PUSH 111
-    OUTC
-    PUSH 116
-    OUTC
+    CALL PRINT_ROOT:
     PUSH 58
     OUTC
     PUSH 32
@@ -162,6 +153,116 @@ PRINT_LINEAR_HLT:
     PUSH [ 11 ]
     OUT
     HLT
+
+QUAD_HLT:
+    PUSH rbx
+    PUSH rbx
+    MUL
+    PUSH 4
+    PUSH rax
+    PUSH rcx
+    MUL
+    MUL
+    SUB
+    POP rdx
+    CALL CHECK_EQUAL:     / ram [ 0 ] == 1 -> D > 0, ram [ 0 ] == 0 -> D == 0, ram [ 0 ] == -1 -> D < 0
+    
+    PUSH -1
+    PUSH [ 0 ]
+    JE PRINT_ZERO_HLT:
+
+    PUSH 0
+    PUSH [ 0 ]
+    JE QUAD_1_HLT:
+
+    PUSH 1
+    PUSH [ 0 ]
+    JE QUAD_2_HLT:
+    RET
+
+QUAD_1_HLT:
+    PUSH 0
+    PUSH rbx
+    SUB
+    PUSH 2
+    DIV
+    PUSH rax
+    DIV
+    POP [ 11 ]
+    CALL PRINT_LINEAR_HLT:
+    RET
+
+QUAD_2_HLT:
+    PUSH 0
+    PUSH rbx
+    SUB
+    PUSH rdx
+    SQRT
+    ADD
+    PUSH 2
+    DIV
+    PUSH rax
+    DIV
+    POP [ 11 ]
+
+    PUSH 0
+    PUSH rbx
+    SUB
+    PUSH rdx
+    SQRT
+    SUB
+    PUSH 2
+    DIV
+    PUSH rax
+    DIV
+    POP [ 22 ]
+
+    CALL PRINT_2_ROOTS_HLT:
+    RET
+
+PRINT_2_ROOTS_HLT:
+    CALL PRINT_ROOT:
+    PUSH 115
+    OUTC
+    PUSH 58
+    OUTC
+    PUSH 32
+    OUTC
+
+    PUSH [ 11 ]
+    OUT
+
+    PUSH 32
+    OUTC
+
+    PUSH [ 22 ]
+    OUT
+
+    RET
+
+CHECK_EQUAL:
+    PUSH rdx
+    PUSH 0
+    JE equal_double:
+
+    PUSH rdx
+    PUSH 0
+    JB equal_null:
+
+    PUSH 1
+    POP [ 0 ]
+    RET
+
+    equal_null:
+    PUSH -1
+    POP [ 0 ]
+    RET
+
+    equal_double:
+    PUSH 0
+    POP [ 0 ]
+    RET
+
 
 ADD_1_TO_RAX:
     PUSH rax
@@ -214,6 +315,21 @@ PRINT_RCX:
 PRINT_RDX:
     PUSH rdx
     OUT
+    RET
+
+PRINT_ROOT:
+    PUSH 49
+    OUTC
+    PUSH 32
+    OUTC
+    PUSH 114
+    OUTC
+    PUSH 111
+    OUTC
+    PUSH 111
+    OUTC
+    PUSH 116
+    OUTC
     RET
 
 PRINT_HELLO:
