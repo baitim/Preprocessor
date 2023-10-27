@@ -2,7 +2,7 @@
 
 ## Description
 
- Implementation of assembler, processor and disassembler.
+ Implementation of processor.
 
 ## How to use
 
