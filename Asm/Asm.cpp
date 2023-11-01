@@ -33,7 +33,7 @@ static int check_empty(const char *string)
 }
 
 static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str);
-
+static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *pointers_labels, int **command);
 static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
 
 #define NUN 0
@@ -84,7 +84,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     while (number_string < src->commands_count) {
 
         char *comment = strchr(src->pointers[number_string], '/');
-        if (comment)
+        if (comment) 
             comment[0] = '\0';
 
         if (check_empty(src->pointers[number_string]))
@@ -92,8 +92,6 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
             number_string++;
             continue;
         }
-
-
         fprintf(listing, "%d\t", index_write - MAGIC_INTS);
         fprintf(listing, "%d\t", number_string);
         int number_char = 0;
@@ -122,20 +120,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         fprintf(listing, "\n");
         number_string++;
     }
-    
-    printf("FIXUP:\n");
-    printf("Need count fixups: %d\n", number_fixup);
-    for (int i = 0; i < number_fixup; i++) {
-        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][pointers_labels[i].start]);
-        for (int j = 0; j < MAX_COUNT_LABELS; j++) {
-            if (!LABELS[j].name) break;
-            if (strncmp(&src->pointers[pointers_labels[i].in_src][pointers_labels[i].start], LABELS[j].name, pointers_labels[i].len) == 0) {
-                command[pointers_labels[i].in_bin] = LABELS[j].index;
-                printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
-                break;
-            }
-        }
-    }
+    fixup_lables(number_fixup, src, pointers_labels, &command);
 
     command = (int *)realloc(command, index_write);
     if (!command)
@@ -150,6 +135,23 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     return GLOBAL_ERROR_NO;
 }
 #undef DEF_CMD
+
+static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *pointers_labels, int **command)
+{
+    printf("FIXUP:\n");
+    printf("Need count fixups: %d\n", number_fixup);
+    for (int i = 0; i < number_fixup; i++) {
+        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][pointers_labels[i].start]);
+        for (int j = 0; j < MAX_COUNT_LABELS; j++) {
+            if (!LABELS[j].name) break;
+            if (strncmp(&src->pointers[pointers_labels[i].in_src][pointers_labels[i].start], LABELS[j].name, pointers_labels[i].len) == 0) {
+                (*command)[pointers_labels[i].in_bin] = LABELS[j].index;
+                printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
+                break;
+            }
+        }
+    }
+}
 
 static GlobalErrors get_arg(const DATA *src, int *number_char, int *command, 
                             int *index_write, int *number_fixup, int number_string, 

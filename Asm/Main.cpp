@@ -59,6 +59,7 @@ int main(int argc, const char *argv[])
     fclose(dest);
 
     dtor_data(&src);
+    fclose(listing);
     fclose(labels);
     return 0;
 }

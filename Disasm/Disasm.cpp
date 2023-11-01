@@ -58,6 +58,7 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
     }
 
     free(command);
+    fclose(src);
     return GLOBAL_ERROR_NO;
 }
 #undef DEF_CMD
