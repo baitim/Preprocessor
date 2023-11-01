@@ -2,11 +2,11 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
-INPUT_txt = 	files/Quadratic
-ASM_bin = 		files/Asm.bin
-DISASM_txt = 	files/Disasm
-LABELS =        files/Labels
-LISTING =       files/Listing
+INPUT_txt = 	--input_txt 	files/Circle
+ASM_bin = 		--asm_bin 		files/Asm.bin
+DISASM_txt = 	--disasm_txt 	files/Disasm
+LABELS =        --labels		files/Labels
+LISTING =       --listing		files/Listing
 
 DEFAULT =       $(wildcard Stack/*.cpp) $(wildcard *.cpp) 
 ASM = 			$(DEFAULT) $(wildcard Asm/*.cpp)

@@ -8,13 +8,13 @@
 #include "../Config.h"
 #include "Input.h"
 
-static GlobalErrors get_data(Data *data, FILE *stream);
+static GlobalErrors get_data(DATA *data, FILE *stream);
 
 static int count_pointers(const char *text);
 
-static GlobalErrors write_pointers(Data *data);
+static GlobalErrors write_pointers(DATA *data);
 
-GlobalErrors create_data(Data *data, const char *src)
+GlobalErrors create_data(DATA *data, const char *src)
 {
     FILE *stream = fopen(src, "r");
     if (!stream)
@@ -54,7 +54,7 @@ GlobalErrors fsize(int *size_file, const char *filename) {
     return GLOBAL_ERROR_NO;
 }
 
-static GlobalErrors get_data(Data *data, FILE *stream)
+static GlobalErrors get_data(DATA *data, FILE *stream)
 {
     assert(data->text);
     assert(stream);
@@ -84,7 +84,7 @@ static int count_pointers(const char *text)
     return count;
 }
 
-static GlobalErrors write_pointers(Data *data)
+static GlobalErrors write_pointers(DATA *data)
 {
     assert(data->pointers);
     assert(data->text);
@@ -105,7 +105,7 @@ static GlobalErrors write_pointers(Data *data)
     return GLOBAL_ERROR_NO;
 }
 
-void dtor_data(Data *data)
+void dtor_data(DATA *data)
 {
     assert (data);
     data->size_file = POISON_BYTE;

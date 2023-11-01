@@ -5,10 +5,17 @@
 #include "ANSI_colors.h"
 #include "Output.h"
 #include "Config.h"
+#include "Process_cmd.h"
 
 static void print_error(int error, const char *s);
 
 static int powf(int x, int st);
+
+void print_help()
+{
+    for (int i = 0; i < COUNT_OPTIONS; i++)
+        printf(ANSI_LIGHT_GREEN "%s\t\t%s\n" ANSI_DEFAULT_COLOR, OPTIONS[i].name, OPTIONS[i].description);
+}
 
 void dump_(int err, const char *file, const char *func, int line)
 {

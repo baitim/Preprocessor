@@ -3,7 +3,7 @@
 
 #include "../Errors.h"
 
-struct Data {
+struct DATA {
     int size_file;
     char *text;
     int commands_count;
@@ -12,8 +12,8 @@ struct Data {
 
 GlobalErrors fsize(int *size_file, const char *filename);
 
-GlobalErrors create_data(Data *data, const char *src);
+GlobalErrors create_data(DATA *data, const char *src);
 
-void dtor_data(Data *data);
+void dtor_data(DATA *data);
 
 #endif // INPUT_H

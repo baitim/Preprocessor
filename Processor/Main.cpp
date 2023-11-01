@@ -5,20 +5,25 @@
 #include "../Debug.h"
 #include "../Asm/Input.h"
 #include "../Output.h"
+#include "../Process_cmd.h"
 
 int main(int argc, const char *argv[])
 {
     printf(print_lblue("# Implementation of Processor.\n"
                        "# (c) BAIDIUSENOV TIMUR, 2023\n\n"));
-    
-    const int COUNT_FROM_CMD = 2;
 
-    if (argc < COUNT_FROM_CMD) {
-        printf(print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
+    CMD_INPUT_DATA cmd_data = { };
+    input_cmd(argc, argv, &cmd_data);
+
+    if (cmd_data.is_help)
+        print_help();
+
+    if (!cmd_data.is_asm_bin || !cmd_data.asm_bin) {
+        fprintf(stderr, print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 1; 
     }
 
-    int error = calculate(argv[1]);
+    int error = calculate(cmd_data.asm_bin);
     if (error) {
         dump(error);
         return 1;
