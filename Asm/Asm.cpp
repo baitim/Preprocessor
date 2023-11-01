@@ -65,7 +65,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     GlobalErrors error = GLOBAL_ERROR_NO;
     if (!dest) return GLOBAL_ERROR_READ_FILE;
 
-    fprintf(listing, "index\tnum_str\tcommand\targ\tbin_com\tbin_arg\n");
+    fprintf(listing, "ind  num  com\targ\tbin_com\tbin_arg\n");
 
     int *command = (int *)calloc(2 * (src->commands_count + MAGIC_INTS), sizeof(int));
     if (!command)
@@ -92,8 +92,8 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
             number_string++;
             continue;
         }
-        fprintf(listing, "%d\t", index_write - MAGIC_INTS);
-        fprintf(listing, "%d\t", number_string);
+        fprintf(listing, "%.4d ", index_write - MAGIC_INTS);
+        fprintf(listing, "%.4d ", number_string);
         int number_char = 0;
         while (src->pointers[number_string][number_char] == ' ')
             number_char++;
