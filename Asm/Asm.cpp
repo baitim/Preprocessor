@@ -36,6 +36,11 @@ static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str);
 
 static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
 
+#define NUN 0
+#define REG (1 << 5)
+#define NUM (1 << 6)
+#define MEM (1 << 7)
+
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
     {                                                                                       \
@@ -110,7 +115,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
               src->pointers[number_string][number_char + len_command] != ' ')
             len_command++;
 
-        #include "../DSL"
+        #include "../Codegen.inc.h"
         {
             int len_lable = 0, count_arg_spaces = 0;
             error = read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);

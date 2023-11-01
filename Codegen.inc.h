@@ -1,18 +1,3 @@
-#define FREE_BYTES 5
-#define NUN 0
-#define REG (1 << 5)
-#define NUM (1 << 6)
-#define MEM (1 << 7)
-#define PRECISION 100
-#define PUSH(arg) stack_push(&stack, arg)
-#define POP(arg) stack_pop(&stack, arg)
-
-#define IS_REG (command & REG)
-#define IS_NUM (command & NUM)
-#define IS_MEM (command & MEM)
-
-//#define PRINT_COMMANDS
-
 DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
     int value_elem = commands[number_command];
     number_command++;
@@ -239,13 +224,13 @@ DEF_CMD(JMON, 20, NUM, 1, {
 })
 
 DEF_CMD(CALL, 21, NUM, 1, {
-    stack_push(&stack_commands, number_command + 1);
+    PUSH_COM(number_command + 1);
     number_command = commands[number_command];
     break;
 })
 
 DEF_CMD(RET, 22, NUN, 0, {
-    stack_pop(&stack_commands, &number_command);
+    POP_COM(&number_command);
     break;
 })
 

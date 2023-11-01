@@ -12,6 +12,23 @@
 #include "../Errors.h"
 #include "../Asm/Input.h"
 
+#define FREE_BYTES 5
+#define NUN 0
+#define REG (1 << 5)
+#define NUM (1 << 6)
+#define MEM (1 << 7)
+#define PRECISION 100
+#define PUSH(arg)       stack_push(&stack, (arg))
+#define POP(arg)        stack_pop (&stack, (arg))
+#define PUSH_COM(arg)   stack_push(&stack_commands, (arg));
+#define POP_COM(arg)    stack_pop (&stack_commands, (arg));
+
+#define IS_REG (command & REG)
+#define IS_NUM (command & NUM)
+#define IS_MEM (command & MEM)
+
+//#define PRINT_COMMANDS
+
 #define DEF_CMD(name, num, type_args, args, code)       \
     case CMD_ ## name:                                  \
         code
@@ -49,7 +66,7 @@ GlobalErrors calculate(const char *name_of_file)
         number_command++;
 
         switch ((int)command % (int)powf(2, FREE_BYTES)) {
-            #include "../DSL"
+            #include "../Codegen.inc.h"
             default: {
                 printf(print_lred("DEFAULT CASE!\nERROR in %s %s %d\n"),
                 __FILE__, __PRETTY_FUNCTION__, __LINE__);

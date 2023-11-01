@@ -22,7 +22,7 @@ void print_el(const type_el* elem);
 #define DEF_CMD(name, num, type_args, args, code) \
     CMD_ ## name = num,
 enum Commands {
-    #include "DSL"
+    #include "Codegen.inc.h"
 };
 #undef DEF_CMD
 

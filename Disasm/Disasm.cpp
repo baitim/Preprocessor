@@ -6,6 +6,8 @@
 
 static int powf(int x, int p);
 
+#define FREE_BYTES 5
+
 #define DEF_CMD(name_cmd, num, type_args, args, code)                           \
     if (int_instruct % powf(2, FREE_BYTES)  == CMD_ ## name_cmd) {              \
         fprintf(dest, "%s", #name_cmd);                                         \
@@ -51,7 +53,7 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
         int int_instruct = command[number_command];
         number_command++;
         
-        #include "../DSL"
+        #include "../Codegen.inc.h"
         {;}
     }
 
