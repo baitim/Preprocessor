@@ -27,17 +27,11 @@ struct CMD_LINE_OPTION {
 };
 
 void input_cmd(int argc, const char *argv[], CMD_INPUT_DATA *cmd_data);
-
 void coef_input_txt_callback(const char* argv[], CMD_INPUT_DATA* data);
-
 void coef_asm_bin_callback(const char* argv[], CMD_INPUT_DATA* data);
-
 void coef_disasm_txt_callback(const char* argv[], CMD_INPUT_DATA* data);
-
 void coef_labels_callback(const char* argv[], CMD_INPUT_DATA* data);
-
 void coef_listing_callback(const char* argv[], CMD_INPUT_DATA* data);
-
 void help_callback(const char* argv[], CMD_INPUT_DATA* data);
 
 const CMD_LINE_OPTION OPTIONS[] = {

@@ -8,11 +8,8 @@
 #include "Output.h"
 
 static int stack_check_error(Stack *stack);
-
 static void print_error(int error, const char *s);
-
 static int powf(int x, int st);
-
 static int calculate_hash(void *data, int size);
 
 StackErrors stack_dump_(Stack *stack, const char *file, const char *func, int line, const char *stk)

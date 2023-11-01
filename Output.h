@@ -8,7 +8,6 @@
 void dump_(int err, const char *file, const char *func, int line);
 
 void print_stack(Stack *stack);
-
 void print_commands(const char *name_of_file, int command);
 
 #endif // OUTPUT_H

@@ -8,7 +8,6 @@
 #include "Process_cmd.h"
 
 static void print_error(int error, const char *s);
-
 static int powf(int x, int st);
 
 void print_help()

@@ -4,9 +4,7 @@
 #include <stdlib.h>
 
 const int DEFAULT_SIZE = 0;
-
 const int DEFAULT_CAPACITY = 20;
-
 const double MULTIPLIER_CAPACITY = 1.5;
 
 enum RESIZE_MULTIPLIER {
