@@ -28,6 +28,7 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
     if (!src) return GLOBAL_ERROR_READ_FILE;
     if (!dest) return GLOBAL_ERROR_READ_FILE;
 
+
     int size_file = 0;
     if (fsize(&size_file, name_src))
         return GLOBAL_ERROR_READ_FILE;
@@ -40,6 +41,9 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
 
     int count_read = (int)fread(command, sizeof(command[0]), size_file, src);
     if (count_read != size_file)
+        return GLOBAL_ERROR_READ_FILE;
+
+    if (strncmp((char *)command, MAGIC_DATA, MAGIC_BYTES) != 0)
         return GLOBAL_ERROR_READ_FILE;
                                                         
     int number_command = MAGIC_INTS;

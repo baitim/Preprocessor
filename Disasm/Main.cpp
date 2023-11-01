@@ -24,7 +24,7 @@ int main(int argc, const char *argv[])
         dump(GLOBAL_ERROR_READ_FILE);
         return 1;
     }
-    GlobalErrors error = process_byte_commands_bin(dest, cmd_data.disasm_txt);
+    GlobalErrors error = process_byte_commands_bin(dest, cmd_data.asm_bin);
     if (error) {
         dump(error);
         return 1;

@@ -68,8 +68,9 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     if (!command)
         return GLOBAL_ERROR_READ_FILE;
 
-    memcpy(command, MAGIC_DATA, MAGIC_BYTES);
-    //???
+    command = (int *)memcpy(command, MAGIC_DATA, MAGIC_BYTES);
+    if (!command)
+        return GLOBAL_ERROR_READ_FILE;
 
     int number_lable = 0;
     int number_string = 0;
