@@ -14,11 +14,6 @@ struct Pointers_label {
     int start;
 };
 
-GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *labels, 
-                                        Pointers_label *pointers_labels, int *count_fixup, 
-                                        FILE *listing);
-
-GlobalErrors process_fixup(const DATA *src, const char *bin_file, 
-                           Pointers_label *pointers_labels, int count_fixup);
+GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *labels, FILE *listing);
 
 #endif // TO_BYTE_CODE_H

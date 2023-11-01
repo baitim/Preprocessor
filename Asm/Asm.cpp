@@ -60,9 +60,7 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
     }                                                                                       \
     else
 
-GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *labels, 
-                                        Pointers_label *pointers_labels, int *count_fixup,
-                                        FILE *listing)
+GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *labels, FILE *listing)
 {
     GlobalErrors error = GLOBAL_ERROR_NO;
     if (!dest) return GLOBAL_ERROR_READ_FILE;
@@ -77,6 +75,8 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     if (!command)
         return GLOBAL_ERROR_READ_FILE;
 
+    Pointers_label pointers_labels[MAX_COUNT_LABELS] = {};
+
     int number_lable = 0;
     int number_string = 0;
     int index_write = MAGIC_INTS;
@@ -87,15 +87,6 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         if (comment)
             comment[0] = '\0';
 
-        if (strlen(src->pointers[number_string]) == 0) { number_string++; continue; }
-        if (check_empty(src->pointers[number_string])) { number_string++; continue; }
-
-        if (strlen(src->pointers[number_string]) == 0)
-
-        {
-            number_string++;
-            continue;
-        }
         if (check_empty(src->pointers[number_string]))
         {
             number_string++;
@@ -131,7 +122,20 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         fprintf(listing, "\n");
         number_string++;
     }
-    *count_fixup = number_fixup;
+    
+    printf("FIXUP:\n");
+    printf("Need count fixups: %d\n", number_fixup);
+    for (int i = 0; i < number_fixup; i++) {
+        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][pointers_labels[i].start]);
+        for (int j = 0; j < MAX_COUNT_LABELS; j++) {
+            if (!LABELS[j].name) break;
+            if (strncmp(&src->pointers[pointers_labels[i].in_src][pointers_labels[i].start], LABELS[j].name, pointers_labels[i].len) == 0) {
+                command[pointers_labels[i].in_bin] = LABELS[j].index;
+                printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
+                break;
+            }
+        }
+    }
 
     command = (int *)realloc(command, index_write);
     if (!command)
@@ -146,42 +150,6 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     return GLOBAL_ERROR_NO;
 }
 #undef DEF_CMD
-
-GlobalErrors process_fixup(const DATA *src, const char *bin_file, 
-                           Pointers_label *pointers_labels, int count_fixup)
-{
-    // Zachem ty ego otkryl?
-    FILE *bin_stream = fopen(bin_file, "r+");
-    if (!bin_stream)
-        return GLOBAL_ERROR_READ_FILE;
-
-    printf("FIXUP:\n");
-
-    printf("Need count fixups: %d\n", count_fixup);
-
-    for (int i = 0; i < count_fixup; i++) {
-        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][pointers_labels[i].start]);
-        for (int j = 0; j < MAX_COUNT_LABELS; j++) {
-            if (!LABELS[j].name) break;
-            if (strncmp(&src->pointers[pointers_labels[i].in_src][pointers_labels[i].start], LABELS[j].name, pointers_labels[i].len) == 0) {
-                fseek(bin_stream, (pointers_labels[i].in_bin) * (int)sizeof(int), SEEK_SET);
-                //???
-                int new_value[1] = {};
-                new_value[0] = LABELS[j].index;
-                printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
-                int count_write = (int)fwrite(new_value, sizeof(int), 1, bin_stream);
-                if (count_write != 1) {
-                    fclose(bin_stream);
-                    return GLOBAL_ERROR_WRITE_FILE;
-                }
-                break;
-            }
-        }
-    }
-
-    fclose(bin_stream);
-    return GLOBAL_ERROR_NO;
-}
 
 static GlobalErrors get_arg(const DATA *src, int *number_char, int *command, 
                             int *index_write, int *number_fixup, int number_string, 

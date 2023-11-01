@@ -51,23 +51,12 @@ int main(int argc, const char *argv[])
         return 1;
     }
 
-    int count_fixup = 0;
-    Pointers_label pointers_labels[MAX_COUNT_LABELS] = {};
-
-    error = process_input_commands_bin(dest, &src, labels, pointers_labels, &count_fixup, listing);
+    error = process_input_commands_bin(dest, &src, labels, listing);
     if (error) {
         dump(error);
         return 1;
     }
     fclose(dest);
-
-    //dump_labels();
-
-    error = process_fixup(&src, cmd_data.asm_bin, pointers_labels, count_fixup);
-    if (error) {
-        dump(error);
-        return 1;
-    }
 
     dtor_data(&src);
     fclose(labels);
