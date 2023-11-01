@@ -64,16 +64,16 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
 
     fprintf(listing, "index\tnum_str\tcommand\targ\tbin_com\tbin_arg\n");
 
-    int *command = (int *)calloc(2 * (src->commands_count + COUNT_INTS_IN_BINARY_TO_DECRIPTION), sizeof(int));
+    int *command = (int *)calloc(2 * (src->commands_count + MAGIC_INTS), sizeof(int));
     if (!command)
         return GLOBAL_ERROR_READ_FILE;
 
-    memcpy(command, FIRST_DATA_IN_BINARY, COUNT_BYTES_IN_BINARY_TO_DECRIPTION);
+    memcpy(command, MAGIC_DATA, MAGIC_BYTES);
     //???
 
     int number_lable = 0;
     int number_string = 0;
-    int index_write = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
+    int index_write = MAGIC_INTS;
     int number_fixup = 0;
     while (number_string < src->commands_count) {
 
@@ -97,7 +97,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         }
 
 
-        fprintf(listing, "%d\t", index_write - COUNT_INTS_IN_BINARY_TO_DECRIPTION);
+        fprintf(listing, "%d\t", index_write - MAGIC_INTS);
         fprintf(listing, "%d\t", number_string);
         int number_char = 0;
         while (src->pointers[number_string][number_char] == ' ')

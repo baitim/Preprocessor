@@ -25,7 +25,9 @@ GlobalErrors calculate(const char *name_of_file)
     if (fsize(&size_file, name_of_file))
         return GLOBAL_ERROR_READ_FILE;
         
-    char *commands = (char *)calloc(size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION, sizeof(char));
+    size_file /= sizeof(int);
+
+    int *commands = (int *)calloc(size_file + MAGIC_INTS, sizeof(int));
     if (!commands)
         return GLOBAL_ERROR_NO;
 
@@ -41,9 +43,9 @@ GlobalErrors calculate(const char *name_of_file)
 
     int ram[MAX_SIZE_RAM] = {};
 
-    int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
-    while (number_command * (int)sizeof(int) < size_file) {
-        int command = *((int *)commands + number_command);
+    int number_command = MAGIC_INTS;
+    while (number_command < size_file) {
+        int command = commands[number_command];
         number_command++;
 
         switch ((int)command % (int)powf(2, FREE_BYTES)) {

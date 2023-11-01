@@ -14,7 +14,7 @@ static int powf(int x, int p);
             continue;                                                           \
         }                                                                       \
         for (int i = 0; i < args; i++) {                                        \
-            int value  = *((int *)command + number_command);                    \
+            int value  = command[number_command];                               \
             number_command++;                                                   \
             fprintf(dest, " %d", value);                                        \
         }                                                                       \
@@ -32,7 +32,9 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
     if (fsize(&size_file, name_src))
         return GLOBAL_ERROR_READ_FILE;
 
-    char *command = (char *)calloc((size_file + COUNT_BYTES_IN_BINARY_TO_DECRIPTION), sizeof(char));
+    size_file /= sizeof(int);
+
+    int *command = (int *)calloc((size_file + MAGIC_INTS), sizeof(int));
     if (!command)
         return GLOBAL_ERROR_ALLOC_FAIL;
 
@@ -40,9 +42,9 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
     if (count_read != size_file)
         return GLOBAL_ERROR_READ_FILE;
                                                         
-    int number_command = COUNT_INTS_IN_BINARY_TO_DECRIPTION;
-    while ((number_command - COUNT_INTS_IN_BINARY_TO_DECRIPTION) * (int)sizeof(int) < size_file) {
-        int int_instruct = *((int *)command + number_command);
+    int number_command = MAGIC_INTS;
+    while ((number_command - MAGIC_INTS) * (int)sizeof(int) < size_file) {
+        int int_instruct = command[number_command];
         number_command++;
         
         #include "../DSL"

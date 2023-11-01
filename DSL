@@ -14,7 +14,7 @@
 //#define PRINT_COMMANDS
 
 DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
-    int value_elem = *((int *)commands + number_command);
+    int value_elem = commands[number_command];
     number_command++;
 
     int push_value = 0;
@@ -53,7 +53,7 @@ DEF_CMD(IN, 2, NUN, 0, {
 })
 
 DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
-    int place_to_write = *((int *)commands + number_command);
+    int place_to_write = commands[number_command];
     number_command++;
 
     int x = 0;
@@ -165,7 +165,7 @@ DEF_CMD(HLT, 12, NUN, 0, {
 })
 
 DEF_CMD(JMP, 13, NUM, 1, {
-    number_command = *((int *)commands + number_command);
+    number_command = commands[number_command];
     break;
 })
 
@@ -174,7 +174,7 @@ DEF_CMD(JA, 14, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y > x) number_command = *((int *)commands + number_command);
+    if (y > x) number_command = commands[number_command];
     else       number_command++;
     break;
 })
@@ -184,7 +184,7 @@ DEF_CMD(JAE, 15, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y >= x) number_command = *((int *)commands + number_command);
+    if (y >= x) number_command = commands[number_command];
     else        number_command++;
     break;
 })
@@ -194,7 +194,7 @@ DEF_CMD(JB, 16, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y < x) number_command = *((int *)commands + number_command);
+    if (y < x) number_command = commands[number_command];
     else       number_command++;
     break;
 })
@@ -204,7 +204,7 @@ DEF_CMD(JBE, 17, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y <= x) number_command = *((int *)commands + number_command);
+    if (y <= x) number_command = commands[number_command];
     else        number_command++;
     break;
 })
@@ -214,7 +214,7 @@ DEF_CMD(JE, 18, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y == x) number_command = *((int *)commands + number_command);
+    if (y == x) number_command = commands[number_command];
     else        number_command++;
     break;
 })
@@ -224,7 +224,7 @@ DEF_CMD(JNE, 19, NUM, 1, {
     int y = 0;
     POP(&x);
     POP(&y);
-    if (y != x) number_command = *((int *)commands + number_command);
+    if (y != x) number_command = commands[number_command];
     else        number_command++;
     break;
 })
@@ -233,14 +233,14 @@ DEF_CMD(JMON, 20, NUM, 1, {
     long int time_ = time(NULL);
     struct tm *loc_time;
     loc_time = localtime(&time_);
-    if (loc_time->tm_wday == 1) number_command = *((int *)commands + number_command);
+    if (loc_time->tm_wday == 1) number_command = commands[number_command];
     else                        number_command++;
     break;
 })
 
 DEF_CMD(CALL, 21, NUM, 1, {
     stack_push(&stack_commands, number_command + 1);
-    number_command = *((int *)commands + number_command);
+    number_command = commands[number_command];
     break;
 })
 
