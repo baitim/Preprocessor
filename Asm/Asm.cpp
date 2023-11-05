@@ -28,9 +28,14 @@ static int is_memory(char *s);
 static int is_register(char *s);
 static void check_len(char *s, int *len);
 static int check_empty(char *string);
-static GlobalErrors read_len_arg(int *len_arg, char *str);
 static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *pointers_labels, int **command);
-static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
+static int get_number(const DATA *src, int number_string, int *command, int *index_write, FILE *listing);
+static int get_memory(const DATA *src, int number_string, int *command, int *index_write);
+static int get_label(const DATA *src, int number_string, int *command, int *index_write, 
+                     Pointers_label *pointers_labels, int *number_fixup);
+static int get_register(const DATA *src, int number_string, int *command, int *index_write);
+static int parse_memory(char **dest, char *src);
+static void make_end_null(char *str);
 
 #define NUN 0
 #define REG (1 << 5)
@@ -100,8 +105,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         {
             char *label = src->pointers[number_string];
             int len_lable = 0;
-            error = read_len_arg(&len_lable, label);
-            if (error) return error;
+            check_len(label, &len_lable);
 
             if (label[len_lable - 1] == ':') {
                 LABELS[number_lable] = (Label){label, index_write};
@@ -153,8 +157,38 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
                             int *number_fixup, int number_string, 
                             Pointers_label *pointers_labels, FILE *listing)
 {
-    GlobalErrors error = GLOBAL_ERROR_NO;
+    if (get_number(src, number_string, command, index_write, listing) == 1)
+        return GLOBAL_ERROR_NO;
 
+    make_end_null(src->pointers[number_string]);
+    fprintf(listing, "%s\t", src->pointers[number_string]);
+    int type_arg = check_type_arg(src->pointers[number_string]);
+
+    if (type_arg == TYPE_ARG_MEM) {
+        if (get_memory(src, number_string, command, index_write) == 1)
+            return GLOBAL_ERROR_NO;
+        else
+            return GLOBAL_ERROR_READ_FILE;
+    }
+ 
+    if (type_arg == TYPE_ARG_REG) {
+        if (get_register(src, number_string, command, index_write) == 1)
+            return GLOBAL_ERROR_NO;
+        else 
+            return GLOBAL_ERROR_READ_FILE;
+    }
+ 
+    if (type_arg == TYPE_ARG_LAB) {
+        if (get_label(src, number_string, command, index_write, pointers_labels, number_fixup) == 1)
+            return GLOBAL_ERROR_NO;
+        else 
+            return GLOBAL_ERROR_READ_FILE;
+    }
+    return GLOBAL_ERROR_NO;
+}
+
+static int get_number(const DATA *src, int number_string, int *command, int *index_write, FILE *listing)
+{
     int int_arg = 0;
     int count_read = sscanf(src->pointers[number_string], "%d", &int_arg);
     if (count_read == 1) {
@@ -162,131 +196,97 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
         (*index_write)++;
         command[*index_write] = int_arg;
         fprintf(listing, "%d\t", int_arg);
-        return GLOBAL_ERROR_NO;
+        return 1;
     }
+    return 0;
+}
 
-    int len_arg = 0;
-    error = read_len_arg(&len_arg, src->pointers[number_string]);
-    if(error) return error;
+static int get_memory(const DATA *src, int number_string, int *command, int *index_write)
+{
+    command[*index_write] += MEM;
+    char *memory_arg = nullptr;
+    if (parse_memory(&memory_arg, src->pointers[number_string]) != 1)
+        return 0;
 
-    fprintf(listing, "%s\t", src->pointers[number_string]);
-    int type_arg = check_type_arg(src->pointers[number_string]);
-    if (type_arg == TYPE_ARG_MEM) {
-        command[*index_write] += MEM;
-        int l_space = 1, r_space = 1;
-        error = get_spaces_lr(&l_space, &r_space, src->pointers[number_string]);
-        if (error) return error;
+    int type_mem_arg = check_type_arg(memory_arg);
 
-        const int len_mem_command = len_arg - l_space - r_space;
-        char *memory_command = (char *)calloc(len_mem_command, sizeof(char));
-        if (!memory_command)
-        return GLOBAL_ERROR_ALLOC_FAIL;
-        memcpy(memory_command, src->pointers[number_string] + l_space, len_mem_command);
-        int type_mem_arg = check_type_arg(memory_command);
-        if (type_mem_arg == TYPE_ARG_REG) {
-            for (int j = 0; j < COUNT_REGISTERS; j++) {
-                if (strcmp(memory_command, REGISTERS[j].name) == 0) {
-                    command[*index_write] += REG;
-                    (*index_write)++;
-                    command[*index_write] = REGISTERS[j].index;
-                    break;                                                              
-                }
-            }
-        }
-        if (type_mem_arg == TYPE_ARG_NUM) {
-            command[*index_write] += NUM;
-            (*index_write)++;
-            command[*index_write] = atoi(memory_command);
-        }
-    }
- 
-    if (type_arg == TYPE_ARG_REG) {
+    if (type_mem_arg == TYPE_ARG_REG) {
         for (int j = 0; j < COUNT_REGISTERS; j++) {
-            if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {
+            if (strcmp(memory_arg, REGISTERS[j].name) == 0) {
                 command[*index_write] += REG;
                 (*index_write)++;
                 command[*index_write] = REGISTERS[j].index;
-                break;
+                break;                                                              
             }
         }
+        return 1;
     }
- 
-    if (type_arg == TYPE_ARG_LAB) {
-        int was_label = 0;
+    if (type_mem_arg == TYPE_ARG_NUM) {
         command[*index_write] += NUM;
         (*index_write)++;
-        for (int j = 0; j < MAX_COUNT_LABELS; j++) {
-            if (!LABELS[j].name) break;
-            if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {
-                command[*index_write] = LABELS[j].index;
-                was_label = 1;
-                break;
-            }
-        }
-        if (!was_label) {
-            command[*index_write] = POISON_LABEL;
-            pointers_labels[*number_fixup] = (Pointers_label) { number_string, (*index_write) };
-            (*number_fixup)++;
-        }
+        command[*index_write] = atoi(memory_arg);
+        return 1;
     }
-    return GLOBAL_ERROR_NO;
+    return 0;
 }
 
-
-
-static GlobalErrors read_len_arg(int *len_arg, char *str)
+static int parse_memory(char **dest, char *src)
 {
-    str = skip_spaces(str);
-
-    if (*str == '[') {
-
-        (*len_arg)++;
-        while (str[*len_arg] == ' ')
-            (*len_arg)++;
-
-        while (str[*len_arg] != ' ')
-            (*len_arg)++;
-
-        while (str[*len_arg] == ' ')
-            (*len_arg)++;
-
-        if (str[*len_arg] != ']')
-            return GLOBAL_ERROR_INPUT_FILE;
-
-        (*len_arg)++;
-
-        str[ + (*len_arg)] = '\0';
-
-        return GLOBAL_ERROR_NO;
+    if (src[0] != '[')
+        return 0;
+    src++;
+    *dest = skip_spaces(src);
+    src = skip_spaces(src);
+    src = skip_word(src);
+    if (src[-1] == ']') {
+        src[-1] = '\0';
+        return 1;
     }
-
-    while(str[*len_arg] != '\n' &&
-          str[*len_arg] != '\0' &&
-          str[*len_arg] != ' ')
-            (*len_arg)++;
-
-    str[*len_arg] = '\0';
-    return GLOBAL_ERROR_NO;
+    src[0] = '\0';
+    src++;
+    src = skip_spaces(src);
+    if (src[0] != ']')
+        return 0;
+    return 1;
 }
 
-static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
+static int get_label(const DATA *src, int number_string, int *command, int *index_write, 
+                     Pointers_label *pointers_labels, int *number_fixup)
 {
-    while (str[*l_spaces] == ' ')
-        (*l_spaces)++;
+    int was_label = 0;
+    command[*index_write] += NUM;
+    (*index_write)++;
+    for (int j = 0; j < MAX_COUNT_LABELS; j++) {
+        if (!LABELS[j].name) break;
+        if (strcmp(src->pointers[number_string], LABELS[j].name) == 0) {
+            command[*index_write] = LABELS[j].index;
+            was_label = 1;
+            break;
+        }
+    }
+    if (!was_label) {
+        command[*index_write] = POISON_LABEL;
+        pointers_labels[*number_fixup] = (Pointers_label) { number_string, (*index_write) };
+        (*number_fixup)++;
+    }
+    return 1;
+}
 
-    int len = 0;
-    while (str[*l_spaces + len] != ']' && str[*l_spaces + len] != ' ')
-        len++;
-    
-    while (str[*l_spaces] == ' ')
-        (*r_spaces)++;
-
-    return GLOBAL_ERROR_NO;
+static int get_register(const DATA *src, int number_string, int *command, int *index_write)
+{
+    for (int j = 0; j < COUNT_REGISTERS; j++) {
+        if (strcmp(src->pointers[number_string], REGISTERS[j].name) == 0) {
+            command[*index_write] += REG;
+            (*index_write)++;
+            command[*index_write] = REGISTERS[j].index;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 static Type_arg check_type_arg(char *arg)
 {
-    arg = skip_spaces(arg);
     if (is_memory(arg))     return TYPE_ARG_MEM;
     if (is_label(arg))      return TYPE_ARG_LAB;
     if (is_register(arg))   return TYPE_ARG_REG;
@@ -308,6 +308,7 @@ static int is_memory(char *s)
     if (s[0] != '[') { s = old; return 0; }
     s = skip_spaces(&s[1]);
     s = skip_word(s);
+    if (s[-1] == ']') { s = old; return 1; }
     s = skip_spaces(s);
     if (s[0] != ']') { s = old; return 0; }
     s = old;
@@ -330,7 +331,7 @@ static int is_register(char *s)
 static char *skip_spaces(char *s)
 {
     int i = 0;
-    while (s[i] == ' ')
+    while (isspace(s[i]))
         i++;
     return &s[i];
 }
@@ -355,4 +356,21 @@ static int check_empty(char *string)
 {
     if(*skip_spaces(string) == '\0')    return 1;
     else                                return 0;
+}
+
+static void make_end_null(char *str)
+{
+    char *string = str;
+    if (string[0] == '[') {
+        string++;
+        string = skip_spaces(string);
+        string = skip_word(string);
+        if (string[-1] == ']')
+            string[0] = '\0'; 
+        string = skip_spaces(string); 
+        string[1] = '\0';
+    } else {
+        string = skip_word(string);
+        string[0] = '\0';
+    }
 }
