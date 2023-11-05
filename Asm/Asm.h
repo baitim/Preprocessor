@@ -10,8 +10,6 @@
 struct Pointers_label {
     int in_src;
     int in_bin;
-    int len;
-    int start;
 };
 
 GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *labels, FILE *listing);

@@ -39,13 +39,12 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
 #define MEM (1 << 7)
 
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
-    if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
+    if (strncmp(src->pointers[number_string], #name_cmd, len_command) == 0)                 \
     {                                                                                       \
         fprintf(listing, "%s ", #name_cmd);                                                 \
         command[index_write] = num;                                                         \
-        number_char += len_command;                                                         \
         if (args > 0) {                                                                     \
-            error = get_arg(src, &number_char, command, &index_write,                       \
+            error = get_arg(src, &len_command, command, &index_write,                       \
                             &number_fixup, number_string, pointers_labels,                  \
                             listing);                                                       \
             if (error) return error;                                                        \
@@ -91,26 +90,25 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         }
         fprintf(listing, "%.4d ", index_write - MAGIC_INTS);
         fprintf(listing, "%.4d ", number_string);
-        int number_char = 0;
-        while (src->pointers[number_string][number_char] == ' ')
-            number_char++;
+        
+        src->pointers[number_string] = skip_spaces(src->pointers[number_string]);
 
         int len_command = 0;
-        while(src->pointers[number_string][number_char + len_command] != '\n' &&
-              src->pointers[number_string][number_char + len_command] != '\0' &&
-              src->pointers[number_string][number_char + len_command] != ' ')
+        while(src->pointers[number_string][len_command] != '\n' &&
+              src->pointers[number_string][len_command] != '\0' &&
+              src->pointers[number_string][len_command] != ' ')
             len_command++;
 
         #include "../Codegen.inc.h"
         {
             int len_lable = 0, count_arg_spaces = 0;
-            error = read_len_arg(&count_arg_spaces, &len_lable, &src->pointers[number_string][number_char]);
+            error = read_len_arg(&count_arg_spaces, &len_lable, src->pointers[number_string]);
             if (error) return error;
 
-            if (src->pointers[number_string][number_char + len_lable - 1] == ':') {
-                LABELS[number_lable] = (Label){&src->pointers[number_string][number_char], index_write};
-                fprintf(listing, "%s\t", &src->pointers[number_string][number_char]);
-                fprintf(labels, "%s\n%d\n", &src->pointers[number_string][number_char], index_write);
+            if (src->pointers[number_string][len_lable - 1] == ':') {
+                LABELS[number_lable] = (Label){src->pointers[number_string], index_write};
+                fprintf(listing, "%s\t", src->pointers[number_string]);
+                fprintf(labels, "%s\n%d\n", src->pointers[number_string], index_write);
                 number_lable++;
             }
         }
@@ -138,10 +136,17 @@ static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *poin
     printf("FIXUP:\n");
     printf("Need count fixups: %d\n", number_fixup);
     for (int i = 0; i < number_fixup; i++) {
-        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][pointers_labels[i].start]);
+        char *st = src->pointers[pointers_labels[i].in_src];
+        st = skip_spaces(st);
+        st = skip_word(st);
+        st = skip_spaces(st);
+        int len_label = 0;
+        check_len(st, &len_label);
+        int start = st - src->pointers[pointers_labels[i].in_src];
+        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][start]);
         for (int j = 0; j < MAX_COUNT_LABELS; j++) {
             if (!LABELS[j].name) break;
-            if (strncmp(&src->pointers[pointers_labels[i].in_src][pointers_labels[i].start], LABELS[j].name, pointers_labels[i].len) == 0) {
+            if (strncmp(&src->pointers[pointers_labels[i].in_src][start], LABELS[j].name, len_label) == 0) {
                 (*command)[pointers_labels[i].in_bin] = LABELS[j].index;
                 printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
                 break;
@@ -235,8 +240,7 @@ static GlobalErrors get_arg(const DATA *src, int *number_char, int *command,
         }
         if (!was_label) {
             command[*index_write] = POISON_LABEL;
-            pointers_labels[*number_fixup] = (Pointers_label) { number_string, (*index_write), 
-                                                                len_arg, (*number_char) + count_arg_spaces};
+            pointers_labels[*number_fixup] = (Pointers_label) { number_string, (*index_write) };
             (*number_fixup)++;
         }
     }
