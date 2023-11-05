@@ -19,7 +19,7 @@ int main(int argc, const char *argv[])
         fprintf(stderr, print_lred("ERROR in %s %s %d\n"), __FILE__, __PRETTY_FUNCTION__, __LINE__);
         return 1; 
     }
-    FILE *dest = fopen(cmd_data.disasm_txt, "wb");
+    FILE *dest = fopen(cmd_data.disasm_txt, "w");
     if (!dest) {
         dump(GLOBAL_ERROR_READ_FILE);
         return 1;

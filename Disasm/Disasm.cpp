@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -28,8 +29,7 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
 {
     FILE *src =  fopen(name_src, "rb");
     if (!src) return GLOBAL_ERROR_READ_FILE;
-    if (!dest) return GLOBAL_ERROR_READ_FILE;
-
+    assert(dest);
 
     int size_file = 0;
     if (fsize(&size_file, name_src))
@@ -49,7 +49,7 @@ GlobalErrors process_byte_commands_bin(FILE *dest, const char *name_src)
         return GLOBAL_ERROR_READ_FILE;
                                                         
     int number_command = MAGIC_INTS;
-    while ((number_command - MAGIC_INTS) * (int)sizeof(int) < size_file) {
+    while (number_command < size_file) {
         int int_instruct = command[number_command];
         number_command++;
         
