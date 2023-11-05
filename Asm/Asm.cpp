@@ -1,6 +1,7 @@
 #include <string.h>
 #include <cstdio>
 #include <stdlib.h>
+#include <cctype>
 
 #include "Asm.h"
 #include "../Config.h"
@@ -19,19 +20,15 @@ static GlobalErrors get_arg(const DATA *src, int *number_char, int *command,
                       int *index_write, int *number_fixup, int number_string, 
                       Pointers_label *pointers_labels, FILE *listing);
 
-static Type_arg check_type_arg(const char *arg);
-
-static int check_empty(const char *string)
-{
-    int i = 0;
-    while (string[i] == ' ')
-        i++;
-
-    if ((int)strlen(string) == i)
-        return 1;
-    return 0;
-}
-
+static Type_arg check_type_arg(char *arg);
+static char *skip_spaces(char *s);
+static char *skip_word(char *s);
+static char *get_word(char *s);
+static int is_label(char *s);
+static int is_memory(char *s);
+static int is_register(char *s);
+static void check_len(char *s, int *len);
+static int check_empty(char *string);
 static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str);
 static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *pointers_labels, int **command);
 static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str);
@@ -44,7 +41,7 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(&src->pointers[number_string][number_char], #name_cmd, len_command) == 0)   \
     {                                                                                       \
-        fprintf(listing, "%s\t", #name_cmd);                                                \
+        fprintf(listing, "%s ", #name_cmd);                                                 \
         command[index_write] = num;                                                         \
         number_char += len_command;                                                         \
         if (args > 0) {                                                                     \
@@ -52,9 +49,9 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
                             &number_fixup, number_string, pointers_labels,                  \
                             listing);                                                       \
             if (error) return error;                                                        \
-            fprintf(listing, "%d\t%d\t", num, command[index_write]);                        \
+            fprintf(listing, "%d %d\t", num, command[index_write]);                         \
         } else {                                                                            \
-            fprintf(listing, "-\t%d\t-\t", num);                                            \
+            fprintf(listing, "-\t%d -\t", num);                                             \
         }                                                                                   \
         index_write++;                                                                      \
     }                                                                                       \
@@ -247,20 +244,7 @@ static GlobalErrors get_arg(const DATA *src, int *number_char, int *command,
     return GLOBAL_ERROR_NO;
 }
 
-static Type_arg check_type_arg(const char *arg)
-{
-    const int len_arg = (int)strlen(arg);
 
-    if (arg[0] == '[' && arg[len_arg - 1] == ']') return TYPE_ARG_MEM;
-
-    if (arg[len_arg - 1] == ':') return TYPE_ARG_LAB;
-
-    for (int j = 0; j < COUNT_REGISTERS; j++) {
-        if (strcmp(arg, REGISTERS[j].name) == 0)
-            return TYPE_ARG_REG;
-    }
-    return TYPE_ARG_NUM;
-}
 
 static GlobalErrors read_len_arg(int *count_spaces, int *len_arg, char *str)
 {
@@ -311,4 +295,77 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
         (*r_spaces)++;
 
     return GLOBAL_ERROR_NO;
+}
+
+static Type_arg check_type_arg(char *arg)
+{
+    arg = skip_spaces(arg);
+    if (is_memory(arg))     return TYPE_ARG_MEM;
+    if (is_label(arg))      return TYPE_ARG_LAB;
+    if (is_register(arg))   return TYPE_ARG_REG;
+    return TYPE_ARG_NUM;
+}
+
+static int is_label(char *s)
+{
+    char *old = s;
+    s = skip_word(s);
+    if (s[-1] == ':') { s = old; return 1; }
+    s = old;
+    return 0;
+}
+
+static int is_memory(char *s)
+{
+    char *old = s;
+    if (s[0] != '[') { s = old; return 0; }
+    s = skip_spaces(&s[1]);
+    s = skip_word(s);
+    s = skip_spaces(s);
+    if (s[0] != ']') { s = old; return 0; }
+    s = old;
+    return 1;
+}
+
+static int is_register(char *s)
+{
+    char *old = s;
+    for (int j = 0; j < COUNT_REGISTERS; j++) {
+        if (strcmp(s, REGISTERS[j].name) == 0) {
+            s = old; 
+            return 1; 
+        }
+    }
+    s = old;
+    return 0;
+}
+
+static char *skip_spaces(char *s)
+{
+    int i = 0;
+    while (s[i] == ' ')
+        i++;
+    return &s[i];
+}
+
+static void check_len(char *s, int *len)
+{
+    char *old = s;
+    while (s[*len] != '\0' && !isspace(s[*len]))
+        (*len)++;
+    s = old;
+}
+
+static char *skip_word(char *s)
+{
+    int i = 0;
+    while (s[i] != '\0' && !isspace(s[i]))
+        i++;
+    return &s[i];
+}
+
+static int check_empty(char *string)
+{
+    if(*skip_spaces(string) == '\0')    return 1;
+    else                                return 0;
 }
