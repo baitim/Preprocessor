@@ -16,9 +16,9 @@ enum Type_arg {
     TYPE_ARG_MEM = 4
 };
 
-static GlobalErrors get_arg(const DATA *src, int *number_char, int *command, 
-                      int *index_write, int *number_fixup, int number_string, 
-                      Pointers_label *pointers_labels, FILE *listing);
+static GlobalErrors get_arg(const DATA *src, int *command, int *index_write, 
+                            int *number_fixup, int number_string, 
+                            Pointers_label *pointers_labels, FILE *listing);
 
 static Type_arg check_type_arg(char *arg);
 static char *skip_spaces(char *s);
@@ -43,10 +43,11 @@ static GlobalErrors get_spaces_lr(int *l_spaces, int *r_spaces, const char *str)
     {                                                                                       \
         fprintf(listing, "%s ", #name_cmd);                                                 \
         command[index_write] = num;                                                         \
+        src->pointers[number_string] = skip_word(src->pointers[number_string]);             \
+        src->pointers[number_string] = skip_spaces(src->pointers[number_string]);           \
         if (args > 0) {                                                                     \
-            error = get_arg(src, &len_command, command, &index_write,                       \
-                            &number_fixup, number_string, pointers_labels,                  \
-                            listing);                                                       \
+            error = get_arg(src, command, &index_write, &number_fixup,                      \
+                            number_string, pointers_labels, listing);                       \
             if (error) return error;                                                        \
             fprintf(listing, "%d %d\t", num, command[index_write]);                         \
         } else {                                                                            \
@@ -94,21 +95,19 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
         src->pointers[number_string] = skip_spaces(src->pointers[number_string]);
 
         int len_command = 0;
-        while(src->pointers[number_string][len_command] != '\n' &&
-              src->pointers[number_string][len_command] != '\0' &&
-              src->pointers[number_string][len_command] != ' ')
-            len_command++;
+        check_len(src->pointers[number_string], &len_command);
 
         #include "../Codegen.inc.h"
         {
+            char *label = src->pointers[number_string];
             int len_lable = 0, count_arg_spaces = 0;
-            error = read_len_arg(&count_arg_spaces, &len_lable, src->pointers[number_string]);
+            error = read_len_arg(&count_arg_spaces, &len_lable, label);
             if (error) return error;
 
-            if (src->pointers[number_string][len_lable - 1] == ':') {
-                LABELS[number_lable] = (Label){src->pointers[number_string], index_write};
-                fprintf(listing, "%s\t", src->pointers[number_string]);
-                fprintf(labels, "%s\n%d\n", src->pointers[number_string], index_write);
+            if (label[len_lable - 1] == ':') {
+                LABELS[number_lable] = (Label){label, index_write};
+                fprintf(listing, "%s\t", label);
+                fprintf(labels, "%s\n%d\n", label, index_write);
                 number_lable++;
             }
         }
@@ -138,15 +137,11 @@ static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *poin
     for (int i = 0; i < number_fixup; i++) {
         char *st = src->pointers[pointers_labels[i].in_src];
         st = skip_spaces(st);
-        st = skip_word(st);
-        st = skip_spaces(st);
         int len_label = 0;
         check_len(st, &len_label);
-        int start = st - src->pointers[pointers_labels[i].in_src];
-        printf("Need fix: %s\n", &src->pointers[pointers_labels[i].in_src][start]);
         for (int j = 0; j < MAX_COUNT_LABELS; j++) {
             if (!LABELS[j].name) break;
-            if (strncmp(&src->pointers[pointers_labels[i].in_src][start], LABELS[j].name, len_label) == 0) {
+            if (strncmp(st, LABELS[j].name, len_label) == 0) {
                 (*command)[pointers_labels[i].in_bin] = LABELS[j].index;
                 printf("Fixed: %s %d\n", LABELS[j].name, LABELS[j].index);
                 break;
@@ -155,14 +150,14 @@ static void fixup_lables(int number_fixup, const DATA *src, Pointers_label *poin
     }
 }
 
-static GlobalErrors get_arg(const DATA *src, int *number_char, int *command, 
-                            int *index_write, int *number_fixup, int number_string, 
+static GlobalErrors get_arg(const DATA *src, int *command, int *index_write, 
+                            int *number_fixup, int number_string, 
                             Pointers_label *pointers_labels, FILE *listing)
 {
     GlobalErrors error = GLOBAL_ERROR_NO;
 
     int int_arg = 0;
-    int count_read = sscanf(&src->pointers[number_string][*number_char], "%d", &int_arg);
+    int count_read = sscanf(src->pointers[number_string], "%d", &int_arg);
     if (count_read == 1) {
         command[*index_write] += NUM;
         (*index_write)++;
@@ -176,14 +171,14 @@ static GlobalErrors get_arg(const DATA *src, int *number_char, int *command,
         return GLOBAL_ERROR_ALLOC_FAIL;
     int len_arg = 0;
     int count_arg_spaces = 0;
-    error = read_len_arg(&count_arg_spaces, &len_arg, &src->pointers[number_string][*number_char]);
+    error = read_len_arg(&count_arg_spaces, &len_arg, src->pointers[number_string]);
     if(error) return error;
 
     argument = (char *)realloc(argument, len_arg * sizeof(char));
     if (!argument)
         return GLOBAL_ERROR_ALLOC_FAIL;
 
-    memcpy(argument, &src->pointers[number_string][*number_char + count_arg_spaces], len_arg);
+    memcpy(argument, &src->pointers[number_string][count_arg_spaces], len_arg);
     fprintf(listing, "%s\t", argument);
     int type_arg = check_type_arg(argument);
     if (type_arg == TYPE_ARG_MEM) {
