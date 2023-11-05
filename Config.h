@@ -5,7 +5,7 @@
 
 typedef int type_el;
 
-const int MAX_SIZE_RAM = 1000;
+const int MAX_SIZE_RAM = 1501;
 
 const int MAX_SIZE_ARGUMENT = 100;
 const int MAX_SIZE_COMMAND  = 1;
@@ -16,6 +16,7 @@ const int MAGIC_INTS = (MAGIC_BYTES + 3) / 4;
 
 const unsigned char POISON_BYTE = 0xbe;
 const type_el POISON_EL = POISON_BYTE;
+const int POISON_DRAW = -0xaab;
 
 void print_el(const type_el* elem);
 
@@ -35,7 +36,8 @@ static Register REGISTERS[] = {
     {"rax", POISON_BYTE, 0xAA},
     {"rbx", POISON_BYTE, 0xAB},
     {"rcx", POISON_BYTE, 0xAC},
-    {"rdx", POISON_BYTE, 0xAD}
+    {"rdx", POISON_BYTE, 0xAD},
+    {"rex", POISON_BYTE, 0xAE},
 };
 const int COUNT_REGISTERS = sizeof(REGISTERS) / sizeof(Register);
 

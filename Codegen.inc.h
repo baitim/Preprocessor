@@ -58,9 +58,8 @@ DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
     if (IS_MEM) {
         if (IS_NUM)
             ram[place_to_write] = x;
-        else {
+        else
             ram[REGISTERS[number_reg].value / PRECISION] = x;
-        }
     } else {
         if (IS_REG)
             REGISTERS[number_reg].value = x;
@@ -77,6 +76,9 @@ DEF_CMD(ADD, 4, NUN, 0, {
     int x = 0;
     int y = 0;
     PUSH((POP(&x), x) + (POP(&y), y));
+#ifdef PRINT_COMMANDS
+    printf("ADDED VALUE = %d\n", x + y);
+#endif
     break;
 })
 
@@ -237,5 +239,20 @@ DEF_CMD(RET, 22, NUN, 0, {
 DEF_CMD(OUTC, 23, NUN, 0, {
     int print_value = 0;
     printf(print_lyellow("%c"), ((POP(&print_value), print_value) / PRECISION));
+    break;
+})
+
+DEF_CMD(DRAW, 24, NUN, 0, {
+    for (int index_ = START_DRAW_RAM; index_ <= END_DRAW_RAM; index_++) {
+        if (ram[index_] < 0) continue;
+        printf(print_lcyan("%c"), ram[index_] / PRECISION);
+    }
+    break;
+})
+
+DEF_CMD(CLEAR_DRAW, 25, NUN, 0, {
+    for (int index_ = START_DRAW_RAM; index_ <= END_DRAW_RAM; index_++) {
+        ram[index_] = POISON_DRAW;
+    }
     break;
 })

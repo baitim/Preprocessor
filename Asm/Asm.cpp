@@ -240,6 +240,7 @@ static int parse_memory(char **dest, char *src)
     src = skip_word(src);
     if (src[-1] == ']') {
         src[-1] = '\0';
+        printf("dest = %s\n", *dest);
         return 1;
     }
     src[0] = '\0';

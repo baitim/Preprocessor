@@ -58,6 +58,8 @@
     * <code> CALL < lable > </code>
     * <code> RET </code>
     * <code> OUTC </code>
+    * <code> DRAW </code>
+    * <code> CLEAR_DRAW </code>
 
 
 

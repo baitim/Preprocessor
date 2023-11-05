@@ -2,7 +2,7 @@ options = -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloa
 
 debug =
 
-INPUT_txt = 	--input_txt 	files/Quadratic
+INPUT_txt = 	--input_txt 	files/Circle
 ASM_bin = 		--asm_bin 		files/Asm.bin
 DISASM_txt = 	--disasm_txt 	files/Disasm
 LABELS =        --labels		files/Labels

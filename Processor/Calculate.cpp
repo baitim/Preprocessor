@@ -22,12 +22,14 @@
 #define POP(arg)        stack_pop (&stack, (arg))
 #define PUSH_COM(arg)   stack_push(&stack_commands, (arg));
 #define POP_COM(arg)    stack_pop (&stack_commands, (arg));
+#define START_DRAW_RAM 500
+#define END_DRAW_RAM   1500
 
 #define IS_REG (command & REG)
 #define IS_NUM (command & NUM)
 #define IS_MEM (command & MEM)
 
-//#define PRINT_COMMANDS
+// #define PRINT_COMMANDS
 
 #define DEF_CMD(name, num, type_args, args, code)       \
     case CMD_ ## name:                                  \
@@ -59,6 +61,8 @@ GlobalErrors calculate(const char *name_of_file)
     stack_ctor(&stack_commands);
 
     int ram[MAX_SIZE_RAM] = {};
+    for (int i = START_DRAW_RAM; i <= END_DRAW_RAM; i++)
+        ram[i] = POISON_DRAW;
 
     int number_command = MAGIC_INTS;
     while (number_command < size_file) {

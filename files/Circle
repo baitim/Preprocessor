@@ -1,14 +1,17 @@
+/ DRAW RAM in [500 - 1500]
 CALL MAIN:
 HLT
 
 MAIN:
     CALL PRINT_HELLO:
+    PUSH 500
+    POP rdx
     PUSH 40
     POP rax
     CALL PRINT_CIRCLE:
     RET
 
-/ WARNING function changes registers values (rbx rcx)
+/ WARNING function changes registers values (rbx rcx rdx)
 PRINT_CIRCLE:
     PUSH 10                      /  обнуление rbx
     POP rbx
@@ -33,12 +36,16 @@ PRINT_CIRCLE:
             CALL ADD_1_TO_RCX:
         JMP for_Y:
         end_for_Y:                      / выход из внутреннего цикла
-        CALL PRINT_NEW_LINE:
+        CALL WRITE_NEW_LINE:
         CALL ADD_1_TO_RBX:
     JMP for_X:
     ret_print_circle:               / выход из внешнего цикла
+
+    DRAW            / вывод круга
+
     RET
 
+/ WARNING function changes register value (rdx)
 PRINT_DOT_OR_STAR:
     CALL PUSH_DISTANCE_X_TO_O:
     CALL PUSH_DISTANCE_X_TO_O:
@@ -50,15 +57,19 @@ PRINT_DOT_OR_STAR:
     CALL PUSH_RADIUS:
     CALL PUSH_RADIUS:
     MUL
-    JBE print_star:
-    JMP print_dot:
+    JBE write_star:
+    JMP write_dot:
 
-    print_star:
-    CALL PRINT_STAR:
+    write_star:
+    PUSH 42
+    POP [ rdx ]
+    CALL ADD_1_TO_RDX:
     RET
 
-    print_dot:
-    CALL PRINT_DOT:
+    write_dot:
+    PUSH 46
+    POP [ rdx ]
+    CALL ADD_1_TO_RDX:
     RET
 
 ADD_1_TO_RBX:
@@ -75,34 +86,45 @@ ADD_1_TO_RCX:
     POP  rcx
     RET
 
-PRINT_DOT:
-    PUSH 46
-    OUTC
+ADD_1_TO_RDX:
+    PUSH rdx
+    PUSH 1
+    ADD
+    POP  rdx
     RET
 
-PRINT_STAR:
-    PUSH 42
-    OUTC
-    RET
-
-PRINT_NEW_LINE:
+WRITE_NEW_LINE:
     PUSH 10
-    OUTC
+    POP [ rdx ]
+    CALL ADD_1_TO_RDX:
     RET
 
 PRINT_RAX:
     PUSH rax
     OUT
+    PUSH 10
+    OUTC
     RET
 
 PRINT_RBX:
     PUSH rbx
     OUT
+    PUSH 10
+    OUTC
     RET
 
 PRINT_RCX:
     PUSH rcx
     OUT
+    PUSH 10
+    OUTC
+    RET
+
+PRINT_RDX:
+    PUSH rdx
+    OUT
+    PUSH 10
+    OUTC
     RET
 
 PUSH_DISTANCE_X_TO_O:
