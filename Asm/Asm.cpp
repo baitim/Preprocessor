@@ -163,14 +163,14 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
     make_end_null(src->pointers[number_string]);
     fprintf(listing, "%s\t", src->pointers[number_string]);
     int type_arg = check_type_arg(src->pointers[number_string]);
-
+ 
     if (type_arg == TYPE_ARG_MEM) {
         if (get_memory(src, number_string, command, index_write) == 1)
             return GLOBAL_ERROR_NO;
         else
             return GLOBAL_ERROR_READ_FILE;
     }
- 
+
     if (type_arg == TYPE_ARG_REG) {
         if (get_register(src, number_string, command, index_write) == 1)
             return GLOBAL_ERROR_NO;
@@ -184,6 +184,7 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
         else 
             return GLOBAL_ERROR_READ_FILE;
     }
+
     return GLOBAL_ERROR_NO;
 }
 
@@ -235,12 +236,11 @@ static int parse_memory(char **dest, char *src)
     if (src[0] != '[')
         return 0;
     src++;
-    *dest = skip_spaces(src);
     src = skip_spaces(src);
+    *dest = src;
     src = skip_word(src);
     if (src[-1] == ']') {
         src[-1] = '\0';
-        printf("dest = %s\n", *dest);
         return 1;
     }
     src[0] = '\0';
@@ -368,8 +368,10 @@ static void make_end_null(char *str)
         string = skip_word(string);
         if (string[-1] == ']')
             string[0] = '\0'; 
-        string = skip_spaces(string); 
-        string[1] = '\0';
+        else {
+            string = skip_spaces(string); 
+            string[1] = '\0';
+        }
     } else {
         string = skip_word(string);
         string[0] = '\0';

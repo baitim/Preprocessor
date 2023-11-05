@@ -49,7 +49,7 @@ ind  num  com	arg	bin_com	bin_arg
 0071 0060 JMP write_dot:	13 -1	
 0073 0062 write_star:	
 0073 0063 PUSH 42	1 42	
-0075 0064 POP [ rdx ]	3 173	
+0075 0064 POP [ rdx]	3 173	
 0077 0065 CALL ADD_1_TO_RDX:	21 -1	
 0079 0066 RET -	22 -	
 0080 0068 write_dot:	
