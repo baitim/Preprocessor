@@ -366,9 +366,9 @@ static void make_end_null(char *str)
         string++;
         string = skip_spaces(string);
         string = skip_word(string);
-        if (string[-1] == ']')
+        if (string[-1] == ']') {
             string[0] = '\0'; 
-        else {
+        } else {
             string = skip_spaces(string); 
             string[1] = '\0';
         }
