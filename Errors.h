@@ -7,19 +7,21 @@ struct Errors {
 };
 
 enum GlobalErrors {
-    GLOBAL_ERROR_NO =                          0,
-    GLOBAL_ERROR_ALLOC_FAIL =                  1 << 0,
-    GLOBAL_ERROR_READ_FILE =                   1 << 1,
-    GLOBAL_ERROR_WRITE_FILE =                  1 << 2,
-    GLOBAL_ERROR_INPUT_FILE =                  1 << 3,
+    GLOBAL_ERROR_NO =                           0,
+    GLOBAL_ERROR_ALLOC_FAIL =                   1 << 0,
+    GLOBAL_ERROR_READ_FILE =                    1 << 1,
+    GLOBAL_ERROR_WRITE_FILE =                   1 << 2,
+    GLOBAL_ERROR_INPUT_FILE =                   1 << 3,
+    GLOBAL_ERROR_MAX_COUNT_LABELS =             1 << 4,
 };
 
 const Errors GLOBAL_ERRORS[] = {
-    {GLOBAL_ERROR_NO,                          "no errors"},
-    {GLOBAL_ERROR_ALLOC_FAIL,                  "realloc fail"},
-    {GLOBAL_ERROR_READ_FILE,                   "file read error"},
-    {GLOBAL_ERROR_WRITE_FILE,                  "file write error"},
-    {GLOBAL_ERROR_INPUT_FILE,                  "can't read input file"},
+    {GLOBAL_ERROR_NO,                           "no errors"},
+    {GLOBAL_ERROR_ALLOC_FAIL,                   "realloc fail"},
+    {GLOBAL_ERROR_READ_FILE,                    "file read error"},
+    {GLOBAL_ERROR_WRITE_FILE,                   "file write error"},
+    {GLOBAL_ERROR_INPUT_FILE,                   "can't read input file"},
+    {GLOBAL_ERROR_MAX_COUNT_LABELS,             "use more than max count labels"},
 };
 const int COUNT_GLOBAL_ERRORS = sizeof(GLOBAL_ERRORS) / sizeof(Errors);
 

@@ -2,28 +2,7 @@ DEF_CMD(PUSH, 1, REG | NUM | MEM, 1, {
     int value_elem = commands[number_command];
     number_command++;
 
-    int push_value = 0;
-
-    if (IS_REG) {
-        for (int i = 0; i < COUNT_REGISTERS; i++) {
-            if (REGISTERS[i].index == value_elem) {
-                push_value = REGISTERS[i].value;
-                break;
-            }
-        }
-    }
-
-    if (IS_MEM) {
-        if (IS_NUM)
-            PUSH(ram[value_elem]);
-        else
-            PUSH(ram[push_value]);
-    } else {
-        if (IS_NUM)
-            PUSH(value_elem * PRECISION);
-        else
-            PUSH(push_value);
-    }
+    PUSH(get_value(command, value_elem, ram));
 
     break;
 })
@@ -38,32 +17,17 @@ DEF_CMD(IN, 2, NUN, 0, {
 })
 
 DEF_CMD(POP, 3, REG | MEM, 1, {
-    int place_to_write = commands[number_command];
+    int arg_to_write = commands[number_command];
     number_command++;
+
+    int *place_to_write = place_get_value(command, arg_to_write, ram);
+
+    if (!place_to_write)
+        return GLOBAL_ERROR_READ_FILE;
 
     int x = 0;
     POP(&x);
-
-    int number_reg = 0;
-
-    if (IS_REG) {
-        for (int i = 0; i < COUNT_REGISTERS; i++) {
-            if (REGISTERS[i].index == place_to_write) {
-                number_reg = i;
-                break;
-            }
-        }
-    }
-
-    if (IS_MEM) {
-        if (IS_NUM)
-            ram[place_to_write] = x;
-        else
-            ram[REGISTERS[number_reg].value / PRECISION] = x;
-    } else {
-        if (IS_REG)
-            REGISTERS[number_reg].value = x;
-    }
+    *place_to_write = x;
 
     break;
 })

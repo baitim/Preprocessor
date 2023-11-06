@@ -30,6 +30,9 @@
 
 // #define PRINT_COMMANDS
 
+static int get_value(int command, int value_elem, int *ram);
+static int *place_get_value(int command, int arg_to_write, int *ram);
+
 #define DEF_CMD(name, num, type_args, args, code)       \
     case CMD_ ## name:                                  \
         code
@@ -98,10 +101,53 @@ GlobalErrors calculate(const char *name_of_file)
 }
 #undef CMD_DEF
 
-static int powf(int x, int p)
+static int get_value(int command, int value_elem, int *ram)
 {
-    if (p == 0) return 1;
-    if (p % 2 == 1) return x * powf(x, p - 1);
-    int z = powf(x, p/2);
-    return z * z;
+    int push_value = 0;
+
+    if (IS_REG) {
+        for (int i = 0; i < COUNT_REGISTERS; i++) {
+            if (REGISTERS[i].index == value_elem) {
+                push_value = REGISTERS[i].value;
+                break;
+            }
+        }
+    }
+
+    if (IS_MEM) {
+        if (IS_NUM)
+            return ram[value_elem];
+        else
+            return ram[push_value];
+    } else {
+        if (IS_NUM)
+            return value_elem * PRECISION;
+        else
+            return push_value;
+    }
+}
+
+static int *place_get_value(int command, int arg_to_write, int *ram)
+{
+    int number_reg = 0;
+
+    if (IS_REG) {
+        for (int i = 0; i < COUNT_REGISTERS; i++) {
+            if (REGISTERS[i].index == arg_to_write) {
+                number_reg = i;
+                break;
+            }
+        }
+    }
+
+    if (IS_MEM) {
+        if (IS_NUM)
+            return &ram[arg_to_write];
+        else
+            return &ram[REGISTERS[number_reg].value / PRECISION];
+    } else {
+        if (IS_REG)
+            return &REGISTERS[number_reg].value;
+    }
+    return NULL;
 }

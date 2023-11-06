@@ -111,6 +111,8 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
                 fprintf(listing, " %s", label);
                 fprintf(labels, "%s\n%d\n", label, index_write);
                 number_lable++;
+                if (number_lable >= MAX_COUNT_LABELS)
+                    return GLOBAL_ERROR_MAX_COUNT_LABELS;
             }
         }
         fprintf(listing, "\n");
