@@ -14,30 +14,32 @@ MAIN:
     CALL IS_INFINITY: / answer in ram[ 0 ], if ram[ 0 ] == 1 equation is infinity
     PUSH [ 0 ]
     PUSH 1
-    JE inf_print_hlt:
+    JE inf_print:
 
     CALL IS_ZERO: / answer in ram[ 0 ], if ram[ 0 ] == 1 zero roots, checks a == 0 and b == 0(doesn't check D)
     PUSH [ 0 ]
     PUSH 1
-    JE zero_print_hlt:
+    JE zero_print:
 
     CALL IS_LINEAR: / answer in ram[ 0 ], if ram[ 0 ] == 1 equation is linear
     PUSH [ 0 ]
     PUSH 1
-    JE line_calc_print_hlt:
+    JE line_calc_print:
 
-    CALL QUAD_HLT:                  / HLT
+    CALL SOLVE_QUAD:
+    RET                      
 
-    RET                            
+    inf_print:
+    CALL PRINT_INFINITY:
+    RET
 
-    inf_print_hlt:
-    CALL PRINT_INFINITY_HLT:        / HLT
+    zero_print:
+    CALL PRINT_ZERO:
+    RET
 
-    zero_print_hlt:
-    CALL PRINT_ZERO_HLT:            / HLT
-
-    line_calc_print_hlt:
-    CALL LINEAR_HLT:                / HLT
+    line_calc_print:
+    CALL SOLVE_LINEAR:
+    RET
 
 / WARNING function changes ram[ 0 ]
 IS_INFINITY:
@@ -62,8 +64,7 @@ IS_INFINITY:
     POP [ 0 ]
     RET
 
-/ WARNING function does HLT
-PRINT_INFINITY_HLT:
+PRINT_INFINITY:
     PUSH 73
     OUTC
     PUSH 78
@@ -82,7 +83,7 @@ PRINT_INFINITY_HLT:
     OUTC
     PUSH 10
     OUTC
-    HLT
+    RET
 
 / WARNING function changes ram[ 0 ]
 IS_ZERO:
@@ -103,8 +104,7 @@ IS_ZERO:
     POP [ 0 ]
     RET
 
-/ WARNING function does HLT
-PRINT_ZERO_HLT:
+PRINT_ZERO:
     PUSH 90
     OUTC
     PUSH 69
@@ -115,7 +115,7 @@ PRINT_ZERO_HLT:
     OUTC
     PUSH 10
     OUTC
-    HLT
+    RET
 
 / WARNING function changes ram[ 0 ]
 IS_LINEAR:
@@ -133,7 +133,7 @@ IS_LINEAR:
     RET
 
 / WARNING function changes ram[ 11 ] (root in ram[ 11 ])
-LINEAR_HLT:
+SOLVE_LINEAR:
     PUSH 0
     PUSH rcx
     PUSH rbx
@@ -141,10 +141,10 @@ LINEAR_HLT:
     SUB
     POP [ 11 ]
 
-    CALL PRINT_LINEAR_HLT:
+    CALL PRINT_LINEAR:
     RET
 
-PRINT_LINEAR_HLT:
+PRINT_LINEAR:
     PUSH 49
     OUTC
     PUSH 32
@@ -156,9 +156,9 @@ PRINT_LINEAR_HLT:
     OUTC
     PUSH [ 11 ]
     OUT
-    HLT
+    RET
 
-QUAD_HLT:
+SOLVE_QUAD:
     PUSH rbx
     PUSH rbx
     MUL
@@ -173,18 +173,24 @@ QUAD_HLT:
     
     PUSH -1
     PUSH [ 0 ]
-    JE PRINT_ZERO_HLT:
+    JNE not_zero_quad:
+    CALL PRINT_ZERO:
+    RET
+
+    not_zero_quad:
 
     PUSH 0
     PUSH [ 0 ]
-    JE QUAD_1_HLT:
-
-    PUSH 1
-    PUSH [ 0 ]
-    JE QUAD_2_HLT:
+    JNE not_one_quad:
+    CALL SOLVE_QUAD_1:
     RET
 
-QUAD_1_HLT:
+    not_one_quad:
+
+    CALL SOLVE_QUAD_2:
+    RET
+
+SOLVE_QUAD_1:
     PUSH 0
     PUSH rbx
     SUB
@@ -193,10 +199,10 @@ QUAD_1_HLT:
     PUSH rax
     DIV
     POP [ 11 ]
-    CALL PRINT_LINEAR_HLT:
+    CALL PRINT_LINEAR:
     RET
 
-QUAD_2_HLT:
+SOLVE_QUAD_2:
     PUSH 0
     PUSH rbx
     SUB
@@ -221,10 +227,10 @@ QUAD_2_HLT:
     DIV
     POP [ 22 ]
 
-    CALL PRINT_2_ROOTS_HLT:
+    CALL PRINT_2_ROOTS:
     RET
 
-PRINT_2_ROOTS_HLT:
+PRINT_2_ROOTS:
     PUSH 50
     OUTC
     PUSH 32
