@@ -45,7 +45,7 @@ static void make_end_null(char *str);
 #define DEF_CMD(name_cmd, num, type_args, args, code)                                       \
     if (strncmp(src->pointers[number_string], #name_cmd, len_command) == 0)                 \
     {                                                                                       \
-        fprintf(listing, "%s ", #name_cmd);                                                 \
+        fprintf(listing, " %*s ", 7, #name_cmd);                                            \
         command[index_write] = num;                                                         \
         src->pointers[number_string] = skip_word(src->pointers[number_string]);             \
         src->pointers[number_string] = skip_spaces(src->pointers[number_string]);           \
@@ -53,9 +53,9 @@ static void make_end_null(char *str);
             error = get_arg(src, command, &index_write, &number_fixup,                      \
                             number_string, pointers_labels, listing);                       \
             if (error) return error;                                                        \
-            fprintf(listing, "%d %d\t", num, command[index_write]);                         \
+            fprintf(listing, "  |  %d %d\t", num, command[index_write]);                    \
         } else {                                                                            \
-            fprintf(listing, "-\t%d -\t", num);                                             \
+            fprintf(listing, "%*c-  |  %d -\t", 20, ' ', num);                             \
         }                                                                                   \
         index_write++;                                                                      \
     }                                                                                       \
@@ -66,7 +66,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
     GlobalErrors error = GLOBAL_ERROR_NO;
     if (!dest) return GLOBAL_ERROR_READ_FILE;
 
-    fprintf(listing, "ind  num  com\targ\tbin_com\tbin_arg\n");
+    fprintf(listing, " ind  | num  | src                            | bin\n");
 
     int *command = (int *)calloc(2 * (src->commands_count + MAGIC_INTS), sizeof(int));
     if (!command)
@@ -93,8 +93,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
             number_string++;
             continue;
         }
-        fprintf(listing, "%.4d ", index_write - MAGIC_INTS);
-        fprintf(listing, "%.4d ", number_string);
+        fprintf(listing, " %.4d | %.4d |", index_write - MAGIC_INTS, number_string);
         
         src->pointers[number_string] = skip_spaces(src->pointers[number_string]);
 
@@ -109,7 +108,7 @@ GlobalErrors process_input_commands_bin(FILE *dest, const DATA *src, FILE *label
 
             if (label[len_lable - 1] == ':') {
                 LABELS[number_lable] = (Label){label, index_write};
-                fprintf(listing, "%s\t", label);
+                fprintf(listing, " %s", label);
                 fprintf(labels, "%s\n%d\n", label, index_write);
                 number_lable++;
             }
@@ -157,11 +156,12 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
                             int *number_fixup, int number_string, 
                             Pointers_label *pointers_labels, FILE *listing)
 {
+    // Нет проверки на сигнатуру.
     if (get_number(src, number_string, command, index_write, listing) == 1)
         return GLOBAL_ERROR_NO;
 
     make_end_null(src->pointers[number_string]);
-    fprintf(listing, "%s\t", src->pointers[number_string]);
+    fprintf(listing, "%*s", 21, src->pointers[number_string]);
     int type_arg = check_type_arg(src->pointers[number_string]);
  
     if (type_arg == TYPE_ARG_MEM) {
@@ -196,7 +196,7 @@ static int get_number(const DATA *src, int number_string, int *command, int *ind
         command[*index_write] += NUM;
         (*index_write)++;
         command[*index_write] = int_arg;
-        fprintf(listing, "%d\t", int_arg);
+        fprintf(listing, "%*d", 21, int_arg);
         return 1;
     }
     return 0;

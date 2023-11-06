@@ -37,7 +37,7 @@ DEF_CMD(IN, 2, NUN, 0, {
     break;
 })
 
-DEF_CMD(POP, 3, NUM | REG | MEM, 1, {
+DEF_CMD(POP, 3, REG | MEM, 1, {
     int place_to_write = commands[number_command];
     number_command++;
 
@@ -122,21 +122,21 @@ DEF_CMD(DIV, 7, NUN, 0, {
 DEF_CMD(SQRT, 8, NUN, 0, {
     int x = 0;
     POP(&x);
-    PUSH((int)sqrt((double)x * (double)100));
+    PUSH((int)sqrt((double)x * (double)PRECISION));
     break;
 })
 
 DEF_CMD(SIN, 9, NUN, 0, {
     int x = 0;
     POP(&x);
-    PUSH((int)sin((double)x / (double)100));
+    PUSH((int)sin((double)x / (double)PRECISION));
     break;
 })
 
 DEF_CMD(COS, 10, NUN, 0, {
     int x = 0;
     POP(&x);
-    PUSH((int)cos((double)x / (double)100));
+    PUSH((int)cos((double)x / (double)PRECISION));
     break;
 })
 

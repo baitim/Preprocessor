@@ -5,7 +5,9 @@
 
 typedef int type_el;
 
-const int MAX_SIZE_RAM = 1501;
+const int MAX_SIZE_RAM =    1501;
+const int START_DRAW_RAM  = 500;
+const int END_DRAW_RAM    = 1500;
 
 const int MAX_SIZE_ARGUMENT = 100;
 const int MAX_SIZE_COMMAND  = 1;

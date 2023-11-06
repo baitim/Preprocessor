@@ -10,9 +10,9 @@
 
 int main(int argc, const char *argv[])
 {
-    int error = GLOBAL_ERROR_NO;
+    GlobalErrors error = GLOBAL_ERROR_NO;
 
-    CMD_INPUT_DATA cmd_data = { };
+    CMD_INPUT_DATA cmd_data = {};
     input_cmd(argc, argv, &cmd_data);
 
     if (cmd_data.is_help)

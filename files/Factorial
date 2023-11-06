@@ -1,4 +1,3 @@
-/ DRAW RAM in [500 - 1500]
 CALL MAIN:
 HLT
 
@@ -7,26 +6,40 @@ MAIN:
 
     PUSH 0
     POP  rax            / start value
-    PUSH 7
+    IN
     POP  rbx            / upper bound of values
     PUSH 1
-    POP  rcx            / fact
-    CALL FACT:
+    POP  rcx            / value of factorial
+
+    CALL FACT:          / calculate factorial answer in rcx
+    CALL PRINT_RCX:
     RET
 
-/ WARNING function changes registers values (rax rcx)
+/ Evaluates factorial of argument arg.
+/
+/ Args:
+/   rax - arg
+/
+/ Clobbers:
+/   rbx, memory
+/
+/ Returns:
+/   rax - value of factorial
 FACT:
     PUSH rax 
     PUSH rbx
     JAE  ret_fact:      / return
     CALL ADD_1_TO_RAX:
     CALL MUL_RAX_RCX:
+    CALL FACT:          / calculate factorial answer in rcx
+    ret_fact:
+    RET
+
+PRINT_RCX:
     PUSH rcx
     OUT
     PUSH 10
     OUTC
-    CALL FACT:          / calc and print again
-    ret_fact:
     RET
 
 ADD_1_TO_RAX:
@@ -35,7 +48,6 @@ ADD_1_TO_RAX:
     ADD
     POP  rax
     RET
-
 
 MUL_RAX_RCX:
     PUSH rcx

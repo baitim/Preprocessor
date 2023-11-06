@@ -17,13 +17,12 @@
 #define REG (1 << 5)
 #define NUM (1 << 6)
 #define MEM (1 << 7)
+#define STR (1 << 8)
 #define PRECISION 100
 #define PUSH(arg)       stack_push(&stack, (arg))
 #define POP(arg)        stack_pop (&stack, (arg))
 #define PUSH_COM(arg)   stack_push(&stack_commands, (arg));
 #define POP_COM(arg)    stack_pop (&stack_commands, (arg));
-#define START_DRAW_RAM 500
-#define END_DRAW_RAM   1500
 
 #define IS_REG (command & REG)
 #define IS_NUM (command & NUM)
@@ -68,6 +67,15 @@ GlobalErrors calculate(const char *name_of_file)
     while (number_command < size_file) {
         int command = commands[number_command];
         number_command++;
+
+        // M R N _______
+        // if (command & MEMORY_BIT)
+        // {
+        //     get_memory_arg()
+        // }
+        // ...
+        
+        // int* value = get_arg(commands);
 
         switch ((int)command % (int)powf(2, FREE_BYTES)) {
             #include "../Codegen.inc.h"

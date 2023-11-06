@@ -23,7 +23,7 @@ int main(int argc, const char *argv[])
         return 1; 
     }
 
-    int error = calculate(cmd_data.asm_bin);
+    GlobalErrors error = calculate(cmd_data.asm_bin);
     if (error) {
         dump(error);
         return 1;
