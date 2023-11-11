@@ -13,7 +13,8 @@ enum Type_arg {
     TYPE_ARG_NUM = 1,
     TYPE_ARG_REG = 2,
     TYPE_ARG_LAB = 3,
-    TYPE_ARG_MEM = 4
+    TYPE_ARG_MEM = 4,
+    TYPE_ARG_ERR = -1,
 };
 
 static GlobalErrors get_arg(const DATA *src, int *command, int *index_write, 
@@ -158,13 +159,14 @@ static GlobalErrors get_arg(const DATA *src, int *command, int *index_write,
                             int *number_fixup, int number_string, 
                             Pointers_label *pointers_labels, FILE *listing)
 {
-    // Нет проверки на сигнатуру.
     if (get_number(src, number_string, command, index_write, listing) == 1)
         return GLOBAL_ERROR_NO;
 
     make_end_null(src->pointers[number_string]);
     fprintf(listing, "%*s", 21, src->pointers[number_string]);
-    int type_arg = check_type_arg(src->pointers[number_string]);
+    Type_arg type_arg = check_type_arg(src->pointers[number_string]);
+    if (type_arg == TYPE_ARG_ERR)
+        return GLOBAL_ERROR_READ_FILE;
  
     if (type_arg == TYPE_ARG_MEM) {
         if (get_memory(src, number_string, command, index_write) == 1)
@@ -211,7 +213,7 @@ static int get_memory(const DATA *src, int number_string, int *command, int *ind
     if (parse_memory(&memory_arg, src->pointers[number_string]) != 1)
         return 0;
 
-    int type_mem_arg = check_type_arg(memory_arg);
+    Type_arg type_mem_arg = check_type_arg(memory_arg);
 
     if (type_mem_arg == TYPE_ARG_REG) {
         for (int j = 0; j < COUNT_REGISTERS; j++) {
